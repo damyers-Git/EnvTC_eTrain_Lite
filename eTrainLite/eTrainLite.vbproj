@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{441258AF-0BF0-491C-9CCD-F1965E878051}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>eTrainLite.My.MyApplication</StartupObject>
+    <RootNamespace>eTrainLite</RootNamespace>
+    <AssemblyName>eTrainLite</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>eTrainLite.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>eTrainLite.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>etrain_oxc_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Syncfusion.Compression.Base, Version=15.4400.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
+    <Reference Include="Syncfusion.XlsIO.Base, Version=15.4400.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
+    <Reference Include="Syncfusion.XlsIO.Windows, Version=15.4400.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Calculations.vb" />
+    <Compile Include="MHImport.vb" />
+    <Compile Include="mSurrogate.vb" />
+    <Compile Include="CustomReport.Designer.vb">
+      <DependentUpon>CustomReport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CustomReport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Permit.vb" />
+    <Compile Include="Project.vb" />
+    <Compile Include="RefBook.vb" />
+    <Compile Include="CopyMethod.Designer.vb">
+      <DependentUpon>CopyMethod.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CopyMethod.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mStandard.vb" />
+    <Compile Include="CSImport.vb" />
+    <Compile Include="eTrain.vb" />
+    <Compile Include="Import.vb" />
+    <Compile Include="eTrainSplash.Designer.vb">
+      <DependentUpon>eTrainSplash.vb</DependentUpon>
+    </Compile>
+    <Compile Include="eTrainSplash.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalVariables.vb" />
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mCompound.vb" />
+    <Compile Include="Method.vb" />
+    <Compile Include="EditMethods.Designer.vb">
+      <DependentUpon>EditMethods.vb</DependentUpon>
+    </Compile>
+    <Compile Include="EditMethods.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mInstrument.vb" />
+    <Compile Include="NewMethodImport.Designer.vb">
+      <DependentUpon>NewMethodImport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewMethodImport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RefBookEdit.Designer.vb">
+      <DependentUpon>RefBookEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="RefBookEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report.vb" />
+    <Compile Include="CompSel.Designer.vb">
+      <DependentUpon>CompSel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CompSel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportForm.Designer.vb">
+      <DependentUpon>ReportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SampleMerge.Designer.vb">
+      <DependentUpon>SampleMerge.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SampleMerge.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SampleEdit.Designer.vb">
+      <DependentUpon>SampleEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SampleEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SIS.vb" />
+    <Compile Include="SpikeInfo.Designer.vb">
+      <DependentUpon>SpikeInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SpikeInfo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Standard.vb" />
+    <Compile Include="Compound.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Sample.vb" />
+    <Compile Include="Surrogate.vb" />
+    <Compile Include="TQ3Import.vb" />
+    <Compile Include="Transfer.vb" />
+    <Compile Include="TransferForm.Designer.vb">
+      <DependentUpon>TransferForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TransferForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UnitConversion.Designer.vb">
+      <DependentUpon>UnitConversion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UnitConversion.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CopyMethod.resx">
+      <DependentUpon>CopyMethod.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomReport.resx">
+      <DependentUpon>CustomReport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditMethods.resx">
+      <DependentUpon>EditMethods.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="eTrainSplash.resx">
+      <DependentUpon>eTrainSplash.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewMethodImport.resx">
+      <DependentUpon>NewMethodImport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RefBookEdit.resx">
+      <DependentUpon>RefBookEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompSel.resx">
+      <DependentUpon>CompSel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportForm.resx">
+      <DependentUpon>ReportForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SampleMerge.resx">
+      <DependentUpon>SampleMerge.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SampleEdit.resx">
+      <DependentUpon>SampleEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpikeInfo.resx">
+      <DependentUpon>SpikeInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransferForm.resx">
+      <DependentUpon>TransferForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnitConversion.resx">
+      <DependentUpon>UnitConversion.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="etrain_oxc_icon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
