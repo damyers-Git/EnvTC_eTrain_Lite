@@ -155,7 +155,7 @@ Public Class Transfer
                         objWriter.Close() 'Added WT 10/13/2017 -> Close File
                         'File.Copy(strPath & strUni, GlobalVariables.eTrain.ServerFP & strUni)
 
-                    ElseIf GlobalVariables.eTrain.location = "MIDLAND" Then
+                    ElseIf GlobalVariables.eTrain.Location = "MIDLAND" Then
                         If GlobalVariables.eTrain.Server = "MIDLAND" Then
                             If GlobalVariables.eTrain.Team = "CLAB" Then
                                 'Construct sample files with data from import
