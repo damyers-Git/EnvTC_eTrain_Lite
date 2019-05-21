@@ -189,7 +189,7 @@ Public Class Transfer
                             ElseIf GlobalVariables.eTrain.Team = "AECOM" Then
 
                                 'Construct sample files with data from import
-                                'Hi this is Will
+                                'This is not Will now
                                 If Not aSample.CompoundList.Item(0).ReportedAmt = "" And IsNumeric(aSample.CompoundList.Item(0).ReportedAmt) Then
 
                                     d = DateTime.Now
