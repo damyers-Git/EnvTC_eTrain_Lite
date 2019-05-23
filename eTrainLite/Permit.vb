@@ -260,7 +260,7 @@ Public Class Permit
             '"WHERE COMPONENT_VIEW.ANALYSIS = 'TPH_DUP' OR COMPONENT_VIEW.ANALYSIS = 'M624H_DUP' OR COMPONENT_VIEW.ANALYSIS = 'HS_FID_DUP'"
         End If
 
-        'Connect and fill dtLimits for later use
+        'Connect and fill dtLimits for later use test
         Try
             objConn = New OdbcConnection(sConn)
             objConn.Open()
