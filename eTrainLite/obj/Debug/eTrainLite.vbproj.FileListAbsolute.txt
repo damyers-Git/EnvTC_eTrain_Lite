@@ -70,9 +70,6 @@ C:\Repos\ETrainLite\eTrainLite\obj\Debug\eTrainLite.vbproj.GenerateResource.Cach
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\eTrainLite.exe
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\eTrainLite.pdb
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\eTrainLite.xml
-C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.Compression.Base.dll
-C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Base.dll
-C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Windows.dll
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.Compression.Base.xml
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Base.xml
 C:\Repos\EAC_eTrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Windows.xml
