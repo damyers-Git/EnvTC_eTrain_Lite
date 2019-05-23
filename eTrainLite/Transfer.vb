@@ -178,7 +178,7 @@ Public Class Transfer
                                     objWriter.WriteLine("NEWSAMPL = True")
                                     objWriter.WriteLine("SOURCE_N = 2")
                                     objWriter.WriteLine("SOURCE_1 = MIOPS Sewer Study Result Summary")
-                                    objWriter.WriteLine("SOURCE_2 = CONTACT D. MYERS 989-636-6204 Wyatt Towne 989-633-1975")
+                                    objWriter.WriteLine("SOURCE_2 = CONTACT D. MEYERS 989-636-6204 Wyatt Towne 989-633-1975")
                                     objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.SampDate))
                                     objWriter.WriteLine("?" & aSample.CompoundList.Item(0).Name.Split("(")(0).Trim() & "  ?N  ?  " & aSample.CompoundList.Item(0).ReportedAmt & "?")
 
@@ -208,7 +208,7 @@ Public Class Transfer
                                     objWriter.WriteLine("NEWSAMPL = True")
                                     objWriter.WriteLine("SOURCE_N = 2")
                                     objWriter.WriteLine("SOURCE_1 = MIOPS Sewer Study Result Summary")
-                                    objWriter.WriteLine("SOURCE_2 = CONTACT D. MYERS 989-636-6204 Wyatt Towne 989-633-1975")
+                                    objWriter.WriteLine("SOURCE_2 = CONTACT D. MEYERS 989-636-6204 Wyatt Towne 989-633-1975")
                                     objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.SampDate))
                                     For Each aCompound In aSample.CompoundList
                                         objWriter.WriteLine("?" & aSample.CompoundList.Item(0).Name.Split("(")(0).Trim() & "  ?N  ?  " & aSample.CompoundList.Item(0).ReportedAmt & "?")
