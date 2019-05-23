@@ -260,7 +260,7 @@ Public Class Permit
             '"WHERE COMPONENT_VIEW.ANALYSIS = 'TPH_DUP' OR COMPONENT_VIEW.ANALYSIS = 'M624H_DUP' OR COMPONENT_VIEW.ANALYSIS = 'HS_FID_DUP'"
         End If
 
-        'Connect and fill dtLimits for later use
+        'Connect and fill dtLimits for later use test
         Try
             objConn = New OdbcConnection(sConn)
             objConn.Open()
@@ -319,14 +319,14 @@ Public Class Permit
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
             sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_EnvMD;PWD=lg#En3#;SERVER=PPT87P.nam.dow.com;"
             'SQL statement
-            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " & _
-                "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVMD.DOW_COMP_LIMIT_ENTRY DOW_COMP_LIMIT_ENTRY " & _
+            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " &
+                "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVMD.DOW_COMP_LIMIT_ENTRY DOW_COMP_LIMIT_ENTRY " &
             "WHERE DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'VOC' AND DOW_COMP_LIMIT_ENTRY.ANALYSIS_VERSION = '         4' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'EOA' AND DOW_COMP_LIMIT_ENTRY.ANALYSIS_VERSION = '         3'"
         ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
             sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT85P.nam.dow.com;"
             'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT87P.nam.dow.com;"
             'Limits
-            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " & _
+            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " &
                 "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVTX.DOW_COMP_LIMIT_ENTRY " '& _
             ' "WHERE DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'TPH_DUP' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'M624H_DUP' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'HS_FID_DUP'"
         End If
@@ -339,8 +339,8 @@ Public Class Permit
             odAdapter.Fill(dtLimits)
             objConn.Close()
         Catch ex As Exception
-            MsgBox("Error connecting to LIMS!" & vbCrLf & _
-                   "Sub Procedure: LoadLimsLimit()" & vbCrLf & _
+            MsgBox("Error connecting to LIMS!" & vbCrLf &
+                   "Sub Procedure: LoadLimsLimit()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
@@ -464,8 +464,8 @@ Public Class Permit
             End If
 
         Catch ex As Exception
-            MsgBox("Error getting Permit names!" & vbCrLf & _
-                   "Sub Procedure: LoadPermitNames()" & vbCrLf & _
+            MsgBox("Error getting Permit names!" & vbCrLf &
+                   "Sub Procedure: LoadPermitNames()" & vbCrLf &
                 "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
@@ -622,9 +622,9 @@ Public Class Permit
                 End If
             End If
         Catch ex As Exception
-            MsgBox("Error reading Permit file!" & vbCrLf & _
-                   "Sub Procedure: LoadPermit()" & vbCrLf & _
-                "Line: " & strLine & vbCrLf & _
+            MsgBox("Error reading Permit file!" & vbCrLf &
+                   "Sub Procedure: LoadPermit()" & vbCrLf &
+                "Line: " & strLine & vbCrLf &
                 "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
@@ -657,7 +657,7 @@ Public Class Permit
                     End If
 
                 Catch ex As Exception
-                    MsgBox("Error Saving Permit File" & vbCrLf & _
+                    MsgBox("Error Saving Permit File" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -686,8 +686,8 @@ Public Class Permit
                     End If
 
                 Catch ex As Exception
-                    MsgBox("Error Saving Permit File" & vbCrLf & _
-                           "Sub Procedure: SavePermit()" & vbCrLf & _
+                    MsgBox("Error Saving Permit File" & vbCrLf &
+                           "Sub Procedure: SavePermit()" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -711,7 +711,7 @@ Public Class Permit
                 Try
                     'Backup old file if there
                     If File.Exists(strFileLoc) Then
-                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Midland\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" & _
+                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Midland\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" &
                                   curDate.Month & curDate.Day & curDate.Year & "_" & curDate.Hour & curDate.Minute & ".et2")
                     End If
                     'Begin write
@@ -736,7 +736,7 @@ Public Class Permit
                     sr.Dispose()
                     Return True
                 Catch ex As Exception
-                    MsgBox("Error Writing Permit File" & vbCrLf & _
+                    MsgBox("Error Writing Permit File" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -746,7 +746,7 @@ Public Class Permit
                 Try
                     'Backup old file if there
                     If File.Exists(strFileLoc) Then
-                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Freeport\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" & _
+                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Freeport\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" &
                                   curDate.Month & curDate.Day & curDate.Year & "_" & curDate.Hour & curDate.Minute & ".et2")
                     End If
                     'Begin write
@@ -771,8 +771,8 @@ Public Class Permit
                     sr.Dispose()
                     Return True
                 Catch ex As Exception
-                    MsgBox("Error Writing Permit File" & vbCrLf & _
-                           "Sub Procedure: WritePermit()" & vbCrLf & _
+                    MsgBox("Error Writing Permit File" & vbCrLf &
+                           "Sub Procedure: WritePermit()" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
