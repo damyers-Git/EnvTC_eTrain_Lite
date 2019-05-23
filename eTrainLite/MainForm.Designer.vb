@@ -32,6 +32,7 @@ Partial Class MainForm
         Me.ROHToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.MidlandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AECOMToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CLABToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lstFileList = New System.Windows.Forms.ListBox()
         Me.btnFindFiles = New System.Windows.Forms.Button()
         Me.btnImport = New System.Windows.Forms.Button()
@@ -53,7 +54,6 @@ Partial Class MainForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.btnClearSamples = New System.Windows.Forms.Button()
         Me.btnSigHelp = New System.Windows.Forms.Button()
-        Me.CLABToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.nudSigFig, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -106,27 +106,33 @@ Partial Class MainForm
         'SeadriftToolStripMenuItem
         '
         Me.SeadriftToolStripMenuItem.Name = "SeadriftToolStripMenuItem"
-        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(181, 26)
+        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(139, 26)
         Me.SeadriftToolStripMenuItem.Text = "&Seadrift"
         '
         'ROHToolStripMenuItem1
         '
         Me.ROHToolStripMenuItem1.Name = "ROHToolStripMenuItem1"
-        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(181, 26)
+        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(139, 26)
         Me.ROHToolStripMenuItem1.Text = "&ROH"
         '
         'MidlandToolStripMenuItem
         '
         Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AECOMToolStripMenuItem, Me.CLABToolStripMenuItem})
         Me.MidlandToolStripMenuItem.Name = "MidlandToolStripMenuItem"
-        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(181, 26)
+        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(139, 26)
         Me.MidlandToolStripMenuItem.Text = "Midland"
         '
         'AECOMToolStripMenuItem
         '
         Me.AECOMToolStripMenuItem.Name = "AECOMToolStripMenuItem"
-        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(181, 26)
+        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(135, 26)
         Me.AECOMToolStripMenuItem.Text = "AECOM"
+        '
+        'CLABToolStripMenuItem
+        '
+        Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
+        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(135, 26)
+        Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'lstFileList
         '
@@ -341,12 +347,6 @@ Partial Class MainForm
         Me.btnSigHelp.TabIndex = 31
         Me.btnSigHelp.Text = "?"
         Me.btnSigHelp.UseVisualStyleBackColor = True
-        '
-        'CLABToolStripMenuItem
-        '
-        Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
-        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(181, 26)
-        Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'MainForm
         '
