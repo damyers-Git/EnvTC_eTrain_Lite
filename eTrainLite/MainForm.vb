@@ -22,8 +22,15 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             GlobalVariables.Import.Type = "EDD"
         ElseIf cboImportType.Text = "SSR" Then
             GlobalVariables.Import.Type = "SSR"
-        ElseIf cboImportType.Text = "EuroFins - Lancaster" Then
+        ElseIf cboImportType.Text = "EUROLAN" Then
             GlobalVariables.Import.Type = "EUROLAN"
+        ElseIf cboImportType.Text = "SGS" Then
+            GlobalVariables.Import.Type = "SGS"
+        ElseIf cboImportType.Text = "ALS" Then
+            GlobalVariables.Import.Type = "ALS"
+        ElseIf cboImportType.Text = "TA" Then
+            GlobalVariables.Import.Type = "TA"
+
         Else
             MsgBox("Please select an Import Type first", MsgBoxStyle.Exclamation, "eTrain 2.0")
             Exit Sub
@@ -1048,8 +1055,10 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
         ' Changed to EDD from Eurofins - WB 5/23/19
-        cboImportType.Items.Add("EDD")
-
+        cboImportType.Items.Add("EUROLAN")
+        cboImportType.Items.Add("ALS")
+        cboImportType.Items.Add("SGS")
+        cboImportType.Items.Add("TA")
         'Enable LIMS transfer if samples and server selected
         If GlobalVariables.SampleList.Count > 0 And Not IsNothing(GlobalVariables.eTrain.Server) Then
             Me.btnTransLIMS.Enabled = True
