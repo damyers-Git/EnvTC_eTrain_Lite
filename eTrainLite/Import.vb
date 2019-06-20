@@ -916,7 +916,7 @@ Public Class Import
                          "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
 
             End Try
-        ElseIf Type = "EUROLAN" Then 'Added WT 9/26/2017
+        ElseIf Type = "EUROLAN" Then
 
             Try
                 Dim aSampleTemp As New Sample
@@ -955,14 +955,57 @@ Public Class Import
                         End If
                     End If
 
-
                 Loop
             Catch ex As Exception
                 MsgBox("Error pulling sample information!" & vbCrLf &
                     "Logic Error: " & ex.Message & vbCrLf &
-                    "(EDD may be formatted incorrectly. Please ensure EDD format Is " & vbCrLf &
-                    "correct And try again.)", MsgBoxStyle.Critical)
+                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                    "correct and try again.)", MsgBoxStyle.Critical)
 
+            End Try
+        ElseIf Type = "ALS" Then
+            Try
+                Dim aSampleTemp As New Sample
+                Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
+                line = sr.ReadLine
+                line = sr.ReadLine
+                Dim Permit As New Permit
+                Do Until line = ""
+                    If (InStr(line, Chr(34))) Then
+                        line = Regex.Replace(line, """", "")
+                    End If
+                    If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                        If (InStr(line, aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode)) = 0 Or (InStr(line, aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) = 0) Then 'Check if the current sample is still the same sample 
+                            Dim temp As String() = aSampleTemp.CompoundList(0).EDDSysSampleCode.Split("_")
+                            aSampleTemp.LimsID = temp(0) 'aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) '7 for space? <- Note: the Lims ID does not always start with an digit <<Ask??
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                            aSampleTemp = New Sample
+                        End If
+                    End If
+
+                    arrSplText = line.Split(vbTab)
+                    If (arrSplText(34) = "TRG" Or arrSplText(34) = "Target") And arrSplText(10) = "N" Then
+                        loadEDD(arrSplText, aSampleTemp)
+                    End If
+
+                    line = sr.ReadLine()
+
+                    'If end of the file, ensure last sample is added to Global sample list
+                    If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
+                        If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
+                            Dim tempTest As String
+                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                        End If
+                    End If
+                Loop
+                Permit.LoadEddLimsCodes()
+            Catch ex As Exception
+                MsgBox("Error pulling sample information!" & vbCrLf &
+                    "Logic Error: " & ex.Message & vbCrLf &
+                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                    "correct and try again.)", MsgBoxStyle.Critical)
             End Try
         End If
     End Sub
