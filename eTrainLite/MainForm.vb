@@ -22,8 +22,15 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             GlobalVariables.Import.Type = "EDD"
         ElseIf cboImportType.Text = "SSR" Then
             GlobalVariables.Import.Type = "SSR"
-        ElseIf cboImportType.Text = "EuroFins - Lancaster" Then
+        ElseIf cboImportType.Text = "EUROLAN" Then
             GlobalVariables.Import.Type = "EUROLAN"
+        ElseIf cboImportType.Text = "SGS" Then
+            GlobalVariables.Import.Type = "SGS"
+        ElseIf cboImportType.Text = "ALS" Then
+            GlobalVariables.Import.Type = "ALS"
+        ElseIf cboImportType.Text = "TA" Then
+            GlobalVariables.Import.Type = "TA"
+
         Else
             MsgBox("Please select an Import Type first", MsgBoxStyle.Exclamation, "eTrain 2.0")
             Exit Sub
@@ -59,7 +66,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
             Exit Sub
         End If
-
         'Search for files
         If GlobalVariables.Import.Type = "CHEM" Then
             GlobalVariables.Import.arrFileList.Clear()
@@ -138,11 +144,21 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 lstFileList.Items.Add(file.ToString) '"...\" & arrSpl(UBound(arrSpl) - 2) & "\" & arrSpl(UBound(arrSpl) - 1) & "\" & arrSpl(UBound(arrSpl)))
             Next
 
+            'Make Import Available
+            Me.btnImport.Enabled = True
+        ElseIf GlobalVariables.Import.Type = "ALS" Then 'Added 
+            GlobalVariables.Import.arrFileList.Clear()
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*") '<- added by wmtowne for testing sewer data 1/25/2019
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
+
+            For Each file In GlobalVariables.Import.arrFileList
+                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
+                lstFileList.Items.Add(file.ToString) '"...\" & arrSpl(UBound(arrSpl) - 2) & "\" & arrSpl(UBound(arrSpl) - 1) & "\" & arrSpl(UBound(arrSpl)))
+            Next
+
+            'Make Import Available
+            Me.btnImport.Enabled = True
         End If
-
-        'Make Import Available
-        Me.btnImport.Enabled = True
-
     End Sub
 
     Private Sub btnImport_Click(sender As System.Object, e As System.EventArgs) Handles btnImport.Click
@@ -278,8 +294,19 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     End If
                 Next
             Next
-        End If
 
+        ElseIf GlobalVariables.Import.Type = "ALS" Then 'Added WT 9/26/2017
+            For Each item In lstFileList.SelectedItems
+                For Each file In GlobalVariables.Import.arrFileList
+                    arrSpl = item.ToString.Split("\") 'arrSpl contain file name? ()
+                    If InStr(file, arrSpl(UBound(arrSpl))) Then
+                        GlobalVariables.Import.FilePath = file.ToString
+                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                        GlobalVariables.Import.SampleImport()
+                    End If
+                Next
+            Next
+        End If
         'CAS no's
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
             If GlobalVariables.eTrain.Team = "CHROM" Then
@@ -309,6 +336,17 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 Next
             End If
         ElseIf GlobalVariables.Import.Type = "EUROLAN" Then
+            If GlobalVariables.SampleList.Count = 0 Then
+                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+            Else
+                For Each aSample In GlobalVariables.SampleList
+                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
+                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                    strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
+                    txtImportResults.Text = strText
+                Next
+            End If
+        ElseIf GlobalVariables.Import.Type = "ALS" Then
             If GlobalVariables.SampleList.Count = 0 Then
                 txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
             Else
@@ -1047,15 +1085,18 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         btnFindFiles.Enabled = True
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
-        cboImportType.Items.Add("EuroFins - Lancaster")
-
+        ' Changed to EDD from Eurofins - WB 5/23/19
+        cboImportType.Items.Add("EUROLAN")
+        cboImportType.Items.Add("ALS")
+        'cboImportType.Items.Add("SGS")
+        'cboImportType.Items.Add("TA")
         'Enable LIMS transfer if samples and server selected
         If GlobalVariables.SampleList.Count > 0 And Not IsNothing(GlobalVariables.eTrain.Server) Then
             Me.btnTransLIMS.Enabled = True
         End If
     End Sub
 
-    Private Sub cboImportType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboImportType.SelectedIndexChanged
+    Private Sub cboImportType_SelectedIndexChanged(sender As Object, e As EventArgs)
 
     End Sub
 End Class

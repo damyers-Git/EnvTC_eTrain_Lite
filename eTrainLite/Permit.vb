@@ -260,7 +260,7 @@ Public Class Permit
             '"WHERE COMPONENT_VIEW.ANALYSIS = 'TPH_DUP' OR COMPONENT_VIEW.ANALYSIS = 'M624H_DUP' OR COMPONENT_VIEW.ANALYSIS = 'HS_FID_DUP'"
         End If
 
-        'Connect and fill dtLimits for later use
+        'Connect and fill dtLimits for later use test 
         Try
             objConn = New OdbcConnection(sConn)
             objConn.Open()
@@ -319,14 +319,14 @@ Public Class Permit
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
             sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_EnvMD;PWD=lg#En3#;SERVER=PPT87P.nam.dow.com;"
             'SQL statement
-            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " & _
-                "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVMD.DOW_COMP_LIMIT_ENTRY DOW_COMP_LIMIT_ENTRY " & _
+            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " &
+                "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVMD.DOW_COMP_LIMIT_ENTRY DOW_COMP_LIMIT_ENTRY " &
             "WHERE DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'VOC' AND DOW_COMP_LIMIT_ENTRY.ANALYSIS_VERSION = '         4' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'EOA' AND DOW_COMP_LIMIT_ENTRY.ANALYSIS_VERSION = '         3'"
         ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
             sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT85P.nam.dow.com;"
             'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT87P.nam.dow.com;"
             'Limits
-            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " & _
+            sSQL = "SELECT DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID, DOW_COMP_LIMIT_ENTRY.INSTRUMENT, DOW_COMP_LIMIT_ENTRY.COMPONENT_NAME, " &
                 "DOW_COMP_LIMIT_ENTRY.MDL, DOW_COMP_LIMIT_ENTRY.RL, DOW_COMP_LIMIT_ENTRY.PQL FROM LIMS_ENVTX.DOW_COMP_LIMIT_ENTRY " '& _
             ' "WHERE DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'TPH_DUP' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'M624H_DUP' OR DOW_COMP_LIMIT_ENTRY.ANALYSIS_ID = 'HS_FID_DUP'"
         End If
@@ -339,8 +339,8 @@ Public Class Permit
             odAdapter.Fill(dtLimits)
             objConn.Close()
         Catch ex As Exception
-            MsgBox("Error connecting to LIMS!" & vbCrLf & _
-                   "Sub Procedure: LoadLimsLimit()" & vbCrLf & _
+            MsgBox("Error connecting to LIMS!" & vbCrLf &
+                   "Sub Procedure: LoadLimsLimit()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
@@ -428,7 +428,6 @@ Public Class Permit
         End If
 
     End Function
-
     Function LoadPermitNames() As Boolean
         Dim strFileNames() As String
         Dim aPermit As Permit
@@ -464,8 +463,8 @@ Public Class Permit
             End If
 
         Catch ex As Exception
-            MsgBox("Error getting Permit names!" & vbCrLf & _
-                   "Sub Procedure: LoadPermitNames()" & vbCrLf & _
+            MsgBox("Error getting Permit names!" & vbCrLf &
+                   "Sub Procedure: LoadPermitNames()" & vbCrLf &
                 "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
@@ -622,9 +621,9 @@ Public Class Permit
                 End If
             End If
         Catch ex As Exception
-            MsgBox("Error reading Permit file!" & vbCrLf & _
-                   "Sub Procedure: LoadPermit()" & vbCrLf & _
-                "Line: " & strLine & vbCrLf & _
+            MsgBox("Error reading Permit file!" & vbCrLf &
+                   "Sub Procedure: LoadPermit()" & vbCrLf &
+                "Line: " & strLine & vbCrLf &
                 "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
@@ -657,7 +656,7 @@ Public Class Permit
                     End If
 
                 Catch ex As Exception
-                    MsgBox("Error Saving Permit File" & vbCrLf & _
+                    MsgBox("Error Saving Permit File" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -686,8 +685,8 @@ Public Class Permit
                     End If
 
                 Catch ex As Exception
-                    MsgBox("Error Saving Permit File" & vbCrLf & _
-                           "Sub Procedure: SavePermit()" & vbCrLf & _
+                    MsgBox("Error Saving Permit File" & vbCrLf &
+                           "Sub Procedure: SavePermit()" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -711,7 +710,7 @@ Public Class Permit
                 Try
                     'Backup old file if there
                     If File.Exists(strFileLoc) Then
-                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Midland\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" & _
+                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Midland\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" &
                                   curDate.Month & curDate.Day & curDate.Year & "_" & curDate.Hour & curDate.Minute & ".et2")
                     End If
                     'Begin write
@@ -736,7 +735,7 @@ Public Class Permit
                     sr.Dispose()
                     Return True
                 Catch ex As Exception
-                    MsgBox("Error Writing Permit File" & vbCrLf & _
+                    MsgBox("Error Writing Permit File" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
@@ -746,7 +745,7 @@ Public Class Permit
                 Try
                     'Backup old file if there
                     If File.Exists(strFileLoc) Then
-                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Freeport\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" & _
+                        File.Copy(strFileLoc, "\\Helium\as-global\Special_Access\EAC\Data\eTrain\DataFiles\Freeport\Chrom\Projects_Methods\Backups\" & aPermit.Name & "_" &
                                   curDate.Month & curDate.Day & curDate.Year & "_" & curDate.Hour & curDate.Minute & ".et2")
                     End If
                     'Begin write
@@ -771,12 +770,171 @@ Public Class Permit
                     sr.Dispose()
                     Return True
                 Catch ex As Exception
-                    MsgBox("Error Writing Permit File" & vbCrLf & _
-                           "Sub Procedure: WritePermit()" & vbCrLf & _
+                    MsgBox("Error Writing Permit File" & vbCrLf &
+                           "Sub Procedure: WritePermit()" & vbCrLf &
                      "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                     Return False
                 End Try
             End If
         End If
+    End Function
+
+    Function LoadEddLimsCodes() As Boolean ' Added 6/12/19 WB & WT
+        Dim sConn As String
+        Dim sSQL As String
+        'Dim aPermit As Permit
+        'Dim aProject As Project
+        'Dim aInstrument As mInstrument
+        Dim aCompound As mCompound
+        Dim rCount As Integer
+        Dim dtLimits As New DataTable
+        Dim dvLimits As DataView
+        Dim dtUnits As New DataTable
+        Dim objConn As OdbcConnection
+        Dim odAdapter As OdbcDataAdapter
+
+        ' COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS
+
+        ' Connection based on location
+        ' Only Midland since that is where all the CLab EDDs will be connecting through for the time being.
+        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+            'sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;"
+            'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_EnvMD;PWD=lg#En3#;SERVER=PPT87P.nam.dow.com;"
+            sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVMD;PWD=lg#En3#;SERVER=PPT107P.nam.dow.com;"
+            'SQL statement
+            sSQL = "Select DOW_COMPONENT_CODE.COMPONENT_NAME, DOW_COMPONENT_CODE.CAS_NAME  " &
+                "FROM LIMS_ENVMD.DOW_COMPONENT_CODE;"
+        End If
+        'Connect and fill dtLimits for later use
+        Try
+            objConn = New OdbcConnection(sConn)
+            objConn.Open()
+            odAdapter = New OdbcDataAdapter(sSQL, sConn)
+            odAdapter.Fill(dtLimits)
+            objConn.Close()
+        Catch ex As Exception
+            MsgBox("Error connecting To LIMS!" & vbCrLf &
+                   "Sub Procedure: LoadEddLimsCodes()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+            Return False
+        End Try
+
+        'Load into Permit List
+        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+            'Check if Permit by LIMS is already used
+            'For Each aPermit In GlobalVariables.PermitList
+            'If aPermit.Name = "LIMS" Then
+            'Return True
+            'End If
+            'Next
+
+            'Get datatable into view and sort
+            dvLimits = New DataView(dtLimits)
+            'dvLimits.Sort = "ANALYSIS_ID ASC, INSTRUMENT ASC"
+            dtLimits = dvLimits.ToTable
+            rCount = 0
+            'aPermit = New Permit
+            'aPermit.Name = "LIMS"
+            Do Until rCount = dtLimits.Rows.Count - 1
+                aCompound = New mCompound
+                aCompound.Name = dtLimits.Rows(rCount)(0).ToString()
+                aCompound.CAS = dtLimits.Rows(rCount)(1).ToString()
+                GlobalVariables.compCASList.Add(aCompound)
+                rCount += 1
+                'Set starting Analysis/Project
+                'aProject = New Project
+                'aProject.Name = dtLimits.Rows(rCount)(0).ToString()
+                'Do Until dtLimits.Rows(rCount)(0).ToString() <> aProject.Name Or rCount = dtLimits.Rows.Count - 1
+                '    'aInstrument = New mInstrument
+                '    aInstrument.Name = dtLimits.Rows(rCount)(1).ToString()
+                '    Do Until dtLimits.Rows(rCount)(1).ToString() <> aInstrument.Name Or dtLimits.Rows(rCount)(0).ToString() <> aProject.Name Or rCount = dtLimits.Rows.Count - 1
+                '        aCompound = New mCompound
+                '        aCompound.Name = dtLimits.Rows(rCount)(2).ToString()
+                '        aCompound.MDL = dtLimits.Rows(rCount)(3).ToString()
+                '        aCompound.RL = dtLimits.Rows(rCount)(4).ToString()
+                '        aCompound.PQL = dtLimits.Rows(rCount)(5).ToString()
+                '        aInstrument.mCompoundList.Add(aCompound)
+                '        rCount = rCount + 1
+                '    Loop
+                '    aProject.mInstrumentList.Add(aInstrument)
+                'Loop
+                'aPermit.ProjectList.Add(aProject)
+            Loop
+            'GlobalVariables.PermitList.Add(aPermit)
+        End If
+        'Load in units from lims
+        If GlobalVariables.Permit.LoadEddLimsUnits() Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Function LoadEddLimsUnits() As Boolean ' Added 6/12/19 WB & WT
+        Dim sConn As String
+        Dim sSQL As String
+        Dim dtUnits As New DataTable
+        Dim dvUnits As DataView
+        Dim aPermit As Permit
+        Dim aProject As Project
+        Dim rCount As Integer
+        Dim objConn As OdbcConnection
+        Dim odAdapter As OdbcDataAdapter
+        Dim aMethod As Method
+
+
+        'Connection based on location
+        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+            sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;" ' Taken from the old CLab Transfer tool for SM 11.1  WB 6/19/19
+            'SQL statement
+            sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVMD.COMPONENT_VIEW "
+            ' & "WHERE COMPONENT_VIEW.ANALYSIS = 'VOC' OR COMPONENT_VIEW.ANALYSIS = 'EOA'"
+            'ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
+            '    sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT87P.nam.dow.com;"
+            '    'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT85P.nam.dow.com;"
+            '    'Units
+            '    sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVTX.COMPONENT_VIEW " ' _
+            '    '"WHERE COMPONENT_VIEW.ANALYSIS = 'TPH_DUP' OR COMPONENT_VIEW.ANALYSIS = 'M624H_DUP' OR COMPONENT_VIEW.ANALYSIS = 'HS_FID_DUP'"
+        End If
+
+        'Connect and fill dtLimits for later use test 
+        Try
+            objConn = New OdbcConnection(sConn)
+            objConn.Open()
+            odAdapter = New OdbcDataAdapter(sSQL, sConn)
+            odAdapter.Fill(dtUnits)
+            objConn.Close()
+
+        Catch ex As Exception
+            MsgBox("Error connecting to LIMS!" & vbCrLf &
+                   "Sub Procedure: LoadLimsUnits()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+            Return False
+        End Try
+
+        'Get datatable into view and sort
+        dvUnits = New DataView(dtUnits)
+        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+            dvUnits.Sort = "ANALYSIS ASC"
+            'ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
+            '    dvUnits.Sort = "ANALYSIS ASC"
+        End If
+        dtUnits = dvUnits.ToTable
+        rCount = 0
+        'For Each aPermit In GlobalVariables.PermitList
+        Do Until rCount = dtUnits.Rows.Count - 1
+            aMethod = New Method
+            aMethod.Units = dtUnits.Rows(rCount)(1).ToString()
+            aMethod.MethodName = dtUnits.Rows(rCount)(0).ToString()
+            GlobalVariables.methodNameAndUnits.Add(aMethod)
+            'For Each aProject In aPermit.ProjectList
+            'aProject.Name = dtUnits.Rows(rCount)(0).ToString()
+            'aProject.LimsUnits = dtUnits.Rows(rCount)(1).ToString()
+            'Exit For
+            'Next
+            rCount = rCount + 1
+        Loop
+        'Next
+        Return True
     End Function
 End Class

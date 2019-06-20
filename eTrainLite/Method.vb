@@ -9,6 +9,10 @@ Public Class Method
     Public Property mInstrumentList As New ArrayList
     Public Property RefBookList As New ArrayList
 
+    ' For contract lab EDD information
+    Private strUnits As String
+    Private strMethodName As String
+
     Public Sub New()
         'Constructor
         blnLoaded = False
@@ -53,6 +57,22 @@ Public Class Method
         End Get
         Set(ByVal value As Boolean)
             blnLoaded = value
+        End Set
+    End Property
+    Public Property Units() As String
+        Get
+            Return strUnits
+        End Get
+        Set(ByVal value As String)
+            strUnits = value
+        End Set
+    End Property
+    Public Property MethodName() As String
+        Get
+            Return strMethodName
+        End Get
+        Set(ByVal value As String)
+            strMethodName = value
         End Set
     End Property
 
