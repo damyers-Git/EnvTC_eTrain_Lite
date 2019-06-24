@@ -798,11 +798,11 @@ Public Class Permit
         ' Connection based on location
         ' Only Midland since that is where all the CLab EDDs will be connecting through for the time being.
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            'sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;"
-            'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_EnvMD;PWD=lg#En3#;SERVER=PPT87P.nam.dow.com;"
-            sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVMD;PWD=lg#En3#;SERVER=PPT107P.nam.dow.com;"
+            'sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;"  ' From CLab transfer tool
+            'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_EnvMD;PWD=lg#En3#;SERVER=PPT87P.nam.dow.com;"   ' From eTrain2
+            sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVMD;PWD=lg#En3#;SERVER=PPT107P.nam.dow.com;"   ' Provided by JD 6/20/19
             'SQL statement
-            sSQL = "Select DOW_COMPONENT_CODE.COMPONENT_NAME, DOW_COMPONENT_CODE.CAS_NAME  " &
+            sSQL = "Select DOW_COMPONENT_CODE.COMPONENT_NAME, DOW_COMPONENT_CODE.CAS_NAME " &
                 "FROM LIMS_ENVMD.DOW_COMPONENT_CODE;"
         End If
         'Connect and fill dtLimits for later use

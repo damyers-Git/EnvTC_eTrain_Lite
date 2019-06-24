@@ -342,6 +342,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 For Each aSample In GlobalVariables.SampleList
                     strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
                     strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf
                     strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
                     txtImportResults.Text = strText
                 Next
@@ -1096,7 +1097,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         End If
     End Sub
 
-    Private Sub cboImportType_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub txtImportResults_TextChanged(sender As Object, e As EventArgs) Handles txtImportResults.TextChanged
 
     End Sub
 End Class
