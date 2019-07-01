@@ -342,8 +342,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 For Each aSample In GlobalVariables.SampleList
                     strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
                     strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf
-                    strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
+                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
                     txtImportResults.Text = strText
                 Next
             End If
@@ -354,7 +354,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 For Each aSample In GlobalVariables.SampleList
                     strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
                     strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
+                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
                     txtImportResults.Text = strText
                 Next
             End If

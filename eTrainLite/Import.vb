@@ -916,6 +916,50 @@ Public Class Import
                          "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
 
             End Try
+        ElseIf Type = "ALS" Then
+            Try
+                Dim aSampleTemp As New Sample
+                Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
+                line = sr.ReadLine
+                line = sr.ReadLine
+                Dim Permit As New Permit
+                Do Until line = ""
+                    If (InStr(line, Chr(34))) Then
+                        line = Regex.Replace(line, """", "")
+                    End If
+                    If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                        If (InStr(line, aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode)) = 0 Or (InStr(line, aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) = 0) Then 'Check if the current sample is still the same sample 
+                            Dim temp As String() = aSampleTemp.CompoundList(0).EDDSysSampleCode.Split("_")
+                            aSampleTemp.LimsID = temp(0) 'aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) '7 for space? <- Note: the Lims ID does not always start with an digit <<Ask??
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                            aSampleTemp = New Sample
+                        End If
+                    End If
+
+                    arrSplText = line.Split(vbTab)
+                    If (arrSplText(34) = "TRG" Or arrSplText(34) = "Target") And arrSplText(10) = "N" Then
+                        loadEDD(arrSplText, aSampleTemp)
+                    End If
+
+                    line = sr.ReadLine()
+
+                    'If end of the file, ensure last sample is added to Global sample list
+                    If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
+                        If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
+                            Dim tempTest As String
+                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                        End If
+                    End If
+                Loop
+                Permit.LoadEddLimsCodes()
+            Catch ex As Exception
+                MsgBox("Error pulling sample information!" & vbCrLf &
+                    "Logic Error: " & ex.Message & vbCrLf &
+                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                    "correct and try again.)", MsgBoxStyle.Critical)
+            End Try
         ElseIf Type = "EUROLAN" Then
 
             Try
@@ -924,7 +968,7 @@ Public Class Import
                 line = sr.ReadLine
                 line = sr.ReadLine ' Writes over the column headers for reading in the file. 
                 Dim arrSplitLine() As String
-                Dim strLineCopy As String
+                Dim aPermit As New Permit
                 Do Until line = ""
 
                     'If (InStr(line, Chr(34))) Then
@@ -944,25 +988,24 @@ Public Class Import
                     '    loadEDDEUROLAN(arrSplText, aSampleTemp)
                     'End If
 
-                    strLineCopy = line
+                    arrSplitLine = convertEurolanEDD(line) ' Converting the EDD to a usable format.
 
-                    arrSplitLine = convertEurolanEDD(strLineCopy)
-
+                    ' Checking each new line read whether it is the same as the previous.
                     If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
-                        If (InStr(arrSplitLine(0), aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode)) = 0 Or (InStr(arrSplitLine(1), aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) = 0) Then 'Check if the current sample is still the same sample 
-                            If (checkLimsNumber(aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6))) Then
-                                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
-                                GlobalVariables.SampleList.Add(aSampleTemp)
-                                aSampleTemp = New Sample
-                            End If
+                        If (arrSplitLine(0) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(1) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                            aSampleTemp = New Sample
                         End If
                     End If
 
-                    If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") Then
-                        loadEDDEUROLAN(arrSplitLine, aSampleTemp)
+                    If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
+                        If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") Then ' Only accepting analytes that are targets for the analysis (no internal or surrogates).
+                            loadEDDEUROLAN(arrSplitLine, aSampleTemp)
+                        End If
                     End If
 
-                    line = sr.ReadLine()
+                    line = sr.ReadLine() ' Reading in the next line of the EDD.
 
                     'If end of the file, ensure last sample is added to Global sample list
                     If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
@@ -974,6 +1017,7 @@ Public Class Import
                         End If
                     End If
                 Loop
+                aPermit.LoadEddLimsCodes()
             Catch ex As Exception
                 MsgBox("Error pulling sample information!" & vbCrLf &
                     "Logic Error: " & ex.Message & vbCrLf &
@@ -983,32 +1027,37 @@ Public Class Import
             End Try
         End If
     End Sub
-    ' Used in taking a EDD from Eurofins Lancaster and changing the delimiter to tabs.
+    ' Used in taking a EDD from Eurofins Lancaster and returning an array of the values.
     ' Starts by creating an array by splitting at the quotation marks.
-    ' A string is concatinated using the loop for creating the correct array size in the method it is called from.
-    ' Any variable that is a single cama "," or a null value is skipped.
-    ' The nested for loop is for the actual samples since they will have various lengths of camas that are each replaced in the array. 
+    ' Split string will be a desired value, single cama, or multiple camas.
+    ' A new array is created by adding the desired values along with empty placeholder values.
+    ' Any element that is a single cama is skipped.
+    ' Empty string values are added in place of the multi-cama elements. Total of camas minus 1.
     Function convertEurolanEDD(ByVal line As String) As String()
         Dim arrInputSplit() As String
-        Dim strCorrectedInput(68) As String ' Lancaster EDDs are 69 columns wide.
+        Dim arrCorrectedEdd(68) As String ' Lancaster EDDs are 69 columns wide.
         arrInputSplit = line.Split("""")
         Dim intCount As Integer = 0 ' Keeping track of where in the array the element is placed.
         For i As Integer = 0 To arrInputSplit.Length - 1
-            If arrInputSplit(i).Equals(",") Then 'Or arrInputSplit(i).Length = 0
+            If arrInputSplit(i).Equals(",") Then ' Or arrInputSplit(i).Length = 0
                 Continue For
-            ElseIf (checkForOnlyCamas(arrInputSplit(i))) Then ' Method call to determine if the array element is a real value or just camas. Adding a filler element into the string for when it gets taken to an array.
+            ElseIf (checkForOnlyCamas(arrInputSplit(i))) Then ' Method call to determine if the array element is a real value or just camas.
                 For j As Integer = 0 To arrInputSplit(i).Length - 2
-                    strCorrectedInput(intCount) = ""
+                    arrCorrectedEdd(intCount) = ""
                     intCount += 1
                 Next
             Else
-                strCorrectedInput(intCount) = arrInputSplit(i)
+                arrCorrectedEdd(intCount) = arrInputSplit(i)
                 intCount += 1
             End If
         Next
-        Return strCorrectedInput
+        If (String.IsNullOrEmpty(arrCorrectedEdd(intCount))) Then ' Filling the last spot in the array if it doesn't already have a value.
+            arrCorrectedEdd(intCount) = ""
+        End If
+        Return arrCorrectedEdd
     End Function
-    ' Method to determine if the string value passed to it is all camas or not. 
+    ' Method to determine if the string value passed to it is all camas or not.
+    ' Used with the EDDs from Eurofins Lancaster Lab since they use double quotes and camas as their delimiters.
     Function checkForOnlyCamas(ByVal input As String) As Boolean
         For i As Integer = 0 To input.Length - 1
             If input.Chars(i) <> "," Then
@@ -1017,10 +1066,11 @@ Public Class Import
         Next
         Return True
     End Function
-
-    Function checkLimsNumber(ByRef input As String) As Boolean
-        For i As Integer = 0 To input.Length - 1
-            If Not (Asc(input.Chars(i)) >= 48 And Asc(input.Chars(i)) <= 57) Then
+    ' Method to determine if a LIMS number was passed to it.
+    ' Only checking the first 6 characters since those should be the LIMS ID for the sample.
+    Function checkForLimsNumber(ByVal input As String) As Boolean
+        For i As Integer = 0 To 5
+            If (Asc(input.Chars(i)) > 57 Or Asc(input.Chars(i)) < 48) Then
                 Return False
             End If
         Next
