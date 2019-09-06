@@ -1101,4 +1101,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
     Private Sub txtImportResults_TextChanged(sender As Object, e As EventArgs) Handles txtImportResults.TextChanged
 
     End Sub
+
+    Private Sub cboImportType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboImportType.SelectedIndexChanged
+
+    End Sub
 End Class

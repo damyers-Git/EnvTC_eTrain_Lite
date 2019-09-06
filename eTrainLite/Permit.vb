@@ -782,9 +782,6 @@ Public Class Permit
     Function LoadEddLimsCodes() As Boolean ' Added 6/12/19 WB & WT
         Dim sConn As String
         Dim sSQL As String
-        'Dim aPermit As Permit
-        'Dim aProject As Project
-        'Dim aInstrument As mInstrument
         Dim aCompound As mCompound
         Dim rCount As Integer
         Dim dtLimits As New DataTable
@@ -798,10 +795,9 @@ Public Class Permit
         ' Connection based on location
         ' Only Midland since that is where all the CLab EDDs will be connecting through for the time being.
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVMD;PWD=lg#En3#;SERVER=PPT107P.nam.dow.com;"   ' Provided by JD 6/20/19
+            sConn = "DRIVER={Microsoft ODBC for Oracle};uid=FGLLIMS_ENVMD;Pwd=lg#En3#;SERVER=PPT107P.NAM.DOW.COM;"
             'SQL statement
-            sSQL = "Select DOW_COMPONENT_CODE.COMPONENT_NAME, DOW_COMPONENT_CODE.CAS_NAME " &
-                "FROM LIMS_ENVMD.DOW_COMPONENT_CODE;"
+            sSQL = "SELECT DOW_COMPONENT_CODE.COMPONENT_NAME, DOW_COMPONENT_CODE.CAS_NAME FROM LIMS_ENVMD.DOW_COMPONENT_CODE"
         End If
         'Connect and fill dtLimits for later use
         Try
@@ -860,6 +856,7 @@ Public Class Permit
             Loop
             'GlobalVariables.PermitList.Add(aPermit)
         End If
+
         'Load in units from lims
         If GlobalVariables.Permit.LoadEddLimsUnits() Then
             Return True
@@ -885,7 +882,7 @@ Public Class Permit
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
             sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;" ' Taken from the old CLab Transfer tool for SM 11.1  WB 6/19/19
             'SQL statement
-            sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVMD.COMPONENT_VIEW "
+            sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVMD.COMPONENT_VIEW"
             ' & "WHERE COMPONENT_VIEW.ANALYSIS = 'VOC' OR COMPONENT_VIEW.ANALYSIS = 'EOA'"
             'ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
             '    sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT87P.nam.dow.com;"
@@ -933,6 +930,10 @@ Public Class Permit
             rCount = rCount + 1
         Loop
         'Next
+        Dim item As Method
+        For Each item In GlobalVariables.methodNameAndUnits
+            Console.WriteLine(item.Units & " " & item.MethodName)
+        Next
         Return True
     End Function
 End Class

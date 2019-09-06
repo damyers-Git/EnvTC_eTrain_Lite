@@ -999,7 +999,7 @@ Public Class Import
                         End If
                     End If
 
-                    If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
+                    If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
                         If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") Then ' Only accepting analytes that are targets for the analysis (no internal or surrogates).
                             loadEDDEUROLAN(arrSplitLine, aSampleTemp)
                         End If
@@ -1023,7 +1023,6 @@ Public Class Import
                     "Logic Error: " & ex.Message & vbCrLf &
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
-
             End Try
         End If
     End Sub
