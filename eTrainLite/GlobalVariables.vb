@@ -29,8 +29,12 @@ Public Class GlobalVariables
     Public Shared Property MidlandMBCompoundList As New ArrayList
     Public Shared Property MidlandHRAvgAreaCompList As New ArrayList
     Public Shared Property MidlandChromRLimitNames As New ArrayList
-    Public Shared Property compCASList As New ArrayList
+    Public Shared Property compNameToCASDic As New Dictionary(Of String, String)
+    Public Shared Property limsAnalysisMethod As New Dictionary(Of String, String)
+    Public Shared Property eddAnalysisMethod As New Dictionary(Of String, String)
+    Public Shared Property limsCompoundInformation As New ArrayList
     Public Shared Property methodNameAndUnits As New ArrayList
+    Public Shared Property limsMethodNames As New Dictionary(Of String, String)
     Public Shared Property NeedsCalculation As Boolean
     Public Shared Property NeedsUnitConversion As Boolean
     Public Shared Property CustomReportError As Boolean

@@ -160,32 +160,37 @@ Public Class Transfer
                             If GlobalVariables.eTrain.Team = "CLAB" Then
                                 'Construct sample files with data from import
 
-                                If Not aSample.CompoundList.Item(0).ReportedAmt = "" And IsNumeric(aSample.CompoundList.Item(0).ReportedAmt) Then
+                                'If Not aSample.CompoundList.Item(0).ReportedAmt = "" And IsNumeric(aSample.CompoundList.Item(0).ReportedAmt) Then
 
-                                    d = DateTime.Now
+                                d = DateTime.Now
+                                strPath = "\\usmdlsdowacds1\Lims_xfer\ENVMD\" & aSample.LimsID & "-" & aSample.UniqueID & ".txt"
+                                ' strPath = "\\usmdlsdowacds1\Lims_xfer\ENVMD\" & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                ' strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                objWriter = New System.IO.StreamWriter(strPath)
 
-                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\ua20088\Documents\TEST\" & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    objWriter = New System.IO.StreamWriter(strPath)
-
-                                    objWriter.WriteLine("$IDNTMODE = S")
-                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
-                                    objWriter.WriteLine("$SAMPTMPL = " & aSample.Type)
-                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
-                                    objWriter.WriteLine("$REPLNUMB = 0")
-                                    objWriter.WriteLine("$OPERATOR = BATCH")
-                                    objWriter.WriteLine("$ANALYSTN = ETRAIN")
-                                    objWriter.WriteLine("NEWSAMPL = True")
-                                    objWriter.WriteLine("SOURCE_N = 2")
-                                    objWriter.WriteLine("SOURCE_1 = MIOPS Sewer Study Result Summary")
-                                    objWriter.WriteLine("SOURCE_2 = CONTACT D. MEYERS 989-636-6204 Wyatt Towne 989-633-1975")
-                                    objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.SampDate))
-                                    objWriter.WriteLine("?" & aSample.CompoundList.Item(0).Name.Split("(")(0).Trim() & "  ?N  ?  " & aSample.CompoundList.Item(0).ReportedAmt & "?")
-
+                                objWriter.WriteLine("$IDNTMODE = S")
+                                objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                'objWriter.WriteLine("$SAMPTMPL = " & aSample.Type)
+                                objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                objWriter.WriteLine("$REPLNUMB = 0")
+                                objWriter.WriteLine("$OPERATOR = CONTLAB")
+                                objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                objWriter.WriteLine("NEWSAMPL = FALSE")
+                                objWriter.WriteLine("$INSTRMNT = ")
+                                objWriter.WriteLine("$SOURCE_N = 2")
+                                objWriter.WriteLine("SOURCE_1 = MIOPS Contract Lab Data")
+                                objWriter.WriteLine("SOURCE_2 = CONTACT William Bodeis 989-636-5245 or W. Towne 989-633-1975")
+                                objWriter.WriteLine("$SAMP_FLD = dow_field_02?")
+                                objWriter.WriteLine("$SAMP_FLD = dow_field_03?" & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
+                                'objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
+                                For Each aCompound In aSample.CompoundList
+                                    objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N" & "  ?" & aCompound.EDDResultValue & "  ?  " & "  ?" & aCompound.EDDLabQualifiers & "  ?" & aCompound.EDDEDilutionFactor)
+                                Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
 
-                                End If
+                                'End If
                             ElseIf GlobalVariables.eTrain.Team = "AECOM" Then
 
                                 'Construct sample files with data from import
@@ -242,27 +247,34 @@ Public Class Transfer
 
         Return True
     End Function
-
+    ' Dates could come in with either a "-" or an "/" so it is checked for both possibilites, then split.
+    ' Months could be written with a leading zero or by itself so it is converted to a single digit.
+    ' Converting to an integer will take off the leading zero. 
+    ' EX:  06 -> 6  for June.
     Function LIMSDate(ByVal sDate As String) As String
         Dim arrSpl() As String
-        arrSpl = sDate.Split("-")
-        If arrSpl(0) = "1" Then
+        If sDate.Contains("/") Then
+            arrSpl = sDate.Split("/")
+        ElseIf sDate.Contains("-") Then
+            arrSpl = sDate.Split("-")
+        End If
+        If Convert.ToInt32(arrSpl(0)) = "1" Then
             arrSpl(0) = "JAN"
-        ElseIf arrSpl(0) = "2" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "2" Then
             arrSpl(0) = "FEB"
-        ElseIf arrSpl(0) = "3" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "3" Then
             arrSpl(0) = "MAR"
-        ElseIf arrSpl(0) = "4" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "4" Then
             arrSpl(0) = "APR"
-        ElseIf arrSpl(0) = "5" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "5" Then
             arrSpl(0) = "MAY"
-        ElseIf arrSpl(0) = "6" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "6" Then
             arrSpl(0) = "JUN"
-        ElseIf arrSpl(0) = "7" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "7" Then
             arrSpl(0) = "JUL"
-        ElseIf arrSpl(0) = "8" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "8" Then
             arrSpl(0) = "AUG"
-        ElseIf arrSpl(0) = "9" Then
+        ElseIf Convert.ToInt32(arrSpl(0)) = "9" Then
             arrSpl(0) = "SEP"
         ElseIf arrSpl(0) = "10" Then
             arrSpl(0) = "OCT"
@@ -271,6 +283,7 @@ Public Class Transfer
         ElseIf arrSpl(0) = "12" Then
             arrSpl(0) = "DEC"
         End If
+
         sDate = arrSpl(1) & "-" & arrSpl(0) & "-" & arrSpl(2)
         Return sDate
 

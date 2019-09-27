@@ -779,19 +779,15 @@ Public Class Permit
         End If
     End Function
 
-    Function LoadEddLimsCodes() As Boolean ' Added 6/12/19 WB & WT
+    Function loadLimsInformation() As Boolean ' Added 6/12/19 WB & WT
         Dim sConn As String
         Dim sSQL As String
-        Dim aCompound As mCompound
         Dim rCount As Integer
         Dim dtLimits As New DataTable
         Dim dvLimits As DataView
         Dim dtUnits As New DataTable
         Dim objConn As OdbcConnection
         Dim odAdapter As OdbcDataAdapter
-
-        ' COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS
-
         ' Connection based on location
         ' Only Midland since that is where all the CLab EDDs will be connecting through for the time being.
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
@@ -808,7 +804,7 @@ Public Class Permit
             objConn.Close()
         Catch ex As Exception
             MsgBox("Error connecting To LIMS!" & vbCrLf &
-                   "Sub Procedure: LoadEddLimsCodes()" & vbCrLf &
+                   "Sub Procedure: loadLimsInformation()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
@@ -824,75 +820,78 @@ Public Class Permit
 
             'Get datatable into view and sort
             dvLimits = New DataView(dtLimits)
-            'dvLimits.Sort = "ANALYSIS_ID ASC, INSTRUMENT ASC"
             dtLimits = dvLimits.ToTable
             rCount = 0
             'aPermit = New Permit
             'aPermit.Name = "LIMS"
-            Do Until rCount = dtLimits.Rows.Count - 1
-                aCompound = New mCompound
-                aCompound.Name = dtLimits.Rows(rCount)(0).ToString()
-                aCompound.CAS = dtLimits.Rows(rCount)(1).ToString()
-                GlobalVariables.compCASList.Add(aCompound)
-                rCount += 1
-                'Set starting Analysis/Project
-                'aProject = New Project
-                'aProject.Name = dtLimits.Rows(rCount)(0).ToString()
-                'Do Until dtLimits.Rows(rCount)(0).ToString() <> aProject.Name Or rCount = dtLimits.Rows.Count - 1
-                '    'aInstrument = New mInstrument
-                '    aInstrument.Name = dtLimits.Rows(rCount)(1).ToString()
-                '    Do Until dtLimits.Rows(rCount)(1).ToString() <> aInstrument.Name Or dtLimits.Rows(rCount)(0).ToString() <> aProject.Name Or rCount = dtLimits.Rows.Count - 1
-                '        aCompound = New mCompound
-                '        aCompound.Name = dtLimits.Rows(rCount)(2).ToString()
-                '        aCompound.MDL = dtLimits.Rows(rCount)(3).ToString()
-                '        aCompound.RL = dtLimits.Rows(rCount)(4).ToString()
-                '        aCompound.PQL = dtLimits.Rows(rCount)(5).ToString()
-                '        aInstrument.mCompoundList.Add(aCompound)
-                '        rCount = rCount + 1
-                '    Loop
-                '    aProject.mInstrumentList.Add(aInstrument)
-                'Loop
-                'aPermit.ProjectList.Add(aProject)
-            Loop
+            'Do Until rCount = dtLimits.Rows.Count - 1
+            '    aCompound = New Compound
+            '    aCompound.Name = dtLimits.Rows(rCount)(0).ToString()
+            '    aCompound.CasNum = dtLimits.Rows(rCount)(1).ToString()
+            '    GlobalVariables.compNameToCASDic.Add(aCompound)
+
+            '    rCount += 1
+            'Loop
             'GlobalVariables.PermitList.Add(aPermit)
-        End If
+            For Each row As DataRow In dtLimits.Rows
+                If GlobalVariables.compNameToCASDic.ContainsKey(row(0).ToString()) Then
+                    Continue For
+                Else
+                    GlobalVariables.compNameToCASDic.Add(row(0).ToString(), row(1).ToString())
+                End If
+            Next
 
-        'Load in units from lims
-        If GlobalVariables.Permit.LoadEddLimsUnits() Then
-            Return True
-        Else
-            Return False
+            ' Supplementing analytes and their CAS number into the dictionary for those no in the DOW_COMPONENT_CODE query.
+            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
+                Dim parts() As String = line.Split("|")
+                If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
+                    GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
+                End If
+            Next
+            ' Only importing the *_DUP method so there will (hypothetically) half the number imported versus the whole table. 
+            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
+                Dim parts() As String = line.Split("|")
+                GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+            Next
+
+            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteEDDMethods.txt")
+                Dim parts() As String = line.Split("|")
+                GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+            Next
+
         End If
+        ' Querying LIMS for each sample that was pulled in from the EDD.
+        ' Queried for each sample because the LIMS number is the unique identifier to pull in the compound information.
+        For Each tempSample As Sample In GlobalVariables.SampleList
+            ' Changing the Sample.type to whatever the first compound in the sampleList is so that it can get transfered to LIMS. 
+            tempSample.Analysis = GlobalVariables.eddAnalysisMethod.Item(tempSample.CompoundList(0).EDDLabAnlMethodName)
+            If GlobalVariables.Permit.loadLimsCompounds(tempSample.LimsID) Then
+                Continue For
+            Else
+                Return False
+            End If
+        Next
+        verifyCLabData()
+        Return True
     End Function
-
-    Function LoadEddLimsUnits() As Boolean ' Added 6/12/19 WB & WT
+    Function loadLimsCompounds(limsID As String) As Boolean
         Dim sConn As String
         Dim sSQL As String
         Dim dtUnits As New DataTable
+        Dim dtUnitsUnique As New DataTable
         Dim dvUnits As DataView
-        Dim aPermit As Permit
-        Dim aProject As Project
         Dim rCount As Integer
         Dim objConn As OdbcConnection
         Dim odAdapter As OdbcDataAdapter
         Dim aMethod As Method
-
+        Dim limsCompound As Compound
 
         'Connection based on location
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;" ' Taken from the old CLab Transfer tool for SM 11.1  WB 6/19/19
+            sConn = "DRIVER={Microsoft ODBC for Oracle};SERVER=PPT107P.nam.dow.com;UID=FGLLIMS_ENVMD;PWD=lg#En3#;"
             'SQL statement
-            sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVMD.COMPONENT_VIEW"
-            ' & "WHERE COMPONENT_VIEW.ANALYSIS = 'VOC' OR COMPONENT_VIEW.ANALYSIS = 'EOA'"
-            'ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
-            '    sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT87P.nam.dow.com;"
-            '    'sConn = "DRIVER={Microsoft ODBC for Oracle};UID=FGLLIMS_ENVTX;PWD=lg#Tx1#;SERVER=PPT85P.nam.dow.com;"
-            '    'Units
-            '    sSQL = "SELECT COMPONENT_VIEW.ANALYSIS, COMPONENT_VIEW.UNITS FROM LIMS_ENVTX.COMPONENT_VIEW " ' _
-            '    '"WHERE COMPONENT_VIEW.ANALYSIS = 'TPH_DUP' OR COMPONENT_VIEW.ANALYSIS = 'M624H_DUP' OR COMPONENT_VIEW.ANALYSIS = 'HS_FID_DUP'"
+            sSQL = "SELECT RESULT.NAME, RESULT.UNITS, TEST.ANALYSIS, RESULT.ORDER_NUMBER FROM LIMS_ENVMD.RESULT JOIN LIMS_ENVMD.TEST ON RESULT.TEST_NUMBER = TEST.TEST_NUMBER WHERE TEST.SAMPLE=" & limsID
         End If
-
-        'Connect and fill dtLimits for later use test 
         Try
             objConn = New OdbcConnection(sConn)
             objConn.Open()
@@ -902,38 +901,76 @@ Public Class Permit
 
         Catch ex As Exception
             MsgBox("Error connecting to LIMS!" & vbCrLf &
-                   "Sub Procedure: LoadLimsUnits()" & vbCrLf &
+                   "Sub Procedure: LoadLimsAnalysisAndUnits()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
             Return False
         End Try
-
-        'Get datatable into view and sort
+        'Get datatable into view and sort.
         dvUnits = New DataView(dtUnits)
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            dvUnits.Sort = "ANALYSIS ASC"
-            'ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
-            '    dvUnits.Sort = "ANALYSIS ASC"
-        End If
+        ' Putting the dataview into the table. 
         dtUnits = dvUnits.ToTable
-        rCount = 0
-        'For Each aPermit In GlobalVariables.PermitList
-        Do Until rCount = dtUnits.Rows.Count - 1
-            aMethod = New Method
-            aMethod.Units = dtUnits.Rows(rCount)(1).ToString()
-            aMethod.MethodName = dtUnits.Rows(rCount)(0).ToString()
-            GlobalVariables.methodNameAndUnits.Add(aMethod)
-            'For Each aProject In aPermit.ProjectList
-            'aProject.Name = dtUnits.Rows(rCount)(0).ToString()
-            'aProject.LimsUnits = dtUnits.Rows(rCount)(1).ToString()
-            'Exit For
-            'Next
-            rCount = rCount + 1
-        Loop
-        'Next
-        Dim item As Method
-        For Each item In GlobalVariables.methodNameAndUnits
-            Console.WriteLine(item.Units & " " & item.MethodName)
+
+        ' Creating an arrayList of each compound based on the LIMS number from the method call.
+        For Each row As DataRow In dtUnits.Rows
+            ' Skipping over the check put in place for the WWTP Grabs and doesn't go in as a sample to be checked against.
+            If row(0).ToString = "Limit Check" Then
+                Continue For
+            ElseIf GlobalVariables.limsAnalysisMethod.ContainsKey(row(2).ToString) Then
+                limsCompound = New Compound
+                limsCompound.EDDsysSampleCode = limsID
+                limsCompound.EDDChemicalName = row(0).ToString
+                limsCompound.EDDResultUnit = row(1).ToString
+                limsCompound.EDDLabAnlMethodName = row(2).ToString
+                If GlobalVariables.compNameToCASDic.ContainsKey(limsCompound.EDDChemicalName) Then
+                    limsCompound.EDDCasRn = GlobalVariables.compNameToCASDic.Item(limsCompound.EDDChemicalName)
+                End If
+                GlobalVariables.limsCompoundInformation.Add(limsCompound)
+                'Console.WriteLine(limsCompound.EDDCasRn & " " & limsCompound.EDDsysSampleCode & " " & limsCompound.EDDChemicalName & " " & limsCompound.EDDResultUnit & " " & limsCompound.EDDLabAnlMethodName)
+            End If
         Next
         Return True
     End Function
+
+    ' Verifying the data inported from the EDD matches the given values pulled from LIMS.
+    Sub verifyCLabData()
+        Dim EDDSample As Sample
+        Dim EDDCompound As Compound
+
+        Try
+            ' Sample based on LIMS ID 
+            For Each EDDSample In GlobalVariables.SampleList
+                ' Each target analyte within the given sample 
+                For Each EDDCompound In EDDSample.CompoundList
+                    ' Looping through each of the compounds made from the LIMS queries to compare to the EDD values.
+                    For Each LIMSCompound In GlobalVariables.limsCompoundInformation
+                        ' Using the LIMS number and CAS number as the identifiers to compare the EDD and LIMS results. 
+                        If LIMSCompound.EDDsysSampleCode = EDDSample.LimsID And LIMSCompound.EDDCasRn = EDDCompound.EDDCasRn Then
+                            ' Changing the EDD name to the one used in LIMS.
+                            If Not LIMSCompound.EDDChemicalName = EDDCompound.Name Then
+                                EDDCompound.EDDChemicalName = LIMSCompound.EDDChemicalName
+                            End If
+                            ' Checking that the units are the same.
+                            If Not LIMSCompound.EDDResultUnit = LIMSCompound.EDDResultUnit Then
+                                MsgBox("Unit mismatch between EDD and LIMS values." & vbCrLf &
+                               "LIMS ID: " & EDDSample.LimsID & " - Analyte: " & EDDCompound.EDDChemicalName, MsgBoxStyle.OkOnly)
+                            End If
+                            ' Checking the method to what it should be in LIMS.
+                            ' Adding them to the text file as they pop up so it is kept on the server so anyone can access and change it. 
+                            If Not GlobalVariables.eddAnalysisMethod.ContainsKey(EDDCompound.EDDLabAnlMethodName) Then
+                                MsgBox(EDDCompound.EDDLabAnlMethodName & " EDD method was not found." & vbCrLf &
+                                           "Please add it to the text file in: " & vbCrLf &
+                                           "\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\", MsgBoxStyle.OkOnly)
+                            End If
+                            'Console.WriteLine(EDDCompound.EDDCasRn & " " & EDDCompound.EDDsysSampleCode & " " & EDDCompound.EDDChemicalName & " " & EDDCompound.EDDResultUnit & " " & EDDCompound.EDDLabAnlMethodName)
+                            Exit For
+                        End If
+                    Next
+                Next
+            Next
+        Catch ex As Exception
+            MsgBox("Error verifying data." & vbCrLf &
+                   "Sub Procedure: verifyCLabData()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+        End Try
+    End Sub
 End Class

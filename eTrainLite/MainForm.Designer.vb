@@ -97,7 +97,7 @@ Partial Class MainForm
         '
         'ModeSwitchToolStripMenuItem
         '
-        Me.ModeSwitchToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SeadriftToolStripMenuItem, Me.ROHToolStripMenuItem1, Me.MidlandToolStripMenuItem})
+        Me.ModeSwitchToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MidlandToolStripMenuItem, Me.SeadriftToolStripMenuItem, Me.ROHToolStripMenuItem1})
         Me.ModeSwitchToolStripMenuItem.Name = "ModeSwitchToolStripMenuItem"
         Me.ModeSwitchToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.ModeSwitchToolStripMenuItem.Text = "&LIMS Server"
@@ -105,32 +105,32 @@ Partial Class MainForm
         'SeadriftToolStripMenuItem
         '
         Me.SeadriftToolStripMenuItem.Name = "SeadriftToolStripMenuItem"
-        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SeadriftToolStripMenuItem.Text = "&Seadrift"
         '
         'ROHToolStripMenuItem1
         '
         Me.ROHToolStripMenuItem1.Name = "ROHToolStripMenuItem1"
-        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(118, 22)
+        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
         Me.ROHToolStripMenuItem1.Text = "&ROH"
         '
         'MidlandToolStripMenuItem
         '
-        Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AECOMToolStripMenuItem, Me.CLABToolStripMenuItem})
+        Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CLABToolStripMenuItem, Me.AECOMToolStripMenuItem})
         Me.MidlandToolStripMenuItem.Name = "MidlandToolStripMenuItem"
-        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.MidlandToolStripMenuItem.Text = "Midland"
         '
         'AECOMToolStripMenuItem
         '
         Me.AECOMToolStripMenuItem.Name = "AECOMToolStripMenuItem"
-        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AECOMToolStripMenuItem.Text = "AECOM"
         '
         'CLABToolStripMenuItem
         '
         Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
-        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'lstFileList
