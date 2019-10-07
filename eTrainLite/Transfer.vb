@@ -158,39 +158,71 @@ Public Class Transfer
                     ElseIf GlobalVariables.eTrain.Location = "MIDLAND" Then
                         If GlobalVariables.eTrain.Server = "MIDLAND" Then
                             If GlobalVariables.eTrain.Team = "CLAB" Then
-                                'Construct sample files with data from import
+                                If GlobalVariables.Import.Type = "GRABS" Then
 
-                                'If Not aSample.CompoundList.Item(0).ReportedAmt = "" And IsNumeric(aSample.CompoundList.Item(0).ReportedAmt) Then
+                                    d = DateTime.Now
 
-                                d = DateTime.Now
-                                strPath = "\\usmdlsdowacds1\Lims_xfer\ENVMD\" & aSample.LimsID & "-" & aSample.UniqueID & ".txt"
-                                ' strPath = "\\usmdlsdowacds1\Lims_xfer\ENVMD\" & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                ' strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                objWriter = New System.IO.StreamWriter(strPath)
+                                    ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
 
-                                objWriter.WriteLine("$IDNTMODE = S")
-                                objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
-                                'objWriter.WriteLine("$SAMPTMPL = " & aSample.Type)
-                                objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
-                                objWriter.WriteLine("$REPLNUMB = 0")
-                                objWriter.WriteLine("$OPERATOR = CONTLAB")
-                                objWriter.WriteLine("$ANALYSTN = " & strUserID)
-                                objWriter.WriteLine("NEWSAMPL = FALSE")
-                                objWriter.WriteLine("$INSTRMNT = ")
-                                objWriter.WriteLine("$SOURCE_N = 2")
-                                objWriter.WriteLine("SOURCE_1 = MIOPS Contract Lab Data")
-                                objWriter.WriteLine("SOURCE_2 = CONTACT William Bodeis 989-636-5245 or W. Towne 989-633-1975")
-                                objWriter.WriteLine("$SAMP_FLD = dow_field_02?")
-                                objWriter.WriteLine("$SAMP_FLD = dow_field_03?" & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
-                                'objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
-                                For Each aCompound In aSample.CompoundList
-                                    objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N" & "  ?" & aCompound.EDDResultValue & "  ?  " & "  ?" & aCompound.EDDLabQualifiers & "  ?" & aCompound.EDDEDilutionFactor)
-                                Next
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = CONTLAB") ' Change to something else?
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$INSTRMNT = ") '& aSample.Instrument)
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS WWTP Grabs Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_02?") '& aSample.DetectLimitType)
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
+
+                                    For Each aCompound In aSample.CompoundList
+                                        ' Skipping methylChlorpyrifos beacuse it isn't LIMS and should be added into the chlorpyrifos (Dursban) amount in the verifyCLabData() step.
+                                        If aCompound.EDDCasRn = "5598-13-0" Then
+                                            Continue For
+                                        End If
+                                        ' Dilution factor set to 1 because the DF calculation is done by the lab to the reported value so it doesn't need it applied a second time. 
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDReportingDetectionLimit & "  ?1")
+                                    Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
 
-                                'End If
+                                Else
+
+                                    d = DateTime.Now
+
+                                    ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
+
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    'objWriter.WriteLine("$SAMPTMPL = " & aSample.Type)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = CONTLAB")
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$INSTRMNT = ")
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("SOURCE_1 = MIOPS Contract Lab Data")
+                                    objWriter.WriteLine("SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_02?")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
+                                    'objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
+                                    For Each aCompound In aSample.CompoundList
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDLabQualifiers & "  ?" & aCompound.EDDEDilutionFactor)
+                                    Next
+                                    objWriter.Close()
+                                    intFileCounter = intFileCounter + 1
+                                End If
+
                             ElseIf GlobalVariables.eTrain.Team = "AECOM" Then
 
                                 'Construct sample files with data from import

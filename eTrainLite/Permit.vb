@@ -833,6 +833,17 @@ Public Class Permit
             '    rCount += 1
             'Loop
             'GlobalVariables.PermitList.Add(aPermit)
+
+            ' Supplementing analytes and their CAS number into the dictionary for those not in the DOW_COMPONENT_CODE query.
+            ' Also using the correct naming convention for a handful of compounds.
+            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
+                Dim parts() As String = line.Split("|")
+                If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
+                    GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
+                End If
+            Next
+
+            ' Adding the rest of the compounds from LIMS into the dictionary. 
             For Each row As DataRow In dtLimits.Rows
                 If GlobalVariables.compNameToCASDic.ContainsKey(row(0).ToString()) Then
                     Continue For
@@ -841,13 +852,6 @@ Public Class Permit
                 End If
             Next
 
-            ' Supplementing analytes and their CAS number into the dictionary for those no in the DOW_COMPONENT_CODE query.
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
-                Dim parts() As String = line.Split("|")
-                If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
-                    GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
-                End If
-            Next
             ' Only importing the *_DUP method so there will (hypothetically) half the number imported versus the whole table. 
             For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
                 Dim parts() As String = line.Split("|")
@@ -935,6 +939,10 @@ Public Class Permit
     Sub verifyCLabData()
         Dim EDDSample As Sample
         Dim EDDCompound As Compound
+        ' Used for the grabs data to add the methyl-Chlorpyrifos and Chlorpyrifos (Dursban) recovery together.
+        Dim methylChlorpyrifosRecovery As String
+        Dim methylChlorInSample As Boolean
+        Dim tempChlorValues As String
 
         Try
             ' Sample based on LIMS ID 
@@ -961,12 +969,42 @@ Public Class Permit
                                            "Please add it to the text file in: " & vbCrLf &
                                            "\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\", MsgBoxStyle.OkOnly)
                             End If
-                            'Console.WriteLine(EDDCompound.EDDCasRn & " " & EDDCompound.EDDsysSampleCode & " " & EDDCompound.EDDChemicalName & " " & EDDCompound.EDDResultUnit & " " & EDDCompound.EDDLabAnlMethodName)
+                            ' Changing analytes with no recovery to 0 so that the data will fill into LIMS when submitted. 
+                            If String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Then
+                                EDDCompound.EDDResultValue = 0
+                            End If
+                            Exit For
+                        End If
+                        ' RL is 2.0 in LIMS (ALS's recovery limit), but still sends reports if the value is less than that.
+                        ' This checks and sets the value to zero so there won't be any kind of recovery or lbs/day calculated. 
+                        'If EDDCompound.EDDLabAnlMethodName = "SM5210" And Convert.ToDouble(EDDCompound.EDDResultValue < 2.0) Then
+                        '    EDDCompound.EDDResultValue = "0.0"
+                        '    MsgBox("Recovery for BOD was less than the RL of 2.0." & vbCrLf &
+                        '        "Its value has been set to 0.0 so LIMS will not calculate lbs/day." & vbCrLf &
+                        '        "LIMS ID: " & EDDSample.LimsID & " - Analyte: " & EDDCompound.EDDChemicalName)
+                        'End If
+                        'Console.WriteLine(EDDCompound.EDDCasRn & " " & EDDCompound.EDDsysSampleCode & " " & EDDCompound.EDDChemicalName & " " & EDDCompound.EDDResultUnit & " " & EDDCompound.EDDLabAnlMethodName)
+                    Next
+                    ' Checking for methyl-Chlorpyrifos
+                    ' Value isn't set to 0 beacuse it won't be included in the LIMS compounds so it is checked against the empty value.
+                    If EDDCompound.EDDCasRn = "5598-13-0" And Not EDDCompound.EDDResultValue = "" Then ' Should this be the PQL of the lab?
+                        methylChlorpyrifosRecovery = EDDCompound.EDDResultValue
+                        methylChlorInSample = True
+                    End If
+                Next
+                ' Combining the two values together 
+                If methylChlorInSample = True Then
+                    For Each EDDCompound In EDDSample.CompoundList
+                        If EDDCompound.EDDCasRn = "2921-88-2" Then
+                            tempChlorValues = Convert.ToString(Convert.ToDouble(methylChlorpyrifosRecovery) + Convert.ToDouble(EDDCompound.EDDResultValue))
+                            EDDCompound.EDDResultValue = tempChlorValues
                             Exit For
                         End If
                     Next
-                Next
+                End If
+
             Next
+
         Catch ex As Exception
             MsgBox("Error verifying data." & vbCrLf &
                    "Sub Procedure: verifyCLabData()" & vbCrLf &

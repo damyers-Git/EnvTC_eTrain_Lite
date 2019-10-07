@@ -1070,7 +1070,7 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "EUROLAN" Then
+        ElseIf Type = "EUROLAN" Or Type = "GRABS" Then
 
             Try
                 Dim aSampleTemp As New Sample
