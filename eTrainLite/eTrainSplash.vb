@@ -27,14 +27,10 @@ Public NotInheritable Class eTrainSplash
         '
         '    Version.Text = System.String.Format(Version.Text, My.Application.Info.Version.Major, My.Application.Info.Version.Minor, My.Application.Info.Version.Build, My.Application.Info.Version.Revision)
         versionNumber = Assembly.GetExecutingAssembly().GetName().Version
-        Version.Text = "Version: " & versionNumber.ToString & vbCrLf & "Developer: Joshua Durham U411882" & vbCrLf & "Co-Developer: Wyatt Towne UA20088"
+        Version.Text = "Version: " & versionNumber.ToString & vbCrLf & "Developer: Joshua Durham U411882" & vbCrLf & "Co-Developer: Wyatt Towne UA20088" & vbCrLf & "Co-Developer: William Bodeis NB98715"
 
         'Copyright info
         Copyright.Text = My.Application.Info.Copyright
-
-    End Sub
-
-    Private Sub Version_Click(sender As Object, e As EventArgs) Handles Version.Click
 
     End Sub
 End Class

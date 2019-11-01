@@ -1180,7 +1180,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         btnFindFiles.Enabled = True
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
-        ' Changed to EDD from Eurofins - WB 5/23/19
+
         cboImportType.Items.Add("GRABS")
         cboImportType.Items.Add("EUROLAN")
         cboImportType.Items.Add("ALS")
@@ -1191,5 +1191,9 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         If GlobalVariables.SampleList.Count > 0 And Not IsNothing(GlobalVariables.eTrain.Server) Then
             Me.btnTransLIMS.Enabled = True
         End If
+    End Sub
+
+    Private Sub cboImportType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboImportType.SelectedIndexChanged
+
     End Sub
 End Class

@@ -106,31 +106,31 @@ Partial Class MainForm
         '
         Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CLABToolStripMenuItem, Me.AECOMToolStripMenuItem})
         Me.MidlandToolStripMenuItem.Name = "MidlandToolStripMenuItem"
-        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
         Me.MidlandToolStripMenuItem.Text = "Midland"
         '
         'CLABToolStripMenuItem
         '
         Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
-        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
         Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'AECOMToolStripMenuItem
         '
         Me.AECOMToolStripMenuItem.Name = "AECOMToolStripMenuItem"
-        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
         Me.AECOMToolStripMenuItem.Text = "AECOM"
         '
         'SeadriftToolStripMenuItem
         '
         Me.SeadriftToolStripMenuItem.Name = "SeadriftToolStripMenuItem"
-        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
         Me.SeadriftToolStripMenuItem.Text = "&Seadrift"
         '
         'ROHToolStripMenuItem1
         '
         Me.ROHToolStripMenuItem1.Name = "ROHToolStripMenuItem1"
-        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
+        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(118, 22)
         Me.ROHToolStripMenuItem1.Text = "&ROH"
         '
         'lstFileList

@@ -162,8 +162,8 @@ Public Class Transfer
 
                                     d = DateTime.Now
 
-                                    ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
-                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -182,8 +182,8 @@ Public Class Transfer
                                     objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
 
                                     For Each aCompound In aSample.CompoundList
-                                        ' Skipping methylChlorpyrifos beacuse it isn't LIMS and should be added into the chlorpyrifos (Dursban) amount in the verifyCLabData() step.
-                                        If aCompound.EDDCasRn = "5598-13-0" Then
+                                        ' Skipping methylChlorpyrifos beacuse it isn't in LIMS and should be added into the chlorpyrifos (Dursban) amount in the verifyCLabData() method call.
+                                        If aCompound.EDDCasRn = "5598-13-0" Or aCompound.EDDChemicalName = "Chlorpyrifos, Methyl" Then
                                             Continue For
                                         End If
                                         ' Dilution factor set to 1 because the DF calculation is done by the lab to the reported value so it doesn't need it applied a second time. 
@@ -196,8 +196,8 @@ Public Class Transfer
 
                                     d = DateTime.Now
 
-                                    ' strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info

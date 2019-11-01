@@ -939,7 +939,7 @@ Public Class Import
                     End If
 
                     If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
-                        If (arrSplitLine(34) = "TRG" Or arrSplitLine(34) = "Target") And arrSplitLine(35) = "Yes" And arrSplitLine(10) = "N" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                        If (arrSplitLine(34) = "TRG" Or arrSplitLine(34) = "Target") And (arrSplitLine(35) = "Yes" Or arrSplitLine(35) = "Y") And arrSplitLine(10) = "N" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
                             loadEDD(arrSplitLine, aSampleTemp)
                         End If
                     End If
@@ -966,6 +966,8 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
+            ' Slightly different than the normal EDD are sent out from SGS.
+            ' Using quotatoin marks in their naming convetion, but also the tabs as desired.
         ElseIf Type = "SGS" Then
             Try
                 Dim aSampleTemp As New Sample
@@ -1043,7 +1045,7 @@ Public Class Import
                     End If
 
                     If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
-                        If (arrSplitLine(34) = "TRG" Or arrSplitLine(34) = "Target") And arrSplitLine(35) = "Yes" And arrSplitLine(10) = "N" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                        If (arrSplitLine(34) = "TRG" Or arrSplitLine(34) = "Target") And (arrSplitLine(35) = "Yes" Or arrSplitLine(35) = "Y") And arrSplitLine(10) = "N" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
                             loadEDD(arrSplitLine, aSampleTemp)
                         End If
                     End If
@@ -1094,7 +1096,7 @@ Public Class Import
                     End If
 
                     If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
-                        If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And arrSplitLine(32) = "Yes" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                        If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32) = "Yes" Or arrSplitLine(32) = "Y") Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is usable.
                             loadEDDEUROLAN(arrSplitLine, aSampleTemp)
                         End If
                     End If
@@ -1148,11 +1150,12 @@ Public Class Import
                     intCount += 1
                 End If
             Next
-            If (String.IsNullOrEmpty(arrCorrectedEdd(intCount - 1))) Then ' Filling the last spot in the array if it doesn't already have a value.
+            ' Filling the last spot in the array if it doesn't already have a value.
+            If (String.IsNullOrEmpty(arrCorrectedEdd(intCount - 1))) Then
                 arrCorrectedEdd(intCount - 1) = ""
             End If
         Catch ex As Exception
-            MsgBox("Error converting the imported EDD" & vbCrLf &
+            MsgBox("Error converting the imported EDD." & vbCrLf &
                    "Sub Procedure: convertEurolanEDD()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
@@ -1170,7 +1173,7 @@ Public Class Import
     End Function
     ' Method to determine if a LIMS number was passed to it.
     ' Only checking the first 6 characters since those should be the LIMS ID for the sample.
-    Function checkForLimsNumber(ByVal input As String) As Boolean
+    Function checkForLimsNumber(input As String) As Boolean
         For i As Integer = 0 To 5
             If (Asc(input.Chars(i)) > 57 Or Asc(input.Chars(i)) < 48) Then
                 Return False

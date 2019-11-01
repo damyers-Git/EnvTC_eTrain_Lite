@@ -44,9 +44,6 @@ C:\Repos\ETrainLite\eTrainLite\obj\Debug\eTrainLite.pdb
 C:\Repos\ETrainLite\eTrainLite\bin\Debug\eTrainLite.exe
 C:\Repos\ETrainLite\eTrainLite\bin\Debug\eTrainLite.pdb
 C:\Repos\ETrainLite\eTrainLite\bin\Debug\eTrainLite.xml
-C:\Repos\ETrainLite\eTrainLite\bin\Debug\Syncfusion.Compression.Base.xml
-C:\Repos\ETrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Base.xml
-C:\Repos\ETrainLite\eTrainLite\bin\Debug\Syncfusion.XlsIO.Windows.xml
 C:\Repos\ETrainLite\eTrainLite\obj\Debug\eTrainLite.vbprojResolveAssemblyReference.cache
 C:\Repos\ETrainLite\eTrainLite\obj\Debug\eTrainLite.CopyMethod.resources
 C:\Repos\ETrainLite\eTrainLite\obj\Debug\eTrainLite.CustomReport.resources
