@@ -1072,7 +1072,61 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "EUROLAN" Or Type = "GRABS" Then
+        ElseIf Type = "FIBERTEC" Then
+            Try
+                Dim aSampleTemp As New Sample
+                Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
+                line = sr.ReadLine
+                line = sr.ReadLine ' Writes over the column headers for reading in the file. 
+                Dim arrSplitLine() As String
+                Dim aPermit As New Permit
+                Do Until line = ""
+
+                    If (InStr(line, Chr(34))) Then
+                        line = Regex.Replace(line, """", "")
+                    End If
+
+                    arrSplitLine = line.Split(vbTab)
+
+                    ' Checking each new line read whether it is the same as the previous.
+                    If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                        If (arrSplitLine(0) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(1) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
+                            aSampleTemp.Type = "SAMPLE"
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                            aSampleTemp = New Sample
+                        End If
+                    End If
+
+                    If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
+                        If (arrSplitLine(34) = "TRG" Or arrSplitLine(34) = "Target") And (arrSplitLine(35) = "Yes" Or arrSplitLine(35) = "Y") And arrSplitLine(10) = "N" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                            loadEDD(arrSplitLine, aSampleTemp)
+                        End If
+                    End If
+
+                    line = sr.ReadLine() ' Reading in the next line of the EDD.
+
+                    'If end of the file, ensure last sample is added to Global sample list
+                    If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
+                        If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
+                            Dim tempTest As String
+                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            GlobalVariables.SampleList.Add(aSampleTemp)
+                        End If
+                    End If
+                Loop
+                ' Getting all of the data from LIMS to check against the EDD.
+                aPermit.loadLimsInformation()
+                ' Comparing (and changing if needed) the imported values to what they should be in LIMS
+                'verifyCLabData()
+            Catch ex As Exception
+                MsgBox("Error pulling sample information!" & vbCrLf &
+                    "Logic Error: " & ex.Message & vbCrLf &
+                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                    "correct and try again.)", MsgBoxStyle.Critical)
+            End Try
+        ElseIf Type = "EUROLAN" Or Type = "GRABS" Or Type = "031B" Then
 
             Try
                 Dim aSampleTemp As New Sample
@@ -1796,7 +1850,6 @@ Public Class Import
         aCompound.EDDQcRpdStatus = arr(61)
         aCompound.EDDRlOrMdl = arr(62)
 
-
         aSampleTemp.CompoundList.Add(aCompound)
     End Sub
 
@@ -1877,7 +1930,7 @@ Public Class Import
         aCompound.EDDCountingError = arr(67)
         aCompound.EDDCriticalValue = arr(68)
 
-
         aSampleTemp.CompoundList.Add(aCompound)
     End Sub
+
 End Class

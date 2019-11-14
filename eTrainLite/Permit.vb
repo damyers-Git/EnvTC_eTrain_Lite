@@ -829,20 +829,38 @@ Public Class Permit
                 End If
             Next
             ' Only importing the method that the data will go into so there will (hypothetically) be half the number imported versus the whole table. 
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
-                Dim parts() As String = line.Split("|")
-                If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
-                    GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
-                End If
-            Next
+            If GlobalVariables.Import.Type = "031B" Then
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BLIMSMethods.txt")
+                    Dim parts() As String = line.Split("|")
+                    If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                        GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                    End If
+                Next
+            Else
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
+                    Dim parts() As String = line.Split("|")
+                    If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                        GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                    End If
+                Next
+            End If
             ' Creating a dictionary of the actaul analysis names with their corresponding name used in LIMS.
-            ' It is used to change the analysis of each sample for when it gets submitted to LIMS and the values get entered correctly. 
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteEDDMethods.txt")
-                Dim parts() As String = line.Split("|")
-                If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
-                    GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
-                End If
-            Next
+            ' It is used to change the analysis of each sample for when it gets submitted to LIMS and the values get entered correctly.
+            If GlobalVariables.Import.Type = "031B" Then
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BEDDMethods.txt")
+                    Dim parts() As String = line.Split("|")
+                    If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                        GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                    End If
+                Next
+            Else
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteEDDMethods.txt")
+                    Dim parts() As String = line.Split("|")
+                    If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                        GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                    End If
+                Next
+            End If
         End If
         ' Querying LIMS for each sample that was pulled in from the EDD.
         ' Queried for each sample because the LIMS number is the unique identifier to pull in the compound information.
@@ -918,7 +936,7 @@ Public Class Permit
     Sub verifyCLabData()
         Dim EDDSample As Sample
         Dim EDDCompound As Compound
-        Dim blnLimsSampleImported = False
+        Dim blnLimsSampleImported As Boolean
         ' Used for the grabs data to add the methyl-Chlorpyrifos and Chlorpyrifos (Dursban) recoveries together.
         Dim strMethylChlorRecovery As String
         Dim blnMethylChlorInSample As Boolean
@@ -962,7 +980,7 @@ Public Class Permit
                             ' Checking the EDD Flags for everything besides the grabs.
                             ' Mostly for the CBOD5 value beacuse ALS's system can't report a flag for an analyte with an MDL of 0.0."
                             ' The MDL isn't reported so blank value is changed to a 0.
-                            If GlobalVariables.Import.Type <> "GRABS" Then
+                            If GlobalVariables.Import.Type <> "GRABS" And GlobalVariables.Import.Type <> "031B" Then
                                 If EDDCompound.EDDMethodDetectionLimit = "" Then
                                     EDDCompound.EDDMethodDetectionLimit = 0
                                 End If

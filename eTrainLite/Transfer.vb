@@ -163,7 +163,7 @@ Public Class Transfer
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -191,13 +191,41 @@ Public Class Transfer
                                     Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
+                                ElseIf GlobalVariables.Import.Type = "031B" Then
 
+                                    d = DateTime.Now
+
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
+
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = CONTLAB") ' Change to something else?
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$INSTRMNT = ") '& aSample.Instrument)
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS WWTP Grabs Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_02?") '& aSample.DetectLimitType)
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
+
+                                    For Each aCompound In aSample.CompoundList
+                                        ' Dilution factor set to 1 because the DF calculation is done by the lab to the reported value so it doesn't need it applied a second time. 
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDReportingDetectionLimit & "  ?1")
+                                    Next
+                                    objWriter.Close()
+                                    intFileCounter = intFileCounter + 1
                                 Else
 
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -257,8 +285,6 @@ Public Class Transfer
                             End If
                         End If
                     End If
-
-
                 Catch ex As Exception
                     MsgBox("Error writing file for LIMS Transfer!" & vbCrLf &
                                    "Sub Procedure: ToLIMS()" & vbCrLf &
