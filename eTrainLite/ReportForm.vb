@@ -21,7 +21,39 @@ Public Class ReportForm
         blnFlg = False
         GlobalVariables.ReportSamList.Clear()
         'Check for entry
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+        If GlobalVariables.Import.Type = "VISTA" Then
+
+
+            If cboType.Text <> "" Then
+                If txtReportSaveLoc.Text <> "" And Directory.Exists(txtReportSaveLoc.Text) Then
+                    If txtRName.Text <> "" Then
+                        'Set report values
+                        For Each aSample In GlobalVariables.SampleList
+                            GlobalVariables.ReportSamList.Add(aSample)
+                        Next
+                        GlobalVariables.Report.SavLoc = txtReportSaveLoc.Text
+                        GlobalVariables.Report.RName = txtRName.Text
+                        'Do Calculations
+                        If GlobalVariables.Report.VistaSummaryReport() Then
+                            MsgBox("Report Generation Completed!", MsgBoxStyle.Information)
+                        Else
+                            MsgBox("Report was NOT generated.", MsgBoxStyle.Exclamation)
+                        End If
+                    Else
+
+                        MsgBox("Please enter a Valid Report Name before trying to Generate a Report.", MsgBoxStyle.Exclamation)
+                        txtRName.Focus()
+                    End If
+                Else
+                    MsgBox("Please enter a Valid Directory before trying to Generate a Report.", MsgBoxStyle.Exclamation)
+                    txtReportSaveLoc.Focus()
+                End If
+            Else
+                MsgBox("Please select a Valid Report Type before trying to Generate a Report.", MsgBoxStyle.Exclamation)
+                cboType.Focus()
+            End If
+
+        ElseIf GlobalVariables.eTrain.Location = "MIDLAND" Then
             If GlobalVariables.eTrain.Team = "FAST" Then
                 If cboType.Text <> "" Then
                     If txt1.Text <> "" And File.Exists(txt1.Text) Then
@@ -296,8 +328,8 @@ Public Class ReportForm
                                         CustomReport.Close()
                                         GlobalVariables.ReportSamList.Clear()
                                     Catch ex As Exception
-                                        MsgBox("Error generating report!" & vbCrLf & _
-                                                    "Sub Procedure: btnGen_Click_ReportForm - Midland()" & vbCrLf & _
+                                        MsgBox("Error generating report!" & vbCrLf &
+                                                    "Sub Procedure: btnGen_Click_ReportForm - Midland()" & vbCrLf &
                                                     "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
                                     End Try
 
@@ -315,7 +347,7 @@ Public Class ReportForm
                     MsgBox("Please select a Valid Report Type before trying to Generate a Report.", MsgBoxStyle.Exclamation)
                     cboType.Focus()
                 End If
-                End If
+            End If
         ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
             If GlobalVariables.eTrain.Team = "CHROM" Then
                 If cboType.Text <> "" Or cboType.Text <> "Custom Report" Then
@@ -565,7 +597,9 @@ Public Class ReportForm
     End Sub
 
     Private Sub ReportForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
+        If GlobalVariables.Import.Type = "VISTA" Then
+            cboType.Items.Add("VISTA")
+        ElseIf GlobalVariables.eTrain.Location = "MIDLAND" Then
             If GlobalVariables.eTrain.Team = "FAST" Then
                 cboType.Items.Add("Sample Report")
                 cboType.Items.Add("CS3 Check Report")

@@ -106,31 +106,31 @@ Partial Class MainForm
         '
         Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CLABToolStripMenuItem, Me.AECOMToolStripMenuItem})
         Me.MidlandToolStripMenuItem.Name = "MidlandToolStripMenuItem"
-        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.MidlandToolStripMenuItem.Text = "Midland"
         '
         'CLABToolStripMenuItem
         '
         Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
-        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'AECOMToolStripMenuItem
         '
         Me.AECOMToolStripMenuItem.Name = "AECOMToolStripMenuItem"
-        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AECOMToolStripMenuItem.Text = "AECOM"
         '
         'SeadriftToolStripMenuItem
         '
         Me.SeadriftToolStripMenuItem.Name = "SeadriftToolStripMenuItem"
-        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SeadriftToolStripMenuItem.Text = "&Seadrift"
         '
         'ROHToolStripMenuItem1
         '
         Me.ROHToolStripMenuItem1.Name = "ROHToolStripMenuItem1"
-        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(118, 22)
+        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
         Me.ROHToolStripMenuItem1.Text = "&ROH"
         '
         'lstFileList
@@ -180,13 +180,13 @@ Partial Class MainForm
         Me.txtImportResults.Name = "txtImportResults"
         Me.txtImportResults.ReadOnly = True
         Me.txtImportResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtImportResults.Size = New System.Drawing.Size(450, 79)
+        Me.txtImportResults.Size = New System.Drawing.Size(450, 149)
         Me.txtImportResults.TabIndex = 7
         '
         'btnTransLIMS
         '
         Me.btnTransLIMS.Enabled = False
-        Me.btnTransLIMS.Location = New System.Drawing.Point(487, 404)
+        Me.btnTransLIMS.Location = New System.Drawing.Point(490, 476)
         Me.btnTransLIMS.Name = "btnTransLIMS"
         Me.btnTransLIMS.Size = New System.Drawing.Size(117, 41)
         Me.btnTransLIMS.TabIndex = 12
@@ -196,19 +196,18 @@ Partial Class MainForm
         'btnReport
         '
         Me.btnReport.Enabled = False
-        Me.btnReport.Location = New System.Drawing.Point(364, 404)
+        Me.btnReport.Location = New System.Drawing.Point(367, 476)
         Me.btnReport.Name = "btnReport"
         Me.btnReport.Size = New System.Drawing.Size(117, 41)
         Me.btnReport.TabIndex = 13
         Me.btnReport.Text = "Generate Report(s)"
         Me.btnReport.UseVisualStyleBackColor = True
-        Me.btnReport.Visible = False
         '
         'StatusStrip1
         '
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsslLocation, Me.tsslTeam, Me.tsslServer})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 465)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 529)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(619, 22)
         Me.StatusStrip1.TabIndex = 16
@@ -238,7 +237,7 @@ Partial Class MainForm
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(15, 390)
+        Me.Label2.Location = New System.Drawing.Point(18, 462)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(138, 13)
         Me.Label2.TabIndex = 18
@@ -247,7 +246,7 @@ Partial Class MainForm
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(15, 418)
+        Me.Label4.Location = New System.Drawing.Point(18, 490)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(96, 13)
         Me.Label4.TabIndex = 21
@@ -256,7 +255,7 @@ Partial Class MainForm
         'nudSigFig
         '
         Me.nudSigFig.Enabled = False
-        Me.nudSigFig.Location = New System.Drawing.Point(118, 416)
+        Me.nudSigFig.Location = New System.Drawing.Point(121, 488)
         Me.nudSigFig.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.nudSigFig.Minimum = New Decimal(New Integer() {1, 0, 0, -2147483648})
         Me.nudSigFig.Name = "nudSigFig"
@@ -311,7 +310,7 @@ Partial Class MainForm
         '
         'btnClearSamples
         '
-        Me.btnClearSamples.Location = New System.Drawing.Point(8, 344)
+        Me.btnClearSamples.Location = New System.Drawing.Point(11, 416)
         Me.btnClearSamples.Name = "btnClearSamples"
         Me.btnClearSamples.Size = New System.Drawing.Size(131, 23)
         Me.btnClearSamples.TabIndex = 30
@@ -321,7 +320,7 @@ Partial Class MainForm
         'btnSigHelp
         '
         Me.btnSigHelp.Enabled = False
-        Me.btnSigHelp.Location = New System.Drawing.Point(182, 416)
+        Me.btnSigHelp.Location = New System.Drawing.Point(185, 488)
         Me.btnSigHelp.Name = "btnSigHelp"
         Me.btnSigHelp.Size = New System.Drawing.Size(23, 20)
         Me.btnSigHelp.TabIndex = 31
@@ -332,7 +331,7 @@ Partial Class MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(619, 487)
+        Me.ClientSize = New System.Drawing.Size(619, 551)
         Me.Controls.Add(Me.btnSigHelp)
         Me.Controls.Add(Me.btnClearSamples)
         Me.Controls.Add(Me.Label1)
@@ -355,7 +354,7 @@ Partial Class MainForm
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "MainForm"
-        Me.Text = "eTrain"
+        Me.Text = "eTrainLite"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.StatusStrip1.ResumeLayout(False)

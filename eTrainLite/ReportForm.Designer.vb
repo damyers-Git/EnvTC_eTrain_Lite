@@ -57,18 +57,16 @@ Partial Class ReportForm
         '
         'txtReportSaveLoc
         '
-        Me.txtReportSaveLoc.Location = New System.Drawing.Point(16, 367)
-        Me.txtReportSaveLoc.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtReportSaveLoc.Location = New System.Drawing.Point(12, 298)
         Me.txtReportSaveLoc.Name = "txtReportSaveLoc"
-        Me.txtReportSaveLoc.Size = New System.Drawing.Size(391, 22)
+        Me.txtReportSaveLoc.Size = New System.Drawing.Size(294, 20)
         Me.txtReportSaveLoc.TabIndex = 9
         '
         'btnReportSaveBrowse
         '
-        Me.btnReportSaveBrowse.Location = New System.Drawing.Point(428, 362)
-        Me.btnReportSaveBrowse.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnReportSaveBrowse.Location = New System.Drawing.Point(321, 294)
         Me.btnReportSaveBrowse.Name = "btnReportSaveBrowse"
-        Me.btnReportSaveBrowse.Size = New System.Drawing.Size(100, 32)
+        Me.btnReportSaveBrowse.Size = New System.Drawing.Size(75, 26)
         Me.btnReportSaveBrowse.TabIndex = 10
         Me.btnReportSaveBrowse.Text = "Browse..."
         Me.btnReportSaveBrowse.UseVisualStyleBackColor = True
@@ -77,29 +75,26 @@ Partial Class ReportForm
         '
         Me.cbo3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo3.FormattingEnabled = True
-        Me.cbo3.Location = New System.Drawing.Point(289, 127)
-        Me.cbo3.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbo3.Location = New System.Drawing.Point(217, 103)
         Me.cbo3.Name = "cbo3"
-        Me.cbo3.Size = New System.Drawing.Size(237, 24)
+        Me.cbo3.Size = New System.Drawing.Size(179, 21)
         Me.cbo3.Sorted = True
         Me.cbo3.TabIndex = 4
         '
         'lbl3
         '
         Me.lbl3.AutoSize = True
-        Me.lbl3.Location = New System.Drawing.Point(285, 107)
-        Me.lbl3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl3.Location = New System.Drawing.Point(214, 87)
         Me.lbl3.Name = "lbl3"
-        Me.lbl3.Size = New System.Drawing.Size(62, 17)
+        Me.lbl3.Size = New System.Drawing.Size(47, 13)
         Me.lbl3.TabIndex = 3
         Me.lbl3.Text = "Option3:"
         '
         'btnGen
         '
-        Me.btnGen.Location = New System.Drawing.Point(428, 410)
-        Me.btnGen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnGen.Location = New System.Drawing.Point(321, 333)
         Me.btnGen.Name = "btnGen"
-        Me.btnGen.Size = New System.Drawing.Size(100, 32)
+        Me.btnGen.Size = New System.Drawing.Size(75, 26)
         Me.btnGen.TabIndex = 12
         Me.btnGen.Text = "Generate"
         Me.btnGen.UseVisualStyleBackColor = True
@@ -107,38 +102,34 @@ Partial Class ReportForm
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(16, 347)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Location = New System.Drawing.Point(12, 282)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(165, 17)
+        Me.Label2.Size = New System.Drawing.Size(126, 13)
         Me.Label2.TabIndex = 5
         Me.Label2.Text = "Save Report to Location:"
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(16, 395)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label3.Location = New System.Drawing.Point(12, 321)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(96, 17)
+        Me.Label3.Size = New System.Drawing.Size(73, 13)
         Me.Label3.TabIndex = 6
         Me.Label3.Text = "Report Name:"
         '
         'txtRName
         '
-        Me.txtRName.Location = New System.Drawing.Point(16, 415)
-        Me.txtRName.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtRName.Location = New System.Drawing.Point(12, 337)
         Me.txtRName.Name = "txtRName"
-        Me.txtRName.Size = New System.Drawing.Size(391, 22)
+        Me.txtRName.Size = New System.Drawing.Size(294, 20)
         Me.txtRName.TabIndex = 11
         '
         'lbl2
         '
         Me.lbl2.AutoSize = True
-        Me.lbl2.Location = New System.Drawing.Point(12, 107)
-        Me.lbl2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl2.Location = New System.Drawing.Point(9, 87)
         Me.lbl2.Name = "lbl2"
-        Me.lbl2.Size = New System.Drawing.Size(62, 17)
+        Me.lbl2.Size = New System.Drawing.Size(47, 13)
         Me.lbl2.TabIndex = 8
         Me.lbl2.Text = "Option2:"
         '
@@ -146,10 +137,9 @@ Partial Class ReportForm
         '
         Me.cbo2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo2.FormattingEnabled = True
-        Me.cbo2.Location = New System.Drawing.Point(16, 127)
-        Me.cbo2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbo2.Location = New System.Drawing.Point(12, 103)
         Me.cbo2.Name = "cbo2"
-        Me.cbo2.Size = New System.Drawing.Size(237, 24)
+        Me.cbo2.Size = New System.Drawing.Size(179, 21)
         Me.cbo2.Sorted = True
         Me.cbo2.TabIndex = 3
         '
@@ -157,20 +147,18 @@ Partial Class ReportForm
         '
         Me.cbo1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo1.FormattingEnabled = True
-        Me.cbo1.Location = New System.Drawing.Point(289, 59)
-        Me.cbo1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbo1.Location = New System.Drawing.Point(217, 48)
         Me.cbo1.Name = "cbo1"
-        Me.cbo1.Size = New System.Drawing.Size(237, 24)
+        Me.cbo1.Size = New System.Drawing.Size(179, 21)
         Me.cbo1.Sorted = True
         Me.cbo1.TabIndex = 2
         '
         'lbl1
         '
         Me.lbl1.AutoSize = True
-        Me.lbl1.Location = New System.Drawing.Point(285, 39)
-        Me.lbl1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl1.Location = New System.Drawing.Point(214, 32)
         Me.lbl1.Name = "lbl1"
-        Me.lbl1.Size = New System.Drawing.Size(62, 17)
+        Me.lbl1.Size = New System.Drawing.Size(47, 13)
         Me.lbl1.TabIndex = 13
         Me.lbl1.Text = "Option1:"
         '
@@ -178,79 +166,71 @@ Partial Class ReportForm
         '
         Me.cboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboType.FormattingEnabled = True
-        Me.cboType.Location = New System.Drawing.Point(16, 59)
-        Me.cboType.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cboType.Location = New System.Drawing.Point(12, 48)
         Me.cboType.Name = "cboType"
-        Me.cboType.Size = New System.Drawing.Size(237, 24)
+        Me.cboType.Size = New System.Drawing.Size(179, 21)
         Me.cboType.Sorted = True
         Me.cboType.TabIndex = 1
         '
         'lblType
         '
         Me.lblType.AutoSize = True
-        Me.lblType.Location = New System.Drawing.Point(12, 39)
-        Me.lblType.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblType.Location = New System.Drawing.Point(9, 32)
         Me.lblType.Name = "lblType"
-        Me.lblType.Size = New System.Drawing.Size(91, 17)
+        Me.lblType.Size = New System.Drawing.Size(69, 13)
         Me.lblType.TabIndex = 15
         Me.lblType.Text = "Report Type:"
         '
         'lblTxt1
         '
         Me.lblTxt1.AutoSize = True
-        Me.lblTxt1.Location = New System.Drawing.Point(16, 299)
-        Me.lblTxt1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblTxt1.Location = New System.Drawing.Point(12, 243)
         Me.lblTxt1.Name = "lblTxt1"
-        Me.lblTxt1.Size = New System.Drawing.Size(164, 17)
+        Me.lblTxt1.Size = New System.Drawing.Size(126, 13)
         Me.lblTxt1.TabIndex = 19
         Me.lblTxt1.Text = "Associated SIS Location:"
         '
         'SISBrowse
         '
-        Me.SISBrowse.Location = New System.Drawing.Point(428, 314)
-        Me.SISBrowse.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.SISBrowse.Location = New System.Drawing.Point(321, 255)
         Me.SISBrowse.Name = "SISBrowse"
-        Me.SISBrowse.Size = New System.Drawing.Size(100, 32)
+        Me.SISBrowse.Size = New System.Drawing.Size(75, 26)
         Me.SISBrowse.TabIndex = 8
         Me.SISBrowse.Text = "Browse..."
         Me.SISBrowse.UseVisualStyleBackColor = True
         '
         'txt1
         '
-        Me.txt1.Location = New System.Drawing.Point(16, 319)
-        Me.txt1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txt1.Location = New System.Drawing.Point(12, 259)
         Me.txt1.Name = "txt1"
-        Me.txt1.Size = New System.Drawing.Size(391, 22)
+        Me.txt1.Size = New System.Drawing.Size(294, 20)
         Me.txt1.TabIndex = 7
         '
         'cbo4
         '
         Me.cbo4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo4.FormattingEnabled = True
-        Me.cbo4.Location = New System.Drawing.Point(16, 193)
-        Me.cbo4.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbo4.Location = New System.Drawing.Point(12, 157)
         Me.cbo4.Name = "cbo4"
-        Me.cbo4.Size = New System.Drawing.Size(237, 24)
+        Me.cbo4.Size = New System.Drawing.Size(179, 21)
         Me.cbo4.Sorted = True
         Me.cbo4.TabIndex = 5
         '
         'lbl4
         '
         Me.lbl4.AutoSize = True
-        Me.lbl4.Location = New System.Drawing.Point(12, 174)
-        Me.lbl4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl4.Location = New System.Drawing.Point(9, 141)
         Me.lbl4.Name = "lbl4"
-        Me.lbl4.Size = New System.Drawing.Size(62, 17)
+        Me.lbl4.Size = New System.Drawing.Size(47, 13)
         Me.lbl4.TabIndex = 22
         Me.lbl4.Text = "Option4:"
         '
         'lbl5
         '
         Me.lbl5.AutoSize = True
-        Me.lbl5.Location = New System.Drawing.Point(285, 174)
-        Me.lbl5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl5.Location = New System.Drawing.Point(214, 141)
         Me.lbl5.Name = "lbl5"
-        Me.lbl5.Size = New System.Drawing.Size(62, 17)
+        Me.lbl5.Size = New System.Drawing.Size(47, 13)
         Me.lbl5.TabIndex = 20
         Me.lbl5.Text = "Option5:"
         '
@@ -258,10 +238,9 @@ Partial Class ReportForm
         '
         Me.cbo5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo5.FormattingEnabled = True
-        Me.cbo5.Location = New System.Drawing.Point(289, 193)
-        Me.cbo5.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cbo5.Location = New System.Drawing.Point(217, 157)
         Me.cbo5.Name = "cbo5"
-        Me.cbo5.Size = New System.Drawing.Size(237, 24)
+        Me.cbo5.Size = New System.Drawing.Size(179, 21)
         Me.cbo5.TabIndex = 6
         '
         'MenuStrip1
@@ -269,8 +248,7 @@ Partial Class ReportForm
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.OptionsToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(8, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(544, 28)
+        Me.MenuStrip1.Size = New System.Drawing.Size(408, 24)
         Me.MenuStrip1.TabIndex = 24
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -278,47 +256,46 @@ Partial Class ReportForm
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExitToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(44, 24)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(37, 20)
         Me.FileToolStripMenuItem.Text = "&File"
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(102, 24)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(92, 22)
         Me.ExitToolStripMenuItem.Text = "E&xit"
         '
         'OptionsToolStripMenuItem
         '
         Me.OptionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ComponentSelectionToolStripMenuItem, Me.SampleEditorToolStripMenuItem, Me.UnitConversionToolStripMenuItem})
         Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
-        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(73, 24)
+        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.OptionsToolStripMenuItem.Text = "&Options"
         '
         'ComponentSelectionToolStripMenuItem
         '
         Me.ComponentSelectionToolStripMenuItem.Name = "ComponentSelectionToolStripMenuItem"
-        Me.ComponentSelectionToolStripMenuItem.Size = New System.Drawing.Size(221, 24)
+        Me.ComponentSelectionToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
         Me.ComponentSelectionToolStripMenuItem.Text = "&Component Selection"
         '
         'SampleEditorToolStripMenuItem
         '
         Me.SampleEditorToolStripMenuItem.Name = "SampleEditorToolStripMenuItem"
-        Me.SampleEditorToolStripMenuItem.Size = New System.Drawing.Size(221, 24)
+        Me.SampleEditorToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
         Me.SampleEditorToolStripMenuItem.Text = "&Sample Editor"
         '
         'UnitConversionToolStripMenuItem
         '
         Me.UnitConversionToolStripMenuItem.Name = "UnitConversionToolStripMenuItem"
-        Me.UnitConversionToolStripMenuItem.Size = New System.Drawing.Size(221, 24)
+        Me.UnitConversionToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
         Me.UnitConversionToolStripMenuItem.Text = "&Unit Conversion"
         '
         'lbl6
         '
         Me.lbl6.AutoSize = True
-        Me.lbl6.Location = New System.Drawing.Point(13, 237)
-        Me.lbl6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lbl6.Location = New System.Drawing.Point(10, 193)
         Me.lbl6.Name = "lbl6"
-        Me.lbl6.Size = New System.Drawing.Size(62, 17)
+        Me.lbl6.Size = New System.Drawing.Size(47, 13)
         Me.lbl6.TabIndex = 26
         Me.lbl6.Text = "Option6:"
         '
@@ -326,17 +303,16 @@ Partial Class ReportForm
         '
         Me.cbo6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbo6.FormattingEnabled = True
-        Me.cbo6.Location = New System.Drawing.Point(16, 258)
-        Me.cbo6.Margin = New System.Windows.Forms.Padding(4)
+        Me.cbo6.Location = New System.Drawing.Point(12, 210)
         Me.cbo6.Name = "cbo6"
-        Me.cbo6.Size = New System.Drawing.Size(237, 24)
+        Me.cbo6.Size = New System.Drawing.Size(179, 21)
         Me.cbo6.TabIndex = 25
         '
         'ReportForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(544, 464)
+        Me.ClientSize = New System.Drawing.Size(408, 377)
         Me.Controls.Add(Me.lbl6)
         Me.Controls.Add(Me.cbo6)
         Me.Controls.Add(Me.cbo4)
@@ -363,9 +339,8 @@ Partial Class ReportForm
         Me.Controls.Add(Me.MenuStrip1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MainMenuStrip = Me.MenuStrip1
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "ReportForm"
-        Me.Text = "Generate Report - eTrain 2.0"
+        Me.Text = "Generate Report - eTrainLite"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)

@@ -104,6 +104,14 @@
     Private strMinimumDetectableConc As String
     Private strCountingError As String
     Private strCriticalValue As String
+    ' Added for Vista samples/data
+    Private strTEQType As String
+    Private strTEQMin As String
+    Private strTEQMax As String
+    Private strTEQRisk As String
+    Private strPercentSolids As String
+    Private strPercentLipids As String
+    Private strEMPC As String
 
     'TQ3
     Private strTQ3QuanMass As String
@@ -921,6 +929,68 @@
             strRlOrMdl = value
         End Set
     End Property '<- End add WT
+
+    Public Property EDDTEQType() As String
+        Get
+            Return strTEQType
+        End Get
+        Set(ByVal value As String)
+            strTEQType = value
+        End Set
+    End Property
+
+    Public Property EDDTEQMin() As String
+        Get
+            Return strTEQMin
+        End Get
+        Set(ByVal value As String)
+            strTEQMin = value
+        End Set
+    End Property
+
+    Public Property EDDTEQMax() As String
+        Get
+            Return strTEQMax
+        End Get
+        Set(ByVal value As String)
+            strTEQMax = value
+        End Set
+    End Property
+
+    Public Property EDDTEQRisk() As String
+        Get
+            Return strTEQRisk
+        End Get
+        Set(ByVal value As String)
+            strTEQRisk = value
+        End Set
+    End Property
+
+    Public Property EDDPercentSolids() As String
+        Get
+            Return strPercentSolids
+        End Get
+        Set(ByVal value As String)
+            strPercentSolids = value
+        End Set
+    End Property
+
+    Public Property EDDPercentLipids() As String
+        Get
+            Return strPercentLipids
+        End Get
+        Set(ByVal value As String)
+            strPercentLipids = value
+        End Set
+    End Property
+    Public Property EDDEMPC() As String
+        Get
+            Return strEMPC
+        End Get
+        Set(ByVal value As String)
+            strEMPC = value
+        End Set
+    End Property
 
     Public Property Name() As String
         Get

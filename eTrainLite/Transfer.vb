@@ -163,7 +163,7 @@ Public Class Transfer
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -209,7 +209,7 @@ Public Class Transfer
                                     objWriter.WriteLine("$NEWSAMPL = FALSE")
                                     objWriter.WriteLine("$INSTRMNT = ") '& aSample.Instrument)
                                     objWriter.WriteLine("$SOURCE_N = 2")
-                                    objWriter.WriteLine("$SOURCE_1 = MIOPS WWTP Grabs Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS NPDES 031B Contract Lab Data")
                                     objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
                                     objWriter.WriteLine("$SAMP_FLD = dow_field_02?") '& aSample.DetectLimitType)
                                     objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
@@ -220,12 +220,76 @@ Public Class Transfer
                                     Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
+                                ElseIf GlobalVariables.Import.Type = "031C" Then
+
+                                    d = DateTime.Now
+
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
+
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = CONTLAB") ' Change to something else?
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$INSTRMNT = ") '& aSample.Instrument)
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS NPDES 031C Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_02?") '& aSample.DetectLimitType)
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
+
+                                    For Each aCompound In aSample.CompoundList
+                                        ' Dilution factor set to 1 because the DF calculation is done by the lab to the reported value so it doesn't need it applied a second time. 
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDReportingDetectionLimit & "  ?1")
+                                    Next
+                                    objWriter.Close()
+                                    intFileCounter = intFileCounter + 1
+                                ElseIf GlobalVariables.Import.Type = "VISTA" Then
+
+                                    d = DateTime.Now
+
+                                    'strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
+
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = BATCH")
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("$INSTRMNT = _VISTA")
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("SOURCE_1 = Midland HR Data Transfer")
+                                    objWriter.WriteLine("SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = description?" & aSample.CompoundList(0).EDDLabSampleID)
+                                    objWriter.WriteLine("$SAMP_FLD = job_name?")
+                                    objWriter.WriteLine("$SAMP_FLD = sample_name?" & aSample.CompoundList(0).EDDsysSampleCode)
+
+                                    For Each aCompound In aSample.CompoundList
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "?N? " & aCompound.EDDResultValue)
+                                        If aCompound.EDDLabQualifiers = "" Then
+                                            objWriter.WriteLine("?" & aCompound.EDDChemicalName & " Flags?T?NONE")
+                                        Else
+                                            objWriter.WriteLine("?" & aCompound.EDDChemicalName & " Flags?T?" & aCompound.EDDLabQualifiers)
+                                        End If
+                                    Next
+                                    calculateTEQ(aSample.LimsID)
+                                    objWriter.Close()
+                                    intFileCounter = intFileCounter + 1
                                 Else
 
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -545,6 +609,22 @@ Public Class Transfer
             MsgBox("Error: Something went wrong when attempting to read from Transfer Cross Check file!" & vbCrLf & ex.StackTrace)
         End Try
 
+    End Function
+
+    Function calculateTEQ(limsID As String) As String
+        Dim aCompound As Compound
+        Dim aSample As Sample
+        Dim dblTeqScore As Double
+
+        For Each aSample In GlobalVariables.SampleList
+            If aSample.LimsID = limsID Then
+                For Each aCompound In aSample.CompoundList
+
+                Next
+            Else
+                Continue For
+            End If
+        Next
     End Function
 
 End Class

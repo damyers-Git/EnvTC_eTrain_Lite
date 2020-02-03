@@ -89,10 +89,238 @@ Public Class Report
 
 
 	End Sub
+    Function VistaSummaryReport() As Boolean
+        Dim exEngine As New ExcelEngine
+        Dim exApp As IApplication
+        Dim workbook As IWorkbook
+        Dim worksheet As IWorksheet
+        Dim aCompound As Compound
+        Dim aSample As Sample
+        Dim intSampleCounter As Integer = 0
+        Dim intCompoundCounter As Integer
+
+        Try
+            exApp = exEngine.Excel
+            workbook = exApp.Workbooks.Create(1)
+
+            For Each aSample In GlobalVariables.SampleList
+                intCompoundCounter = 9
+                worksheet = workbook.Worksheets(intSampleCounter)
+                workbook.Worksheets("Sheet1").Name = "OF-031A Summary_" & intSampleCounter
+
+                ' Header.
+                worksheet.Range("A1").Value = "Calculation of Toxic Equivalent Quantity (TEQ) for 031 Outfall NPDES Reporting"
+
+                ' Date and LIMS #.
+                worksheet.Range("A3").Value = "Sample Date:"
+                worksheet.Range("A4").Value = "Analysis Date:"
+                worksheet.Range("A5").Value = "Report Date:"
+                worksheet.Range("A6").Value = "LIMS-sample ID:"
+                worksheet.Range("B3").Value = ""
+                worksheet.Range("B4").Value = aSample.CompoundList(0).EDDAnalysisDate
+                worksheet.Range("B5").Value = ""
+                worksheet.Range("B6").Value = aSample.LimsID
+
+                ' Toxicity Stuff.
+                worksheet.Range("G4").Value = "2,3,7,8-TeCDD"
+                worksheet.Range("G5").Value = "Total TEQ (ppq)"
+                worksheet.Range("I4").Value = "=C22"
+                worksheet.Range("I5").Value = "=F26"
+
+                'Sample Info Header.
+                worksheet.Range("A8").Value = "Congener"
+                worksheet.Range("B8").Value = "CAS #"
+                worksheet.Range("C8").Value = "Concentration (ppq) (note #)"
+                worksheet.Range("D8").Value = "Reported LoD"
+                worksheet.Range("E8").Value = "Flags"
+                worksheet.Range("F8").Value = "TEQ (ppq)"
+                worksheet.Range("G8").Value = "QL (ppq)"
+                worksheet.Range("H8").Value = "TEF"
+                worksheet.Range("I8").Value = "BEF"
+
+                ' TEQ Stuff.
+                worksheet.Range("E26").Value = "Total TEQ (ppq)"
+                worksheet.Range("F26").Value = "=SUM(F9:F25)"
+
+                For Each aCompound In aSample.CompoundList
+                    worksheet.Range("B" & intCompoundCounter).Value = aCompound.EDDCasRn
+                    If aCompound.EDDResultValue <> "0" Then
+                        worksheet.Range("C" & intCompoundCounter).Value = aCompound.EDDResultValue
+                    Else
+                        worksheet.Range("C" & intCompoundCounter).Value = "ND"
+                    End If
+                    worksheet.Range("D" & intCompoundCounter).Value = aCompound.EDDDetectionLimitUnit
+                    If aCompound.EDDLabQualifiers <> "" Then
+                        worksheet.Range("E" & intCompoundCounter).Value = aCompound.EDDLabQualifiers
+                    Else
+                        worksheet.Range("E" & intCompoundCounter).Value = "NONE"
+                    End If
+                    worksheet.Range("F" & intCompoundCounter).Value = "=IF(OR(C" & intCompoundCounter & "<G" & intCompoundCounter & ",C" & intCompoundCounter & "=""ND""),0,C" & intCompoundCounter & "*H" & intCompoundCounter & "*I" & intCompoundCounter & ")"
+                    For i As Integer = 0 To GlobalVariables.befAndTefScores.Count - 1
+                        If GlobalVariables.befAndTefScores(i).Contains(aCompound.EDDChemicalName) Then
+                            worksheet.Range("A" & intCompoundCounter).Value = GlobalVariables.befAndTefScores(i).Item(1)
+                            worksheet.Range("G" & intCompoundCounter).Value = GlobalVariables.befAndTefScores(i).Item(2)
+                            worksheet.Range("H" & intCompoundCounter).Value = GlobalVariables.befAndTefScores(i).Item(3)
+                            worksheet.Range("I" & intCompoundCounter).Value = GlobalVariables.befAndTefScores(i).Item(4)
+                        End If
+                    Next
+
+                    worksheet.Range("A28").Value = "#: 'ND' in the concentration level denotes that the compound was not detected at the reported detection limit"
+                    worksheet.Range("A29").Value = "J: amount detected is below Lower Calibration Limit"
+
+                    intCompoundCounter += 1
+                Next
+
+                ' Header Formatting.
+                worksheet.Range("A1").CellStyle.Font.FontName = "Tahoma"
+                worksheet.Range("A1").CellStyle.Font.Size = "12"
+                worksheet.Range("A1").CellStyle.Font.Bold = True
+                worksheet.Range("A1:I1").Merge()
+                worksheet.Range("A1").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+
+                ' Dates and LIMS # Formatting.
+                worksheet.Range("A3:A6").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
+                worksheet.Range("B3:B6").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
+                worksheet.Range("A3:B3").CellStyle.Font.Bold = True
+
+                ' Toxicity Stuff Formatting.
+                worksheet.Range("G4:H4").Merge()
+                worksheet.Range("G5:H5").Merge()
+                worksheet.Range("G4:I4").BorderAround(ExcelLineStyle.Medium)
+                worksheet.Range("G5:I5").BorderAround(ExcelLineStyle.Medium)
+                worksheet.Range("G4:I5").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+
+                ' Sample Info and Header Formatting
+                worksheet.Range("A8:I26").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+                worksheet.Range("A8:I26").CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter
+                worksheet.Range("A8:I26").CellStyle.WrapText = True
+                worksheet.Range("F9:F25").NumberFormat = "0.000"
+
+                ' Borders for days.
+                worksheet.Range("A8:I25").BorderInside()
+                worksheet.Range("A8:I8").BorderAround(ExcelLineStyle.Medium)
+                worksheet.Range("A9:I25").BorderAround(ExcelLineStyle.Medium)
+                worksheet.Range("E26:F26").BorderAround(ExcelLineStyle.Medium)
+
+                ' Adjusting the columns.
+                'worksheet.SetColumnWidth(1, 20.5)
+                worksheet.Range("A1").ColumnWidth = 20.7
+                worksheet.Range("B1").ColumnWidth = 20.7
+                worksheet.Range("C1").ColumnWidth = 20.7
+                worksheet.Range("D1").ColumnWidth = 8.15
+                worksheet.Range("E1").ColumnWidth = 8.15
+                worksheet.Range("F1").ColumnWidth = 10.5
+                worksheet.Range("G1").ColumnWidth = 8.15
+                worksheet.Range("H1").ColumnWidth = 8.15
+                worksheet.Range("I1").ColumnWidth = 8.15
+
+                'worksheet.UsedRange.AutofitColumns()
+
+                ' Sample counter for making new sheets, if needed.
+                intSampleCounter += 1
+
+            Next
+            workbook.Version = ExcelVersion.Excel2010
+            workbook.SaveAs(GlobalVariables.Report.SavLoc & "\" & "OF031A_Summ_" & GlobalVariables.Report.RName & ".xlsx")
+            workbook.Close()
+            exEngine.Dispose()
+
+            ' createDRITReport()
+
+            Return True
+        Catch ex As Exception
+            MsgBox("Error generating report!" & vbCrLf &
+                    "Sub Procedure: VistaSummaryReport()" & vbCrLf &
+                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical, "(╯°□°)╯︵ ┻━┻")
+            Return False
+        End Try
+    End Function
+
+    Function createDRITReport() As Boolean
+        Dim exEngine As New ExcelEngine
+        Dim exApp As IApplication
+        Dim workbook As IWorkbook
+        Dim worksheet As IWorksheet
+        Dim aCompound As Compound
+        Dim aSample As Sample
+        Dim intSampleCounter As Integer = 0
+        Dim intCompoundCounter As Integer
+
+        Try
+            exApp = exEngine.Excel
+            workbook = exApp.Workbooks.Create(1)
+
+            For Each aSample In GlobalVariables.SampleList
+                worksheet = workbook.Worksheets(intSampleCounter)
+                workbook.Worksheets("Sheet1").Name = "DRIT transfer"
+
+                ' First row
+                worksheet.Range("A2").Value = "Unit ID"
+                worksheet.Range("B2").Value = "Session"
+                worksheet.Range("C2").Value = "Sample Date"
+                worksheet.Range("D2").Value = "Sample Number"
+                worksheet.Range("E2").Value = "Label"
+                worksheet.Range("F2").Value = "Units"
+                worksheet.Range("G2").Value = "AL Number"
+                worksheet.Range("H2").Value = "Comments"
+                worksheet.Range("I2").Value = "Solids %"
+                worksheet.Range("J2").Value = "Property"
+                worksheet.Range("K2").Value = "Temp C"
+                worksheet.Range("L2").Value = "2378-TCDD"
+                worksheet.Range("M2").Value = "Total TCDD"
+                worksheet.Range("N2").Value = "12378-PeCDF"
+                worksheet.Range("O2").Value = "Total PeCDD"
+                worksheet.Range("P2").Value = "123478-HxCDD"
+                worksheet.Range("Q2").Value = "123678-HxCDD"
+                worksheet.Range("R2").Value = "123789-HxCDD"
+                worksheet.Range("S2").Value = "Total HxCDD"
+                worksheet.Range("U2").Value = "OCDD"
+                worksheet.Range("V2").Value = "2378-TCDF"
+                worksheet.Range("X2").Value = "Total TCDF"
+                worksheet.Range("Y2").Value = "12378-PeCDF"
+                worksheet.Range("Z2").Value = "23478-PeCDF"
+                worksheet.Range("AA2").Value = "Total PeCDF"
+                worksheet.Range("AB2").Value = "123478-HxCDF"
+                worksheet.Range("AC2").Value = "123678-HxCDF"
+                worksheet.Range("AD2").Value = "234678-HxCDF"
+                worksheet.Range("AE2").Value = "123789-HxCDF"
+                worksheet.Range("AF2").Value = "Total HxCDF"
+                worksheet.Range("AG2").Value = "1234678-HpCDF"
+                worksheet.Range("AH2").Value = "1234789-HpCDF"
+                worksheet.Range("AI2").Value = "Total HpCDF"
+                worksheet.Range("AJ2").Value = "OCDF"
+                worksheet.Range("AK2").Value = "TEQ (ND=0)"
+                worksheet.Range("AL2").Value = "TEQ (ND=1/2 LoD)"
+                worksheet.Range("AM2").Value = "TEQ (ND=LoD)"
+                worksheet.Range("AN2").Value = "17 Congener total (ND=0)"
+                worksheet.Range("AO2").Value = "17 Congener total (ND=1/2 LoD)"
+                worksheet.Range("AP2").Value = "Hexachlorobenzene"
+                worksheet.Range("AQ2").Value = "Pentachlorobenzene"
+                worksheet.Range("AR2").Value = "Flow"
+
+                ' Second row
+                worksheet.Range("A3").Value = "Unit ID"
 
 
-	'LCS Report for Midland FAST
-	Sub MidlandFASTLCSReport()
+
+
+            Next
+            workbook.Version = ExcelVersion.Excel2010
+                workbook.SaveAs(GlobalVariables.Report.SavLoc & "\" & "OF031A_Summ_" & GlobalVariables.Report.RName & ".xlsx")
+                workbook.Close()
+                exEngine.Dispose()
+
+            Return True
+
+        Catch ex As Exception
+            MsgBox("Error generating report!" & vbCrLf &
+                    "Sub Procedure: VistaSummaryReport()" & vbCrLf &
+                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical, "(╯°□°)╯︵ ┻━┻")
+            Return False
+        End Try
+    End Function
+    'LCS Report for Midland FAST
+    Sub MidlandFASTLCSReport()
 		Dim exEngine As New ExcelEngine
 		Dim exApp As IApplication
 		Dim aSample As Sample
@@ -5247,549 +5475,546 @@ Public Class Report
 
 	End Function
 
-	'Midland Customer Report
-	Function MidlandChromCustomerReport() As Boolean
-		Dim worksheet As IWorksheet
-		Dim exEngine As New ExcelEngine
-		Dim exApp As IApplication
-		exApp = exEngine.Excel
+    'Midland Customer Report
+    Function MidlandChromCustomerReport() As Boolean
+        Dim worksheet As IWorksheet
+        Dim exEngine As New ExcelEngine
+        Dim exApp As IApplication
+        exApp = exEngine.Excel
 
-		Try
-			GlobalVariables.workbook.Worksheets.Create("Cover Pg")
-			GlobalVariables.workbook.Worksheets.Create("Case Narrative")
-			GlobalVariables.workbook.Worksheets.Create("Flag Sheet")
-			For Each wks In GlobalVariables.workbook.Worksheets
-				If wks.name = "Cover Pg" Then
-					worksheet = wks
-					worksheet.Range(1, 1, 32, 10).CellStyle.Font.FontName = "Arial"
-					worksheet.Range("A1:J1").Merge()
-					worksheet.Range("A1").Value = "DOW CONFIDENTIAL INFORMATION"
-					worksheet.Range("A2:J2").Merge()
-					worksheet.Range("A2").Value = "Do not share without permission"
-					worksheet.Range("A4:J4").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A1").CellStyle.Font.Size = 16
-					worksheet.Range("A2").CellStyle.Font.Size = 12
-					worksheet.Range(1, 1, 2, 10).CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
-					worksheet.Range(1, 1, 2, 10).CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter
-					worksheet.Range("A5:C5").Merge()
-					worksheet.Range("A5").Value = "EH&S ANALYTICAL REPORT"
-					worksheet.Range("D5:F5").Merge()
-					worksheet.Range("D5").Value = "DOW CHEMICAL, USA"
-					worksheet.Range("A5").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
-					worksheet.Range("A5:J5").CellStyle.HorizontalAlignment = ExcelVAlign.VAlignCenter
-					worksheet.Range("J5").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
-					worksheet.Range("J5").Value = "MIDLAND, MI"
-					worksheet.Range("A7:B7").Merge()
-					worksheet.Range("A7").Value = "Date Issued:"
-					worksheet.Range("A7").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
-					worksheet.Range("G7:H7").Merge()
-					worksheet.Range("G7").Value = "Study Number:"
-					worksheet.Range("G7").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
-					worksheet.Range("A7:J7").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A7:J7").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("C9:H9").Merge()
-					worksheet.Range("C9").Value = "Title:"
-					worksheet.Range("C9").CellStyle.Font.Size = 11
-					worksheet.Range("C9").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
-					worksheet.Range("A10:J10").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("B13:C13").Merge()
-					worksheet.Range("B13").Value = "FULL REPORT"
-					worksheet.Range("A14").Value = "To:"
-					worksheet.Range("A14").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
-					worksheet.Range("A23:C23").Merge()
-					worksheet.Range("A23").Value = "Pages in complete report:"
-					worksheet.Range("A23:J23").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A23:J23").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A26:B26").Merge()
-					worksheet.Range("A26").Value = "Sample Date:"
-					worksheet.Range("G26:I26").Merge()
-					worksheet.Range("H26").Value = "Analysis Completion Date:"
-					worksheet.Range("A28:B28").Merge()
-					worksheet.Range("A28:J28").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A28").Value = "Signature/Date:"
-					worksheet.Range("D28").Value = "Bldg:"
-					worksheet.Range("E28").Value = "Phone:"
-					worksheet.Range("G28:H28").Merge()
-					worksheet.Range("G28").Value = "Reviewer/Date:"
-					worksheet.Range("I28").Value = "Bldg:"
-					worksheet.Range("J28").Value = "Phone:"
-					worksheet.Range("A33:J33").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range(1, 1, 33, 10).CellStyle.Font.Bold = True
-				ElseIf wks.name = "Case Narrative" Then
-					worksheet = wks
-					worksheet.Range(1, 1, 34, 10).CellStyle.Font.FontName = "Arial"
-					worksheet.Range(1, 1, 34, 10).CellStyle.Font.Bold = True
-					worksheet.Range("A1").CellStyle.Font.Size = 16
-					worksheet.Range("A1:J1").Merge()
-					worksheet.Range("A1").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
-					worksheet.Range("A1").Value = "Case Narrative"
-					worksheet.Range("A3").Value = "Project:"
-					worksheet.Range("A4").Value = "Sample Date:"
-					worksheet.Range("A5").Value = "Analysis Date:"
-					worksheet.Range("A6").Value = "Analysis:"
-					worksheet.Range("A7").Value = "Matrix:"
-					worksheet.Range("A8").Value = "Samples Affected:"
-					worksheet.Range("A10").Value = "Samples were received in acceptable condition."
-					worksheet.Range("A12:J12").Merge()
-					worksheet.Range("A12").Value = "All quality exceptions or observations that impacted data quality or indicate data bias/uncertainty are " &
-					"documented below in this narrative and flagged in the data report.  All exceptions to method specified quality requirements that do not impact data quality " &
-					"are documented in a Quality Control Exception Report filed with the raw data."
-					worksheet.Range("A12").CellStyle.WrapText = True
-					worksheet.SetRowHeightInPixels(12, 90)
-					worksheet.Range("A14").Value = "Exceptions:"
-					worksheet.Range("A30").Value = "Analyst:"
-					worksheet.Range("A32").Value = "Quality Reviewer:"
-					worksheet.Range("F30").Value = "Date:"
-					worksheet.Range("F32").Value = "Date:"
-					worksheet.Range("A30:F32").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
-					worksheet.Range("B30:E30").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("G30:J30").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("B32:E32").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("G32:J32").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("B34:I34").Merge()
-					worksheet.Range("B34").Value = "Case Narrative signed in hardcopy only."
-					worksheet.Range("B34").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
-					worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thick
-					worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeLeft).LineStyle = ExcelLineStyle.Thick
-					worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeRight).LineStyle = ExcelLineStyle.Thick
-					worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thick
-					worksheet.SetRowHeightInPixels(12, 70)
-					worksheet.SetColumnWidthInPixels(1, 125)
-				ElseIf wks.name = "Flag Sheet" Then
-					worksheet = wks
-					worksheet.Range(1, 1, 128, 10).CellStyle.Font.FontName = "Arial"
-					worksheet.Range("F2:H2").Merge()
-					worksheet.Range("F3:H3").Merge()
-					worksheet.Range("F4:H4").Merge()
-					worksheet.Range("F2").Value = "Organic Group"
-					worksheet.Range("F3").Value = "Report Qualifiers (Flags)"
-					worksheet.Range("F4").Value = "Revised: 5/9/13"
-					worksheet.Range("A4").Value = "Qualifier"
-					worksheet.Range("A4:O4").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("A1:H4").CellStyle.Font.Bold = True
-					worksheet.Range("A6").Value = "B"
-					worksheet.Range("B6:O6").Merge()
-					worksheet.Range("B6").Value = "Analyte was detected in the associated Lab Blank/Method Blank/Reagent Blank, a high bias to data indicated."
-					worksheet.Range("A7").Value = "B1"
-					worksheet.Range("B7:O7").Merge()
-					worksheet.Range("B7").Value = "Non-target analyte detected in associated Lab Blank/Method Blank/Reagent Blank and sample, producing interference."
-					worksheet.Range("A8").Value = "B2"
-					worksheet.Range("B8:O8").Merge()
-					worksheet.Range("B8").Value = "Analyte was detected in the associated Lab Blank/Method Blank/Reagent Blank, but was not detected in Sample, sample data not affected."
-					worksheet.Range("A9").Value = "B3"
-					worksheet.Range("B9:O9").Merge()
-					worksheet.Range("B9").Value = "Analyte detected in associated Lab Blank/Method Blank/Reagent Blank at level less than 5% that found in sample, data quality not affected."
-					worksheet.Range("A10").Value = "B4"
-					worksheet.Range("B10:O10").Merge()
-					worksheet.Range("B10").Value = "Analyte detected in associated Lab Blank/Method Blank/Reagent Blank at or above MDL but at level less than 10% of the MAL, data quality not affected for TPH reporting."
-					worksheet.SetRowHeightInPixels(10, 45)
-					worksheet.Range("A13").Value = "C"
-					worksheet.Range("B13:O13").Merge()
-					worksheet.Range("B13").Value = "Calibration Verification recovery was below the method control limit for this analyte. Low bias to data indicated."
-					worksheet.Range("A14").Value = "C1"
-					worksheet.Range("B14:O14").Merge()
-					worksheet.Range("B14").Value = "The sample was originally analyzed with a positive result, however the reanalysis did not confirm the presence of the analyte."
-					worksheet.Range("A15").Value = "C2"
-					worksheet.Range("B15:O15").Merge()
-					worksheet.Range("B15").Value = "Results confirmed by reanalysis."
-					worksheet.Range("A16").Value = "C3"
-					worksheet.Range("B16:O16").Merge()
-					worksheet.Range("B16").Value = "Quantitation curve failure: R^2 >15% or coefficient of determination <0.99."
-					worksheet.Range("A17").Value = "C4"
-					worksheet.Range("B17:O17").Merge()
-					worksheet.Range("B17").Value = "Calibration Verification recovery was above the method control limit for this analyte. High bias to data indicated."
-					worksheet.Range("A18").Value = "C5"
-					worksheet.Range("B18:O18").Merge()
-					worksheet.Range("B18").Value = "Calibration Verification recovery was above the method control limit for this analyte. Analyte not found in samples, data quality not affected."
-					worksheet.Range("A20").Value = "D"
-					worksheet.Range("B20:O20").Merge()
-					worksheet.Range("B20").Value = "Compound quantitated on a diluted sample."
-					worksheet.Range("A22").Value = "E"
-					worksheet.Range("B22:O22").Merge()
-					worksheet.Range("B22").Value = "Reported value is EMPC (estimated maximum possible concentration)"
-					worksheet.Range("A23").Value = "E1"
-					worksheet.Range("B23:O23").Merge()
-					worksheet.Range("B23").Value = "Concentration exceeds the tested calibration range of the instrument."
-					worksheet.Range("A24").Value = "E2"
-					worksheet.Range("B24:O24").Merge()
-					worksheet.Range("B24").Value = "Estimated due to interference."
-					worksheet.Range("A26").Value = "H"
-					worksheet.Range("B26:O26").Merge()
-					worksheet.Range("B26").Value = "Sample analysis performed past the method-specified holding time per client's approval."
-					worksheet.Range("A27").Value = "H1"
-					worksheet.Range("B27:O27").Merge()
-					worksheet.Range("B27").Value = "Initial analysis within holding time.  Reanalysis for the required dilution was past holding time."
-					worksheet.Range("A29").Value = "I"
-					worksheet.Range("B29:O29").Merge()
-					worksheet.Range("B29").Value = "Internal Standard recovery was outside of method limits."
-					worksheet.Range("A30").Value = "I1"
-					worksheet.Range("B30:O30").Merge()
-					worksheet.Range("B30").Value = "Estimated result. The associated internal standard did not meet the specified method criteria."
-					worksheet.Range("A32").Value = "J"
-					worksheet.Range("B32:O32").Merge()
-					worksheet.Range("B32").Value = "Estimated value.  Analyte detected at a level less than the Reporting Limit (RL) and greater than or equal to the Method Detection Limit (MDL). The user of " &
-					"this data should be aware that this data is of limited reliability."
-					worksheet.SetRowHeightInPixels(32, 45)
-					worksheet.Range("A33").Value = "J1"
-					worksheet.Range("B33:O33").Merge()
-					worksheet.Range("B33").Value = "Analyte detected at a level less then the Reporting Limit (RL) and greater than, or equal to the Method Detection Limit (MDL). On the Final Summary Report Analyte " &
-						"reported Not Detected (ND) because analyzed concentration is below the RL. For Lab Control Spike (LCS)  & Matrix Spike (MS) recovery purposes the analyzed concentration below the RL and above " &
-						"or equal to the MDL are shown on the LCS & MS recovery reports."
-					worksheet.SetRowHeightInPixels(33, 67)
-					worksheet.Range("A34").Value = "J2"
-					worksheet.Range("B34:O34").Merge()
-					worksheet.Range("B34").Value = "Analyte detected at a level less then the Reporting Limit (RL) and is less than Method Detection Limit (MDL). On the Final Summary Report Analyte reported Not " &
-						"Detected (ND) because analyzed concentration is below the RL. For Lab Control Spike (LCS) & Matrix Spike (MS) recovery purposes the analyzed concentration below the RL and less then " &
-						"the MDL are shown on the LCS & MS recovery reports."
-					worksheet.SetRowHeightInPixels(34, 67)
-					worksheet.Range("A35").Value = "J3"
-					worksheet.Range("B35:O35").Merge()
-					worksheet.Range("B35").Value = "Analyte detected above MDL but below lowest calibration point. Estimated value."
-					worksheet.Range("A36").Value = "J4"
-					worksheet.Range("B36:O36").Merge()
-					worksheet.Range("B36").Value = "Analyte detected above detection level but below quantification level. Estimated value."
-					worksheet.Range("A38").Value = "L"
-					worksheet.Range("B38:O38").Merge()
-					worksheet.Range("B38").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was above the acceptance limits. Analyte not detected at reporting limit " &
-						"in samples, therefore data quality not affected. "
-					worksheet.SetRowHeightInPixels(38, 45)
-					worksheet.Range("A39").Value = "L1"
-					worksheet.Range("B39:O39").Merge()
-					worksheet.Range("B39").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was above acceptance limits. High bias to sample results indicated."
-					worksheet.Range("A40").Value = "L2"
-					worksheet.Range("B40:O40").Merge()
-					worksheet.Range("B40").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was below the acceptance limits. A low bias to sample results is indicated."
-					worksheet.Range("A41").Value = "L3"
-					worksheet.Range("B41:O41").Merge()
-					worksheet.Range("B41").Value = "The LCS and/or LCSD were above the acceptance limits.  Passing matrix spike (MS) satisfies method requirements. Data quality not affected."
-					worksheet.Range("A42").Value = "L4"
-					worksheet.Range("B42:O42").Merge()
-					worksheet.Range("B42").Value = "The LCS and/or LCSD were below the acceptance limits.  Passing matrix spike (MS) satisfies method requirements. Data quality not affected."
-					worksheet.Range("A44").Value = "M"
-					worksheet.Range("B44:O44").Merge()
-					worksheet.Range("B44").Value = "Duplicate sample precision not met."
-					worksheet.Range("A45").Value = "M1"
-					worksheet.Range("B45:O45").Merge()
-					worksheet.Range("B45").Value = "The MS and/or MSD were above the acceptance limits.  Passing Lab Control Spike (LCS) satisfies method requirements.  Data quality not affected."
-					worksheet.Range("A46").Value = "M2"
-					worksheet.Range("B46:O46").Merge()
-					worksheet.Range("B46").Value = "The MS and/or MSD were below the acceptance limits.  Passing Lab Control Spike (LCS) satisfies method requirements. "
-					worksheet.Range("A47").Value = "M3"
-					worksheet.Range("B47:O47").Merge()
-					worksheet.Range("B47").Value = "The sample spiked had a pH of less than 2.  Analyte degrades under acidic conditions."
-					worksheet.Range("A48").Value = "M4"
-					worksheet.Range("B48:O48").Merge()
-					worksheet.Range("B48").Value = "Due to high levels of analyte in the sample, the MS/MSD calculation does not provide useful spike recovery information. See Laboratory Control Spike (LCS)."
-					worksheet.SetRowHeightInPixels(48, 45)
-					worksheet.Range("A49").Value = "M5"
-					worksheet.Range("B49:O49").Merge()
-					worksheet.Range("B49").Value = "No results were reported for the MS/MSD.  The sample used for the MS/MSD required dilution due to the sample matrix.  Because of this, the spike " &
-						"compounds were diluted below the detection limit."
-					worksheet.SetRowHeightInPixels(49, 45)
-					worksheet.Range("A50").Value = "M6"
-					worksheet.Range("B50:O50").Merge()
-					worksheet.Range("B50").Value = "There was no MS/MSD analyzed with this batch due to insufficient sample volume.  See Lab Control Spike/Lab Control Spike Duplicate."
-					worksheet.Range("A51").Value = "M7"
-					worksheet.Range("B51:O51").Merge()
-					worksheet.Range("B51").Value = "No recovery range given in method for analyte in LCS/MS/MSD"
-					worksheet.Range("A52").Value = "M8"
-					worksheet.Range("B52:O52").Merge()
-					worksheet.Range("B52").Value = "Matrix spike and/or Matrix Spike Duplicate recovery was above acceptance limits. Analyte not found in samples, data quality not affected."
-					worksheet.Range("A53").Value = "M9"
-					worksheet.Range("B53:O53").Merge()
-					worksheet.Range("B53").Value = "Matrix Spike and/or Matrix Spike Duplicate recovery was above acceptance limits. High bias to sample results indicated."
-					worksheet.Range("A54").Value = "M10"
-					worksheet.Range("B54:O54").Merge()
-					worksheet.Range("B54").Value = "Matrix Spike and/or Matrix Spike Duplicate recovery was below the acceptance limits.   A low bias to sample results is indicated."
-					worksheet.Range("A55").Value = "M11"
-					worksheet.Range("B55:O55").Merge()
-					worksheet.Range("B55").Value = "Matrix spike results reported from diluted sample, due to target analyte recovery above calibration limit in undiluted sample."
-					worksheet.Range("A57").Value = "N"
-					worksheet.Range("B57:O57").Merge()
-					worksheet.Range("B57").Value = "Spike recovery not within control limits."
-					worksheet.Range("A58").Value = "N1"
-					worksheet.Range("B58:O58").Merge()
-					worksheet.Range("B58").Value = "See case narrative."
-					worksheet.Range("A59").Value = "N2"
-					worksheet.Range("B59:O59").Merge()
-					worksheet.Range("B59").Value = "Sample point not sampled, see case narrative."
-					worksheet.Range("A61").Value = "P"
-					worksheet.Range("B61:O61").Merge()
-					worksheet.Range("B61").Value = "The sample, as received, was not preserved in accordance to the referenced analytical method."
-					worksheet.Range("A62").Value = "P2"
-					worksheet.Range("B62:O62").Merge()
-					worksheet.Range("B62").Value = "Sample was not sufficiently preserved at time of collection.  Sample pH is >2"
-					worksheet.Range("A63").Value = "P3"
-					worksheet.Range("B63:O63").Merge()
-					worksheet.Range("B63").Value = "Sample received without chemical preservation, but preserved by the laboratory."
-					worksheet.Range("A64").Value = "P4"
-					worksheet.Range("B64:O64").Merge()
-					worksheet.Range("B64").Value = "Sample was received above recommended temperature."
-					worksheet.Range("A65").Value = "P5"
-					worksheet.Range("B65:O65").Merge()
-					worksheet.Range("B65").Value = "Sample received in inappropriate sample container."
-					worksheet.Range("A66").Value = "P6"
-					worksheet.Range("B66:O66").Merge()
-					worksheet.Range("B66").Value = "Insufficient sample received to meet method QC requirements."
-					worksheet.Range("A67").Value = "P7"
-					worksheet.Range("B67:O67").Merge()
-					worksheet.Range("B67").Value = "Sample taken from VOA vial with air bubble > 6mm diameter."
-					worksheet.Range("A68").Value = "P8"
-					worksheet.Range("B68:O68").Merge()
-					worksheet.Range("B68").Value = "Sample pH  < 2 when received, target analyte(s) is acid sensitive, thererfore analysis for target analyte(s) is not valid."
-					worksheet.Range("A70").Value = "R"
-					worksheet.Range("B70:O70").Merge()
-					worksheet.Range("B70").Value = "The RPD exceeded the method control limit due to sample matrix effects.  The individual analyte QA/QC recoveries, however,  pass the method control limits. "
-					worksheet.SetRowHeightInPixels(70, 45)
-					worksheet.Range("A71").Value = "R1"
-					worksheet.Range("B71:O71").Merge()
-					worksheet.Range("B71").Value = "The RPD exceeded the acceptance limit due to sample matrix effects."
-					worksheet.Range("A72").Value = "R2"
-					worksheet.Range("B72:O72").Merge()
-					worksheet.Range("B72").Value = "Due to the low levels of analyte in the sample, the duplicate RPD calculation does not provide useful information."
-					worksheet.Range("A73").Value = "R3"
-					worksheet.Range("B73:O73").Merge()
-					worksheet.Range("B73").Value = "Reporting limit raised due to high concentrations of non-target analytes."
-					worksheet.Range("A74").Value = "R4"
-					worksheet.Range("B74:O74").Merge()
-					worksheet.Range("B74").Value = "Reporting limit raised due to insufficient sample volume."
-					worksheet.Range("A75").Value = "R5"
-					worksheet.Range("B75:O75").Merge()
-					worksheet.Range("B75").Value = "Sample required dilution due to high concentrations of target analyte."
-					worksheet.Range("A76").Value = "R6"
-					worksheet.Range("B76:O76").Merge()
-					worksheet.Range("B76").Value = "RPD exceeded method control limits due to a lack of sample homogeneity"
-					worksheet.Range("A77").Value = "R7"
-					worksheet.Range("B77:O77").Merge()
-					worksheet.Range("B77").Value = "Reporting limit raised due to dilution required for sample matrix.  See case narrative for details."
-					worksheet.Range("A78").Value = "R8"
-					worksheet.Range("B78:O78").Merge()
-					worksheet.Range("B78").Value = "Due to the high levels of analyte in the sample, the duplicate RPD calculation does not provide useful information."
-					worksheet.Range("A79").Value = "R9"
-					worksheet.Range("B79:O79").Merge()
-					worksheet.Range("B79").Value = "RPD exceeds the acceptance limit.  Analyte not detected at reporting limit in samples, therefore data quality not affected."
-					worksheet.Range("A81").Value = "S"
-					worksheet.Range("B81:O81").Merge()
-					worksheet.Range("B81").Value = "Sediment present."
-					worksheet.Range("A82").Value = "S1"
-					worksheet.Range("B82:O82").Merge()
-					worksheet.Range("B82").Value = "Insufficient sample available for reanalysis."
-					worksheet.Range("A83").Value = "S2"
-					worksheet.Range("B83:O83").Merge()
-					worksheet.Range("B83").Value = "Analytical results not reliable due to potential sample container contamination."
-					worksheet.Range("A85").Value = "T1"
-					worksheet.Range("B85:O85").Merge()
-					worksheet.Range("B85").Value = "Tentatively identified compound.  Concentration is estimated based on the closest internal standard."
-					worksheet.Range("A86").Value = "T2"
-					worksheet.Range("B86:O86").Merge()
-					worksheet.Range("B86").Value = "Not to be reported for compliance purposes."
-					worksheet.Range("A88").Value = "Z"
-					worksheet.Range("B88:O88").Merge()
-					worksheet.Range("B88").Value = "The surrogate/Isotopic recovery was below the acceptance limits, results may be biased low."
-					worksheet.Range("A89").Value = "Z1"
-					worksheet.Range("B89:O89").Merge()
-					worksheet.Range("B89").Value = "Surrogate/Isotopic standard recovery was outside the acceptance limits.  Data not impacted."
-					worksheet.Range("A90").Value = "Z2"
-					worksheet.Range("B90:O90").Merge()
-					worksheet.Range("B90").Value = "The sample required a dilution due to the nature of the sample matrix.  Because of this dilution, the surrogate/Isotopic spike concentration " &
-						"in the sample was reduced to a level where the recovery calculation does not provide useful information."
-					worksheet.SetRowHeightInPixels(90, 45)
-					worksheet.Range("A91").Value = "Z3"
-					worksheet.Range("B91:O91").Merge()
-					worksheet.Range("B91").Value = "The surrogate/isotopic recovery was above the acceptance limits, results may be biased high."
-					worksheet.Range("A93:O93").Merge()
-					worksheet.Range("A93").Value = "Organic Group Abbreviations"
-					worksheet.Range("A95:O95").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
-					worksheet.Range("B97:G97").Merge()
-					worksheet.Range("I97:O97").Merge()
-					worksheet.Range("A97").Value = "AF"
-					worksheet.Range("B97").Value = "Antifoam"
-					worksheet.Range("H97").Value = "MS"
-					worksheet.Range("I97").Value = "Matrix Spike"
-					worksheet.Range("B98:G98").Merge()
-					worksheet.Range("I98:O98").Merge()
-					worksheet.Range("A98").Value = "<"
-					worksheet.Range("B98").Value = "Less Than"
-					worksheet.Range("H98").Value = "MSD"
-					worksheet.Range("I98").Value = "Matrix Spike Duplicate"
-					worksheet.Range("B99:G99").Merge()
-					worksheet.Range("I99:O99").Merge()
-					worksheet.Range("A99").Value = ">"
-					worksheet.Range("B99").Value = "Greater Than"
-					worksheet.Range("H99").Value = "MW"
-					worksheet.Range("I99").Value = "Monitoring Well"
-					worksheet.Range("B100:G100").Merge()
-					worksheet.Range("I100:O100").Merge()
-					worksheet.Range("A100").Value = "Bldg"
-					worksheet.Range("B100").Value = "Building"
-					worksheet.Range("H100").Value = "m3"
-					worksheet.Range("I100").Value = "Cubic Meters"
-					worksheet.Range("B101:G101").Merge()
-					worksheet.Range("I101:O101").Merge()
-					worksheet.Range("A101").Value = "C"
-					worksheet.Range("B101").Value = "Degrees Celsius"
-					worksheet.Range("H101").Value = "N/A"
-					worksheet.Range("I101").Value = "Not Applicable"
-					worksheet.Range("B102:G102").Merge()
-					worksheet.Range("I102:O102").Merge()
-					worksheet.Range("A102").Value = "CAS #"
-					worksheet.Range("B102").Value = "Chemical Abstracts Service Number"
-					worksheet.Range("H102").Value = "ng/dscm"
-					worksheet.Range("I102").Value = "Nanograms per Dry Standard Cubic Meter"
-					worksheet.Range("B103:G103").Merge()
-					worksheet.Range("I103:O103").Merge()
-					worksheet.Range("A103").Value = "CFR"
-					worksheet.Range("B103").Value = "Code of Federal Regulations"
-					worksheet.Range("H103").Value = "ND"
-					worksheet.Range("I103").Value = "Not Detected at the Reporting Limit"
-					worksheet.Range("B104:G104").Merge()
-					worksheet.Range("I104:O104").Merge()
-					worksheet.Range("A104").Value = "Dil."
-					worksheet.Range("B104").Value = "Dilution"
-					worksheet.Range("H104").Value = "OF"
-					worksheet.Range("I104").Value = "Outfall"
-					worksheet.Range("B105:G105").Merge()
-					worksheet.Range("I105:O105").Merge()
-					worksheet.Range("A105").Value = "Dup."
-					worksheet.Range("B105").Value = "Duplicate"
-					worksheet.Range("H105").Value = "ppb"
-					worksheet.Range("I105").Value = "Parts Per Billion"
-					worksheet.Range("B106:G106").Merge()
-					worksheet.Range("I106:O106").Merge()
-					worksheet.Range("A106").Value = "F"
-					worksheet.Range("B106").Value = "Degrees Fahrenheit"
-					worksheet.Range("H106").Value = "ppm"
-					worksheet.Range("I106").Value = "Parts Per Million"
-					worksheet.Range("B107:G107").Merge()
-					worksheet.Range("I107:O107").Merge()
-					worksheet.Range("A107").Value = "g"
-					worksheet.Range("B107").Value = "gram(s)"
-					worksheet.Range("H107").Value = "ppt"
-					worksheet.Range("I107").Value = "Parts Per Trillion"
-					worksheet.Range("B108:G108").Merge()
-					worksheet.Range("I108:O108").Merge()
-					worksheet.Range("A108").Value = "GC/MSD"
-					worksheet.Range("B108").Value = "Gas Chromatography/Mass Spectrometry Detection"
-					worksheet.Range("H108").Value = "ppq"
-					worksheet.Range("I108").Value = "Parts Per Quadrillion"
-					worksheet.Range("B109:G109").Merge()
-					worksheet.Range("I109:O109").Merge()
-					worksheet.Range("A109").Value = "GWW"
-					worksheet.Range("B109").Value = "Ground Water Well"
-					worksheet.Range("H109").Value = "pg/dscm"
-					worksheet.Range("I109").Value = "Picograms Per Dry Standard Cubic Meter"
-					worksheet.Range("B110:G110").Merge()
-					worksheet.Range("I110:O110").Merge()
-					worksheet.Range("A110").Value = "kg"
-					worksheet.Range("B110").Value = "Kilogram(s)"
-					worksheet.Range("H110").Value = "PQL"
-					worksheet.Range("I110").Value = "Practical Quantitation Limit"
-					worksheet.Range("B111:G111").Merge()
-					worksheet.Range("I111:O111").Merge()
-					worksheet.Range("A111").Value = "l"
-					worksheet.Range("B111").Value = "Liter(s)"
-					worksheet.Range("H111").Value = "QA/QC"
-					worksheet.Range("I111").Value = "Quality Assurance / Quality Control"
-					worksheet.Range("B112:G112").Merge()
-					worksheet.Range("I112:O112").Merge()
-					worksheet.Range("A112").Value = "lb."
-					worksheet.Range("B112").Value = "Pound(s)"
-					worksheet.Range("H112").Value = "Rec"
-					worksheet.Range("I112").Value = "Recovered"
-					worksheet.Range("B113:G113").Merge()
-					worksheet.Range("I113:O113").Merge()
-					worksheet.Range("A113").Value = "LCS"
-					worksheet.Range("B113").Value = "Lab Control Spike"
-					worksheet.Range("H113").Value = "RL"
-					worksheet.Range("I113").Value = "Reporting Limit"
-					worksheet.Range("B114:G114").Merge()
-					worksheet.Range("I114:O114").Merge()
-					worksheet.Range("A114").Value = "LIMS"
-					worksheet.Range("B114").Value = "Laboratory Information Management System"
-					worksheet.Range("H114").Value = "RPD"
-					worksheet.Range("I114").Value = "Relative Percent Difference"
-					worksheet.Range("B115:G115").Merge()
-					worksheet.Range("I115:O115").Merge()
-					worksheet.Range("A115").Value = "LS"
-					worksheet.Range("B115").Value = "Lift Station"
-					worksheet.Range("H115").Value = "SS"
-					worksheet.Range("I115").Value = "Surrogate Standard"
-					worksheet.Range("B116:G116").Merge()
-					worksheet.Range("I116:O116").Merge()
-					worksheet.Range("A116").Value = "MAL"
-					worksheet.Range("B116").Value = "Minimum Analytical Limit"
-					worksheet.Range("H116").Value = "TDL"
-					worksheet.Range("I116").Value = "Target Detection Limit"
-					worksheet.Range("B117:G117").Merge()
-					worksheet.Range("I117:O117").Merge()
-					worksheet.Range("A117").Value = "MDL"
-					worksheet.Range("B117").Value = "Method Detection Limit"
-					worksheet.Range("H117").Value = "TPH"
-					worksheet.Range("I117").Value = "Total Purgable Halocarbons"
-					worksheet.Range("B118:G118").Merge()
-					worksheet.Range("I118:O118").Merge()
-					worksheet.Range("A118").Value = "Med"
-					worksheet.Range("B118").Value = "Methylated"
-					worksheet.Range("H118").Value = "ug"
-					worksheet.Range("I118").Value = "Microgram(s)"
-					worksheet.Range("B119:G119").Merge()
-					worksheet.Range("I119:O119").Merge()
-					worksheet.Range("A119").Value = "mg"
-					worksheet.Range("B119").Value = "Milligram(s)"
-					worksheet.Range("H119").Value = "ul"
-					worksheet.Range("I119").Value = "Microliter(s)"
-					worksheet.Range("B120:G120").Merge()
-					worksheet.Range("I120:O120").Merge()
-					worksheet.Range("A120").Value = "mg/L"
-					worksheet.Range("B120").Value = "Milligrams Per Liter"
-					worksheet.Range("H120").Value = "ug/L"
-					worksheet.Range("I120").Value = "Microgram(s) per Liter"
-					worksheet.Range("B121:G121").Merge()
-					worksheet.Range("I121:O121").Merge()
-					worksheet.Range("A121").Value = "ml"
-					worksheet.Range("B121").Value = "Milliliter(s)"
-					worksheet.Range("H121").Value = "WWTP"
-					worksheet.Range("I121").Value = "Wastewater Treatment Plant"
-					worksheet.Range("B122:G122").Merge()
-					worksheet.Range("A122").Value = "mm"
-					worksheet.Range("B122").Value = "Millimeters(s)"
-					worksheet.Range("A124:C124").Merge()
-					worksheet.Range("A125:C125").Merge()
-					worksheet.Range("A126:C126").Merge()
-					worksheet.Range("A127:C127").Merge()
-					worksheet.Range("A128:C128").Merge()
-					worksheet.Range("D124:O124").Merge()
-					worksheet.Range("D125:O125").Merge()
-					worksheet.Range("D126:O126").Merge()
-					worksheet.Range("D127:O127").Merge()
-					worksheet.Range("D128:O128").Merge()
-					worksheet.Range("A124").Value = "Dry Weight Basis:"
-					worksheet.Range("A125").Value = "Dilution Factor:"
-					worksheet.Range("A126").Value = "Elevated Limit:"
-					worksheet.Range("A127").Value = "Adjusted Limit:"
-					worksheet.Range("A128").Value = "Calculation Factor:"
-					worksheet.Range("D124").Value = "Results based on dry weight"
-					worksheet.Range("D125").Value = "Elevated Limit / Original Limit"
-					worksheet.Range("D126").Value = "Original Limit multiplied by Dilution Factor"
-					worksheet.Range("D127").Value = "Original Limit multiplied by Calculation Factor based on Dilution and Sample Size"
-					worksheet.Range("D128").Value = "Adjusted Limit / Original Limit"
-					worksheet.Range("A5:A128").CellStyle.Font.Bold = True
-					worksheet.Range("H97:H121").CellStyle.Font.Bold = True
-					worksheet.Range(1, 1, 128, 10).CellStyle.WrapText = True
+        Try
+            GlobalVariables.workbook.Worksheets.Create("Cover Pg")
+            GlobalVariables.workbook.Worksheets.Create("Case Narrative")
+            GlobalVariables.workbook.Worksheets.Create("Flag Sheet")
+            For Each wks In GlobalVariables.workbook.Worksheets
+                If wks.name = "Cover Pg" Then
+                    worksheet = wks
+                    worksheet.Range(1, 1, 32, 10).CellStyle.Font.FontName = "Arial"
+                    worksheet.Range("A1:J1").Merge()
+                    worksheet.Range("A1").Value = "DOW CONFIDENTIAL INFORMATION"
+                    worksheet.Range("A2:J2").Merge()
+                    worksheet.Range("A2").Value = "Do not share without permission"
+                    worksheet.Range("A4:J4").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A1").CellStyle.Font.Size = 16
+                    worksheet.Range("A2").CellStyle.Font.Size = 12
+                    worksheet.Range(1, 1, 2, 10).CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+                    worksheet.Range(1, 1, 2, 10).CellStyle.VerticalAlignment = ExcelVAlign.VAlignCenter
+                    worksheet.Range("A5:C5").Merge()
+                    worksheet.Range("A5").Value = "EH&S ANALYTICAL REPORT"
+                    worksheet.Range("D5:F5").Merge()
+                    worksheet.Range("D5").Value = "DOW CHEMICAL, USA"
+                    worksheet.Range("A5").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
+                    worksheet.Range("A5:J5").CellStyle.HorizontalAlignment = ExcelVAlign.VAlignCenter
+                    worksheet.Range("J5").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
+                    worksheet.Range("J5").Value = "MIDLAND, MI"
+                    worksheet.Range("A7:B7").Merge()
+                    worksheet.Range("A7").Value = "Date Issued:"
+                    worksheet.Range("A7").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
+                    worksheet.Range("G7:H7").Merge()
+                    worksheet.Range("G7").Value = "Study Number:"
+                    worksheet.Range("G7").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
+                    worksheet.Range("A7:J7").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A7:J7").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("C9:H9").Merge()
+                    worksheet.Range("C9").Value = "Title:"
+                    worksheet.Range("C9").CellStyle.Font.Size = 11
+                    worksheet.Range("C9").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignLeft
+                    worksheet.Range("A10:J10").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("B13:C13").Merge()
+                    worksheet.Range("B13").Value = "FULL REPORT"
+                    worksheet.Range("A14").Value = "To:"
+                    worksheet.Range("A14").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
+                    worksheet.Range("A23:C23").Merge()
+                    worksheet.Range("A23").Value = "Pages in complete report:"
+                    worksheet.Range("A23:J23").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A23:J23").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A26:B26").Merge()
+                    worksheet.Range("A26").Value = "Sample Date:"
+                    worksheet.Range("G26:I26").Merge()
+                    worksheet.Range("H26").Value = "Analysis Completion Date:"
+                    worksheet.Range("A28:B28").Merge()
+                    worksheet.Range("A28:J28").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A28").Value = "Signature/Date:"
+                    worksheet.Range("D28").Value = "Bldg:"
+                    worksheet.Range("E28").Value = "Phone:"
+                    worksheet.Range("G28:H28").Merge()
+                    worksheet.Range("G28").Value = "Reviewer/Date:"
+                    worksheet.Range("I28").Value = "Bldg:"
+                    worksheet.Range("J28").Value = "Phone:"
+                    worksheet.Range("A33:J33").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range(1, 1, 33, 10).CellStyle.Font.Bold = True
+                ElseIf wks.name = "Case Narrative" Then
+                    worksheet = wks
+                    worksheet.Range(1, 1, 34, 10).CellStyle.Font.FontName = "Arial"
+                    worksheet.Range(1, 1, 34, 10).CellStyle.Font.Bold = True
+                    worksheet.Range("A1").CellStyle.Font.Size = 16
+                    worksheet.Range("A1:J1").Merge()
+                    worksheet.Range("A1").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+                    worksheet.Range("A1").Value = "Case Narrative"
+                    worksheet.Range("A3").Value = "Project:"
+                    worksheet.Range("A4").Value = "Sample Date:"
+                    worksheet.Range("A5").Value = "Analysis Date:"
+                    worksheet.Range("A6").Value = "Analysis:"
+                    worksheet.Range("A7").Value = "Matrix:"
+                    worksheet.Range("A8").Value = "Samples Affected:"
+                    worksheet.Range("A10").Value = "Samples were received in acceptable condition."
+                    worksheet.Range("A12:J12").Merge()
+                    worksheet.Range("A12").Value = "All quality exceptions or observations that impacted data quality or indicate data bias/uncertainty are " &
+                    "documented below in this narrative and flagged in the data report.  All exceptions to method specified quality requirements that do not impact data quality " &
+                    "are documented in a Quality Control Exception Report filed with the raw data."
+                    worksheet.Range("A12").CellStyle.WrapText = True
+                    worksheet.SetRowHeightInPixels(12, 90)
+                    worksheet.Range("A14").Value = "Exceptions:"
+                    worksheet.Range("A30").Value = "Analyst:"
+                    worksheet.Range("A32").Value = "Quality Reviewer:"
+                    worksheet.Range("F30").Value = "Date:"
+                    worksheet.Range("F32").Value = "Date:"
+                    worksheet.Range("A30:F32").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignRight
+                    worksheet.Range("B30:E30").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("G30:J30").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("B32:E32").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("G32:J32").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("B34:I34").Merge()
+                    worksheet.Range("B34").Value = "Case Narrative signed in hardcopy only."
+                    worksheet.Range("B34").CellStyle.HorizontalAlignment = ExcelHAlign.HAlignCenter
+                    worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thick
+                    worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeLeft).LineStyle = ExcelLineStyle.Thick
+                    worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeRight).LineStyle = ExcelLineStyle.Thick
+                    worksheet.Range("B34:I34").CellStyle.Borders(ExcelBordersIndex.EdgeTop).LineStyle = ExcelLineStyle.Thick
+                    worksheet.SetRowHeightInPixels(12, 70)
+                    worksheet.SetColumnWidthInPixels(1, 125)
+                ElseIf wks.name = "Flag Sheet" Then
+                    worksheet = wks
+                    worksheet.Range(1, 1, 128, 10).CellStyle.Font.FontName = "Arial"
+                    worksheet.Range("F2:H2").Merge()
+                    worksheet.Range("F3:H3").Merge()
+                    worksheet.Range("F4:H4").Merge()
+                    worksheet.Range("F2").Value = "Organic Group"
+                    worksheet.Range("F3").Value = "Report Qualifiers (Flags)"
+                    worksheet.Range("F4").Value = "Revised: 5/9/13"
+                    worksheet.Range("A4").Value = "Qualifier"
+                    worksheet.Range("A4:O4").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("A1:H4").CellStyle.Font.Bold = True
+                    worksheet.Range("A6").Value = "B"
+                    worksheet.Range("B6:O6").Merge()
+                    worksheet.Range("B6").Value = "Analyte was detected in the associated Lab Blank/Method Blank/Reagent Blank, a high bias to data indicated."
+                    worksheet.Range("A7").Value = "B1"
+                    worksheet.Range("B7:O7").Merge()
+                    worksheet.Range("B7").Value = "Non-target analyte detected in associated Lab Blank/Method Blank/Reagent Blank and sample, producing interference."
+                    worksheet.Range("A8").Value = "B2"
+                    worksheet.Range("B8:O8").Merge()
+                    worksheet.Range("B8").Value = "Analyte was detected in the associated Lab Blank/Method Blank/Reagent Blank, but was not detected in Sample, sample data not affected."
+                    worksheet.Range("A9").Value = "B3"
+                    worksheet.Range("B9:O9").Merge()
+                    worksheet.Range("B9").Value = "Analyte detected in associated Lab Blank/Method Blank/Reagent Blank at level less than 5% that found in sample, data quality not affected."
+                    worksheet.Range("A10").Value = "B4"
+                    worksheet.Range("B10:O10").Merge()
+                    worksheet.Range("B10").Value = "Analyte detected in associated Lab Blank/Method Blank/Reagent Blank at or above MDL but at level less than 10% of the MAL, data quality not affected for TPH reporting."
+                    worksheet.SetRowHeightInPixels(10, 45)
+                    worksheet.Range("A13").Value = "C"
+                    worksheet.Range("B13:O13").Merge()
+                    worksheet.Range("B13").Value = "Calibration Verification recovery was below the method control limit for this analyte. Low bias to data indicated."
+                    worksheet.Range("A14").Value = "C1"
+                    worksheet.Range("B14:O14").Merge()
+                    worksheet.Range("B14").Value = "The sample was originally analyzed with a positive result, however the reanalysis did not confirm the presence of the analyte."
+                    worksheet.Range("A15").Value = "C2"
+                    worksheet.Range("B15:O15").Merge()
+                    worksheet.Range("B15").Value = "Results confirmed by reanalysis."
+                    worksheet.Range("A16").Value = "C3"
+                    worksheet.Range("B16:O16").Merge()
+                    worksheet.Range("B16").Value = "Quantitation curve failure: R^2 >15% or coefficient of determination <0.99."
+                    worksheet.Range("A17").Value = "C4"
+                    worksheet.Range("B17:O17").Merge()
+                    worksheet.Range("B17").Value = "Calibration Verification recovery was above the method control limit for this analyte. High bias to data indicated."
+                    worksheet.Range("A18").Value = "C5"
+                    worksheet.Range("B18:O18").Merge()
+                    worksheet.Range("B18").Value = "Calibration Verification recovery was above the method control limit for this analyte. Analyte not found in samples, data quality not affected."
+                    worksheet.Range("A20").Value = "D"
+                    worksheet.Range("B20:O20").Merge()
+                    worksheet.Range("B20").Value = "Compound quantitated on a diluted sample."
+                    worksheet.Range("A22").Value = "E"
+                    worksheet.Range("B22:O22").Merge()
+                    worksheet.Range("B22").Value = "Reported value is EMPC (estimated maximum possible concentration)"
+                    worksheet.Range("A23").Value = "E1"
+                    worksheet.Range("B23:O23").Merge()
+                    worksheet.Range("B23").Value = "Concentration exceeds the tested calibration range of the instrument."
+                    worksheet.Range("A24").Value = "E2"
+                    worksheet.Range("B24:O24").Merge()
+                    worksheet.Range("B24").Value = "Estimated due to interference."
+                    worksheet.Range("A26").Value = "H"
+                    worksheet.Range("B26:O26").Merge()
+                    worksheet.Range("B26").Value = "Sample analysis performed past the method-specified holding time per client's approval."
+                    worksheet.Range("A27").Value = "H1"
+                    worksheet.Range("B27:O27").Merge()
+                    worksheet.Range("B27").Value = "Initial analysis within holding time.  Reanalysis for the required dilution was past holding time."
+                    worksheet.Range("A29").Value = "I"
+                    worksheet.Range("B29:O29").Merge()
+                    worksheet.Range("B29").Value = "Internal Standard recovery was outside of method limits."
+                    worksheet.Range("A30").Value = "I1"
+                    worksheet.Range("B30:O30").Merge()
+                    worksheet.Range("B30").Value = "Estimated result. The associated internal standard did not meet the specified method criteria."
+                    worksheet.Range("A32").Value = "J"
+                    worksheet.Range("B32:O32").Merge()
+                    worksheet.Range("B32").Value = "Estimated value.  Analyte detected at a level less than the Reporting Limit (RL) and greater than or equal to the Method Detection Limit (MDL). The user of " &
+                    "this data should be aware that this data is of limited reliability."
+                    worksheet.SetRowHeightInPixels(32, 45)
+                    worksheet.Range("A33").Value = "J1"
+                    worksheet.Range("B33:O33").Merge()
+                    worksheet.Range("B33").Value = "Analyte detected at a level less then the Reporting Limit (RL) and greater than, or equal to the Method Detection Limit (MDL). On the Final Summary Report Analyte " &
+                        "reported Not Detected (ND) because analyzed concentration is below the RL. For Lab Control Spike (LCS)  & Matrix Spike (MS) recovery purposes the analyzed concentration below the RL and above " &
+                        "or equal to the MDL are shown on the LCS & MS recovery reports."
+                    worksheet.SetRowHeightInPixels(33, 67)
+                    worksheet.Range("A34").Value = "J2"
+                    worksheet.Range("B34:O34").Merge()
+                    worksheet.Range("B34").Value = "Analyte detected at a level less then the Reporting Limit (RL) and is less than Method Detection Limit (MDL). On the Final Summary Report Analyte reported Not " &
+                        "Detected (ND) because analyzed concentration is below the RL. For Lab Control Spike (LCS) & Matrix Spike (MS) recovery purposes the analyzed concentration below the RL and less then " &
+                        "the MDL are shown on the LCS & MS recovery reports."
+                    worksheet.SetRowHeightInPixels(34, 67)
+                    worksheet.Range("A35").Value = "J3"
+                    worksheet.Range("B35:O35").Merge()
+                    worksheet.Range("B35").Value = "Analyte detected above MDL but below lowest calibration point. Estimated value."
+                    worksheet.Range("A36").Value = "J4"
+                    worksheet.Range("B36:O36").Merge()
+                    worksheet.Range("B36").Value = "Analyte detected above detection level but below quantification level. Estimated value."
+                    worksheet.Range("A38").Value = "L"
+                    worksheet.Range("B38:O38").Merge()
+                    worksheet.Range("B38").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was above the acceptance limits. Analyte not detected at reporting limit " &
+                        "in samples, therefore data quality not affected. "
+                    worksheet.SetRowHeightInPixels(38, 45)
+                    worksheet.Range("A39").Value = "L1"
+                    worksheet.Range("B39:O39").Merge()
+                    worksheet.Range("B39").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was above acceptance limits. High bias to sample results indicated."
+                    worksheet.Range("A40").Value = "L2"
+                    worksheet.Range("B40:O40").Merge()
+                    worksheet.Range("B40").Value = "Laboratory Control Spike and/or Laboratory Control Spike Duplicate recovery was below the acceptance limits. A low bias to sample results is indicated."
+                    worksheet.Range("A41").Value = "L3"
+                    worksheet.Range("B41:O41").Merge()
+                    worksheet.Range("B41").Value = "The LCS and/or LCSD were above the acceptance limits.  Passing matrix spike (MS) satisfies method requirements. Data quality not affected."
+                    worksheet.Range("A42").Value = "L4"
+                    worksheet.Range("B42:O42").Merge()
+                    worksheet.Range("B42").Value = "The LCS and/or LCSD were below the acceptance limits.  Passing matrix spike (MS) satisfies method requirements. Data quality not affected."
+                    worksheet.Range("A44").Value = "M"
+                    worksheet.Range("B44:O44").Merge()
+                    worksheet.Range("B44").Value = "Duplicate sample precision not met."
+                    worksheet.Range("A45").Value = "M1"
+                    worksheet.Range("B45:O45").Merge()
+                    worksheet.Range("B45").Value = "The MS and/or MSD were above the acceptance limits.  Passing Lab Control Spike (LCS) satisfies method requirements.  Data quality not affected."
+                    worksheet.Range("A46").Value = "M2"
+                    worksheet.Range("B46:O46").Merge()
+                    worksheet.Range("B46").Value = "The MS and/or MSD were below the acceptance limits.  Passing Lab Control Spike (LCS) satisfies method requirements. "
+                    worksheet.Range("A47").Value = "M3"
+                    worksheet.Range("B47:O47").Merge()
+                    worksheet.Range("B47").Value = "The sample spiked had a pH of less than 2.  Analyte degrades under acidic conditions."
+                    worksheet.Range("A48").Value = "M4"
+                    worksheet.Range("B48:O48").Merge()
+                    worksheet.Range("B48").Value = "Due to high levels of analyte in the sample, the MS/MSD calculation does not provide useful spike recovery information. See Laboratory Control Spike (LCS)."
+                    worksheet.SetRowHeightInPixels(48, 45)
+                    worksheet.Range("A49").Value = "M5"
+                    worksheet.Range("B49:O49").Merge()
+                    worksheet.Range("B49").Value = "No results were reported for the MS/MSD.  The sample used for the MS/MSD required dilution due to the sample matrix.  Because of this, the spike " &
+                        "compounds were diluted below the detection limit."
+                    worksheet.SetRowHeightInPixels(49, 45)
+                    worksheet.Range("A50").Value = "M6"
+                    worksheet.Range("B50:O50").Merge()
+                    worksheet.Range("B50").Value = "There was no MS/MSD analyzed with this batch due to insufficient sample volume.  See Lab Control Spike/Lab Control Spike Duplicate."
+                    worksheet.Range("A51").Value = "M7"
+                    worksheet.Range("B51:O51").Merge()
+                    worksheet.Range("B51").Value = "No recovery range given in method for analyte in LCS/MS/MSD"
+                    worksheet.Range("A52").Value = "M8"
+                    worksheet.Range("B52:O52").Merge()
+                    worksheet.Range("B52").Value = "Matrix spike and/or Matrix Spike Duplicate recovery was above acceptance limits. Analyte not found in samples, data quality not affected."
+                    worksheet.Range("A53").Value = "M9"
+                    worksheet.Range("B53:O53").Merge()
+                    worksheet.Range("B53").Value = "Matrix Spike and/or Matrix Spike Duplicate recovery was above acceptance limits. High bias to sample results indicated."
+                    worksheet.Range("A54").Value = "M10"
+                    worksheet.Range("B54:O54").Merge()
+                    worksheet.Range("B54").Value = "Matrix Spike and/or Matrix Spike Duplicate recovery was below the acceptance limits.   A low bias to sample results is indicated."
+                    worksheet.Range("A55").Value = "M11"
+                    worksheet.Range("B55:O55").Merge()
+                    worksheet.Range("B55").Value = "Matrix spike results reported from diluted sample, due to target analyte recovery above calibration limit in undiluted sample."
+                    worksheet.Range("A57").Value = "N"
+                    worksheet.Range("B57:O57").Merge()
+                    worksheet.Range("B57").Value = "Spike recovery not within control limits."
+                    worksheet.Range("A58").Value = "N1"
+                    worksheet.Range("B58:O58").Merge()
+                    worksheet.Range("B58").Value = "See case narrative."
+                    worksheet.Range("A59").Value = "N2"
+                    worksheet.Range("B59:O59").Merge()
+                    worksheet.Range("B59").Value = "Sample point not sampled, see case narrative."
+                    worksheet.Range("A61").Value = "P"
+                    worksheet.Range("B61:O61").Merge()
+                    worksheet.Range("B61").Value = "The sample, as received, was not preserved in accordance to the referenced analytical method."
+                    worksheet.Range("A62").Value = "P2"
+                    worksheet.Range("B62:O62").Merge()
+                    worksheet.Range("B62").Value = "Sample was not sufficiently preserved at time of collection.  Sample pH is >2"
+                    worksheet.Range("A63").Value = "P3"
+                    worksheet.Range("B63:O63").Merge()
+                    worksheet.Range("B63").Value = "Sample received without chemical preservation, but preserved by the laboratory."
+                    worksheet.Range("A64").Value = "P4"
+                    worksheet.Range("B64:O64").Merge()
+                    worksheet.Range("B64").Value = "Sample was received above recommended temperature."
+                    worksheet.Range("A65").Value = "P5"
+                    worksheet.Range("B65:O65").Merge()
+                    worksheet.Range("B65").Value = "Sample received in inappropriate sample container."
+                    worksheet.Range("A66").Value = "P6"
+                    worksheet.Range("B66:O66").Merge()
+                    worksheet.Range("B66").Value = "Insufficient sample received to meet method QC requirements."
+                    worksheet.Range("A67").Value = "P7"
+                    worksheet.Range("B67:O67").Merge()
+                    worksheet.Range("B67").Value = "Sample taken from VOA vial with air bubble > 6mm diameter."
+                    worksheet.Range("A68").Value = "P8"
+                    worksheet.Range("B68:O68").Merge()
+                    worksheet.Range("B68").Value = "Sample pH  < 2 when received, target analyte(s) is acid sensitive, thererfore analysis for target analyte(s) is not valid."
+                    worksheet.Range("A70").Value = "R"
+                    worksheet.Range("B70:O70").Merge()
+                    worksheet.Range("B70").Value = "The RPD exceeded the method control limit due to sample matrix effects.  The individual analyte QA/QC recoveries, however,  pass the method control limits. "
+                    worksheet.SetRowHeightInPixels(70, 45)
+                    worksheet.Range("A71").Value = "R1"
+                    worksheet.Range("B71:O71").Merge()
+                    worksheet.Range("B71").Value = "The RPD exceeded the acceptance limit due to sample matrix effects."
+                    worksheet.Range("A72").Value = "R2"
+                    worksheet.Range("B72:O72").Merge()
+                    worksheet.Range("B72").Value = "Due to the low levels of analyte in the sample, the duplicate RPD calculation does not provide useful information."
+                    worksheet.Range("A73").Value = "R3"
+                    worksheet.Range("B73:O73").Merge()
+                    worksheet.Range("B73").Value = "Reporting limit raised due to high concentrations of non-target analytes."
+                    worksheet.Range("A74").Value = "R4"
+                    worksheet.Range("B74:O74").Merge()
+                    worksheet.Range("B74").Value = "Reporting limit raised due to insufficient sample volume."
+                    worksheet.Range("A75").Value = "R5"
+                    worksheet.Range("B75:O75").Merge()
+                    worksheet.Range("B75").Value = "Sample required dilution due to high concentrations of target analyte."
+                    worksheet.Range("A76").Value = "R6"
+                    worksheet.Range("B76:O76").Merge()
+                    worksheet.Range("B76").Value = "RPD exceeded method control limits due to a lack of sample homogeneity"
+                    worksheet.Range("A77").Value = "R7"
+                    worksheet.Range("B77:O77").Merge()
+                    worksheet.Range("B77").Value = "Reporting limit raised due to dilution required for sample matrix.  See case narrative for details."
+                    worksheet.Range("A78").Value = "R8"
+                    worksheet.Range("B78:O78").Merge()
+                    worksheet.Range("B78").Value = "Due to the high levels of analyte in the sample, the duplicate RPD calculation does not provide useful information."
+                    worksheet.Range("A79").Value = "R9"
+                    worksheet.Range("B79:O79").Merge()
+                    worksheet.Range("B79").Value = "RPD exceeds the acceptance limit.  Analyte not detected at reporting limit in samples, therefore data quality not affected."
+                    worksheet.Range("A81").Value = "S"
+                    worksheet.Range("B81:O81").Merge()
+                    worksheet.Range("B81").Value = "Sediment present."
+                    worksheet.Range("A82").Value = "S1"
+                    worksheet.Range("B82:O82").Merge()
+                    worksheet.Range("B82").Value = "Insufficient sample available for reanalysis."
+                    worksheet.Range("A83").Value = "S2"
+                    worksheet.Range("B83:O83").Merge()
+                    worksheet.Range("B83").Value = "Analytical results not reliable due to potential sample container contamination."
+                    worksheet.Range("A85").Value = "T1"
+                    worksheet.Range("B85:O85").Merge()
+                    worksheet.Range("B85").Value = "Tentatively identified compound.  Concentration is estimated based on the closest internal standard."
+                    worksheet.Range("A86").Value = "T2"
+                    worksheet.Range("B86:O86").Merge()
+                    worksheet.Range("B86").Value = "Not to be reported for compliance purposes."
+                    worksheet.Range("A88").Value = "Z"
+                    worksheet.Range("B88:O88").Merge()
+                    worksheet.Range("B88").Value = "The surrogate/Isotopic recovery was below the acceptance limits, results may be biased low."
+                    worksheet.Range("A89").Value = "Z1"
+                    worksheet.Range("B89:O89").Merge()
+                    worksheet.Range("B89").Value = "Surrogate/Isotopic standard recovery was outside the acceptance limits.  Data not impacted."
+                    worksheet.Range("A90").Value = "Z2"
+                    worksheet.Range("B90:O90").Merge()
+                    worksheet.Range("B90").Value = "The sample required a dilution due to the nature of the sample matrix.  Because of this dilution, the surrogate/Isotopic spike concentration " &
+                        "in the sample was reduced to a level where the recovery calculation does not provide useful information."
+                    worksheet.SetRowHeightInPixels(90, 45)
+                    worksheet.Range("A91").Value = "Z3"
+                    worksheet.Range("B91:O91").Merge()
+                    worksheet.Range("B91").Value = "The surrogate/isotopic recovery was above the acceptance limits, results may be biased high."
+                    worksheet.Range("A93:O93").Merge()
+                    worksheet.Range("A93").Value = "Organic Group Abbreviations"
+                    worksheet.Range("A95:O95").CellStyle.Borders(ExcelBordersIndex.EdgeBottom).LineStyle = ExcelLineStyle.Thin
+                    worksheet.Range("B97:G97").Merge()
+                    worksheet.Range("I97:O97").Merge()
+                    worksheet.Range("A97").Value = "AF"
+                    worksheet.Range("B97").Value = "Antifoam"
+                    worksheet.Range("H97").Value = "MS"
+                    worksheet.Range("I97").Value = "Matrix Spike"
+                    worksheet.Range("B98:G98").Merge()
+                    worksheet.Range("I98:O98").Merge()
+                    worksheet.Range("A98").Value = "<"
+                    worksheet.Range("B98").Value = "Less Than"
+                    worksheet.Range("H98").Value = "MSD"
+                    worksheet.Range("I98").Value = "Matrix Spike Duplicate"
+                    worksheet.Range("B99:G99").Merge()
+                    worksheet.Range("I99:O99").Merge()
+                    worksheet.Range("A99").Value = ">"
+                    worksheet.Range("B99").Value = "Greater Than"
+                    worksheet.Range("H99").Value = "MW"
+                    worksheet.Range("I99").Value = "Monitoring Well"
+                    worksheet.Range("B100:G100").Merge()
+                    worksheet.Range("I100:O100").Merge()
+                    worksheet.Range("A100").Value = "Bldg"
+                    worksheet.Range("B100").Value = "Building"
+                    worksheet.Range("H100").Value = "m3"
+                    worksheet.Range("I100").Value = "Cubic Meters"
+                    worksheet.Range("B101:G101").Merge()
+                    worksheet.Range("I101:O101").Merge()
+                    worksheet.Range("A101").Value = "C"
+                    worksheet.Range("B101").Value = "Degrees Celsius"
+                    worksheet.Range("H101").Value = "N/A"
+                    worksheet.Range("I101").Value = "Not Applicable"
+                    worksheet.Range("B102:G102").Merge()
+                    worksheet.Range("I102:O102").Merge()
+                    worksheet.Range("A102").Value = "CAS #"
+                    worksheet.Range("B102").Value = "Chemical Abstracts Service Number"
+                    worksheet.Range("H102").Value = "ng/dscm"
+                    worksheet.Range("I102").Value = "Nanograms per Dry Standard Cubic Meter"
+                    worksheet.Range("B103:G103").Merge()
+                    worksheet.Range("I103:O103").Merge()
+                    worksheet.Range("A103").Value = "CFR"
+                    worksheet.Range("B103").Value = "Code of Federal Regulations"
+                    worksheet.Range("H103").Value = "ND"
+                    worksheet.Range("I103").Value = "Not Detected at the Reporting Limit"
+                    worksheet.Range("B104:G104").Merge()
+                    worksheet.Range("I104:O104").Merge()
+                    worksheet.Range("A104").Value = "Dil."
+                    worksheet.Range("B104").Value = "Dilution"
+                    worksheet.Range("H104").Value = "OF"
+                    worksheet.Range("I104").Value = "Outfall"
+                    worksheet.Range("B105:G105").Merge()
+                    worksheet.Range("I105:O105").Merge()
+                    worksheet.Range("A105").Value = "Dup."
+                    worksheet.Range("B105").Value = "Duplicate"
+                    worksheet.Range("H105").Value = "ppb"
+                    worksheet.Range("I105").Value = "Parts Per Billion"
+                    worksheet.Range("B106:G106").Merge()
+                    worksheet.Range("I106:O106").Merge()
+                    worksheet.Range("A106").Value = "F"
+                    worksheet.Range("B106").Value = "Degrees Fahrenheit"
+                    worksheet.Range("H106").Value = "ppm"
+                    worksheet.Range("I106").Value = "Parts Per Million"
+                    worksheet.Range("B107:G107").Merge()
+                    worksheet.Range("I107:O107").Merge()
+                    worksheet.Range("A107").Value = "g"
+                    worksheet.Range("B107").Value = "gram(s)"
+                    worksheet.Range("H107").Value = "ppt"
+                    worksheet.Range("I107").Value = "Parts Per Trillion"
+                    worksheet.Range("B108:G108").Merge()
+                    worksheet.Range("I108:O108").Merge()
+                    worksheet.Range("A108").Value = "GC/MSD"
+                    worksheet.Range("B108").Value = "Gas Chromatography/Mass Spectrometry Detection"
+                    worksheet.Range("H108").Value = "ppq"
+                    worksheet.Range("I108").Value = "Parts Per Quadrillion"
+                    worksheet.Range("B109:G109").Merge()
+                    worksheet.Range("I109:O109").Merge()
+                    worksheet.Range("A109").Value = "GWW"
+                    worksheet.Range("B109").Value = "Ground Water Well"
+                    worksheet.Range("H109").Value = "pg/dscm"
+                    worksheet.Range("I109").Value = "Picograms Per Dry Standard Cubic Meter"
+                    worksheet.Range("B110:G110").Merge()
+                    worksheet.Range("I110:O110").Merge()
+                    worksheet.Range("A110").Value = "kg"
+                    worksheet.Range("B110").Value = "Kilogram(s)"
+                    worksheet.Range("H110").Value = "PQL"
+                    worksheet.Range("I110").Value = "Practical Quantitation Limit"
+                    worksheet.Range("B111:G111").Merge()
+                    worksheet.Range("I111:O111").Merge()
+                    worksheet.Range("A111").Value = "l"
+                    worksheet.Range("B111").Value = "Liter(s)"
+                    worksheet.Range("H111").Value = "QA/QC"
+                    worksheet.Range("I111").Value = "Quality Assurance / Quality Control"
+                    worksheet.Range("B112:G112").Merge()
+                    worksheet.Range("I112:O112").Merge()
+                    worksheet.Range("A112").Value = "lb."
+                    worksheet.Range("B112").Value = "Pound(s)"
+                    worksheet.Range("H112").Value = "Rec"
+                    worksheet.Range("I112").Value = "Recovered"
+                    worksheet.Range("B113:G113").Merge()
+                    worksheet.Range("I113:O113").Merge()
+                    worksheet.Range("A113").Value = "LCS"
+                    worksheet.Range("B113").Value = "Lab Control Spike"
+                    worksheet.Range("H113").Value = "RL"
+                    worksheet.Range("I113").Value = "Reporting Limit"
+                    worksheet.Range("B114:G114").Merge()
+                    worksheet.Range("I114:O114").Merge()
+                    worksheet.Range("A114").Value = "LIMS"
+                    worksheet.Range("B114").Value = "Laboratory Information Management System"
+                    worksheet.Range("H114").Value = "RPD"
+                    worksheet.Range("I114").Value = "Relative Percent Difference"
+                    worksheet.Range("B115:G115").Merge()
+                    worksheet.Range("I115:O115").Merge()
+                    worksheet.Range("A115").Value = "LS"
+                    worksheet.Range("B115").Value = "Lift Station"
+                    worksheet.Range("H115").Value = "SS"
+                    worksheet.Range("I115").Value = "Surrogate Standard"
+                    worksheet.Range("B116:G116").Merge()
+                    worksheet.Range("I116:O116").Merge()
+                    worksheet.Range("A116").Value = "MAL"
+                    worksheet.Range("B116").Value = "Minimum Analytical Limit"
+                    worksheet.Range("H116").Value = "TDL"
+                    worksheet.Range("I116").Value = "Target Detection Limit"
+                    worksheet.Range("B117:G117").Merge()
+                    worksheet.Range("I117:O117").Merge()
+                    worksheet.Range("A117").Value = "MDL"
+                    worksheet.Range("B117").Value = "Method Detection Limit"
+                    worksheet.Range("H117").Value = "TPH"
+                    worksheet.Range("I117").Value = "Total Purgable Halocarbons"
+                    worksheet.Range("B118:G118").Merge()
+                    worksheet.Range("I118:O118").Merge()
+                    worksheet.Range("A118").Value = "Med"
+                    worksheet.Range("B118").Value = "Methylated"
+                    worksheet.Range("H118").Value = "ug"
+                    worksheet.Range("I118").Value = "Microgram(s)"
+                    worksheet.Range("B119:G119").Merge()
+                    worksheet.Range("I119:O119").Merge()
+                    worksheet.Range("A119").Value = "mg"
+                    worksheet.Range("B119").Value = "Milligram(s)"
+                    worksheet.Range("H119").Value = "ul"
+                    worksheet.Range("I119").Value = "Microliter(s)"
+                    worksheet.Range("B120:G120").Merge()
+                    worksheet.Range("I120:O120").Merge()
+                    worksheet.Range("A120").Value = "mg/L"
+                    worksheet.Range("B120").Value = "Milligrams Per Liter"
+                    worksheet.Range("H120").Value = "ug/L"
+                    worksheet.Range("I120").Value = "Microgram(s) per Liter"
+                    worksheet.Range("B121:G121").Merge()
+                    worksheet.Range("I121:O121").Merge()
+                    worksheet.Range("A121").Value = "ml"
+                    worksheet.Range("B121").Value = "Milliliter(s)"
+                    worksheet.Range("H121").Value = "WWTP"
+                    worksheet.Range("I121").Value = "Wastewater Treatment Plant"
+                    worksheet.Range("B122:G122").Merge()
+                    worksheet.Range("A122").Value = "mm"
+                    worksheet.Range("B122").Value = "Millimeters(s)"
+                    worksheet.Range("A124:C124").Merge()
+                    worksheet.Range("A125:C125").Merge()
+                    worksheet.Range("A126:C126").Merge()
+                    worksheet.Range("A127:C127").Merge()
+                    worksheet.Range("A128:C128").Merge()
+                    worksheet.Range("D124:O124").Merge()
+                    worksheet.Range("D125:O125").Merge()
+                    worksheet.Range("D126:O126").Merge()
+                    worksheet.Range("D127:O127").Merge()
+                    worksheet.Range("D128:O128").Merge()
+                    worksheet.Range("A124").Value = "Dry Weight Basis:"
+                    worksheet.Range("A125").Value = "Dilution Factor:"
+                    worksheet.Range("A126").Value = "Elevated Limit:"
+                    worksheet.Range("A127").Value = "Adjusted Limit:"
+                    worksheet.Range("A128").Value = "Calculation Factor:"
+                    worksheet.Range("D124").Value = "Results based on dry weight"
+                    worksheet.Range("D125").Value = "Elevated Limit / Original Limit"
+                    worksheet.Range("D126").Value = "Original Limit multiplied by Dilution Factor"
+                    worksheet.Range("D127").Value = "Original Limit multiplied by Calculation Factor based on Dilution and Sample Size"
+                    worksheet.Range("D128").Value = "Adjusted Limit / Original Limit"
+                    worksheet.Range("A5:A128").CellStyle.Font.Bold = True
+                    worksheet.Range("H97:H121").CellStyle.Font.Bold = True
+                    worksheet.Range(1, 1, 128, 10).CellStyle.WrapText = True
 
-				End If
-			Next
-			Return True
+                End If
+            Next
+            Return True
 
-		Catch ex As Exception
-			MsgBox("Error generating report!" & vbCrLf &
-						"Sub Procedure: MidlandChromCustomerReport()" & vbCrLf &
-						"Logic Error: " & ex.Message, MsgBoxStyle.Critical, "(╯°□°)╯︵ ┻━┻")
-			Return False
-		End Try
+        Catch ex As Exception
+            MsgBox("Error generating report!" & vbCrLf &
+                        "Sub Procedure: MidlandChromCustomerReport()" & vbCrLf &
+                        "Logic Error: " & ex.Message, MsgBoxStyle.Critical, "(╯°□°)╯︵ ┻━┻")
+            Return False
+        End Try
 
-	End Function
-
-
+    End Function
 End Class
-

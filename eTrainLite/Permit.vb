@@ -808,72 +808,120 @@ Public Class Permit
             Return False
         End Try
 
-        'Load into Permit List
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            'Get datatable into view and sort
-            dvLimits = New DataView(dtLimits)
-            dtLimits = dvLimits.ToTable
-            ' Supplementing analytes and their CAS number into the dictionary for those not in the DOW_COMPONENT_CODE query.
-            ' Adding them here first so the names are correct versus what is in LIMS.
-            ' Example: '2,4-D' is actually '2,4-D (Med)' for all the samples that I have seen come through. 
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
-                Dim parts() As String = line.Split("|")
-                If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
-                    GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
-                End If
-            Next
-            ' Adding the rest of the compounds from LIMS into the dictionary. 
-            For Each row As DataRow In dtLimits.Rows
-                If Not GlobalVariables.compNameToCASDic.ContainsKey(row(0).ToString()) Then
-                    GlobalVariables.compNameToCASDic.Add(row(0).ToString(), row(1).ToString())
-                End If
-            Next
-            ' Only importing the method that the data will go into so there will (hypothetically) be half the number imported versus the whole table. 
-            If GlobalVariables.Import.Type = "031B" Then
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BLIMSMethods.txt")
+        Try
+            'Load into Permit List
+            If GlobalVariables.eTrain.Location = "MIDLAND" Then
+                'Get datatable into view and sort
+                dvLimits = New DataView(dtLimits)
+                dtLimits = dvLimits.ToTable
+                ' Supplementing analytes and their CAS number into the dictionary for those not in the DOW_COMPONENT_CODE query.
+                ' Adding them here first so the names are correct versus what is in LIMS.
+                ' Example: '2,4-D' is actually '2,4-D (Med)' for all the samples that I have seen come through. 
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
                     Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                    If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
+                        GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
                     End If
                 Next
-            Else
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
-                    Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                ' Adding the rest of the compounds from LIMS into the dictionary. 
+                For Each row As DataRow In dtLimits.Rows
+                    If Not GlobalVariables.compNameToCASDic.ContainsKey(row(0).ToString()) Then
+                        GlobalVariables.compNameToCASDic.Add(row(0).ToString(), row(1).ToString())
                     End If
+                Next
+                ' Only importing the method that the data will go into so there will (hypothetically) be half the number imported versus the whole table. 
+                If GlobalVariables.Import.Type = "031B" Then
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BLIMSMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                ElseIf GlobalVariables.Import.Type = "031C" Then
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031CLIMSMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                Else
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteLIMSMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                End If
+                ' Creating a dictionary of the actaul analysis names with their corresponding name used in LIMS.
+                ' It is used to change the analysis of each sample for when it gets submitted to LIMS and the values get entered correctly.
+                If GlobalVariables.Import.Type = "031B" Then
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BEDDMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                ElseIf GlobalVariables.Import.Type = "031C" Then
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031CEDDMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                Else
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteEDDMethods.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                End If
+                ' Creating a list of lists of the possible recovery units.
+                ' Sometimes reported slightly different than what they are in LIMS even though they might mean the same thing. 
+                ' Example: ppm and mg/L
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\RecoveryUnits.txt")
+                    Dim count As Integer = 0
+                    Dim tempList As New List(Of String)
+                    Dim parts() As String = line.Split("|")
+                    For i As Integer = 0 To parts.Length - 1
+                        tempList.Add(parts(i))
+                    Next
+                    GlobalVariables.recoveryUnits.Add(tempList)
+                Next
+                ' Creating a list of lists of the BEF and TEF values for the D&F data.
+                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\BefAndTef.txt")
+                    Dim count As Integer = 0
+                    Dim tempList As New List(Of String)
+                    Dim parts() As String = line.Split("|")
+                    For i As Integer = 0 To parts.Length - 1
+                        tempList.Add(parts(i))
+                    Next
+                    GlobalVariables.befAndTefScores.Add(tempList)
                 Next
             End If
-            ' Creating a dictionary of the actaul analysis names with their corresponding name used in LIMS.
-            ' It is used to change the analysis of each sample for when it gets submitted to LIMS and the values get entered correctly.
-            If GlobalVariables.Import.Type = "031B" Then
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLite031BEDDMethods.txt")
-                    Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
-                    End If
-                Next
-            Else
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\eTrainLiteEDDMethods.txt")
-                    Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
-                    End If
-                Next
-            End If
-        End If
+        Catch ex As Exception
+            MsgBox("Error importing methods and dictionaries!" & vbCrLf &
+                   "Sub Procedure: loadLimsInformation()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+        End Try
         ' Querying LIMS for each sample that was pulled in from the EDD.
         ' Queried for each sample because the LIMS number is the unique identifier to pull in the compound information.
         For Each limsSample As Sample In GlobalVariables.SampleList
             ' Changing the Sample.type to whatever the first compound in the sampleList is so that it can get transfered to LIMS. 
-            limsSample.Analysis = GlobalVariables.eddAnalysisMethod.Item(limsSample.CompoundList(0).EDDLabAnlMethodName)
-            If GlobalVariables.Permit.loadLimsCompounds(limsSample.LimsID) Then
-                Continue For
-            Else
-                MsgBox("Error connecting to LIMS for ID: " & limsSample.LimsID & vbCrLf &
-                   "Sub Procedure: loadLimsInformation()", MsgBoxStyle.Critical)
-                Return False
-            End If
+            Try
+                limsSample.Analysis = GlobalVariables.eddAnalysisMethod.Item(limsSample.CompoundList(0).EDDLabAnlMethodName)
+                If GlobalVariables.Permit.loadLimsCompounds(limsSample.LimsID) Then
+                    Continue For
+                Else
+                    MsgBox("Error connecting to LIMS for ID: " & limsSample.LimsID & vbCrLf &
+                       "Sub Procedure: loadLimsInformation()", MsgBoxStyle.Critical)
+                    Return False
+                End If
+            Catch ex As Exception
+                MsgBox("Error verify analysis method" & vbCrLf &
+                   "Sub Procedure: LoadLimsAnalysisAndUnits()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+            End Try
         Next
         verifyCLabData()
         Return True
@@ -913,7 +961,7 @@ Public Class Permit
         dtUnits = dvUnits.ToTable
         ' Creating an arrayList of each compound based on the LIMS number from the method call.
         For Each row As DataRow In dtUnits.Rows
-            ' Skipping over the check put in place for the WWTP Grabs and doesn't go in as a sample to be checked against.
+            ' Skipping over the check put in place for the WWTP Grabs, and various NPDES sample sets so they go in as a sample to be checked against.
             If row(0).ToString = "Limit Check" Then
                 Continue For
             ElseIf GlobalVariables.limsAnalysisMethod.ContainsKey(row(2).ToString) Then
@@ -937,63 +985,104 @@ Public Class Permit
         Dim EDDSample As Sample
         Dim EDDCompound As Compound
         Dim blnLimsSampleImported As Boolean
-        ' Used for the grabs data to add the methyl-Chlorpyrifos and Chlorpyrifos (Dursban) recoveries together.
+        ' Used for the grabs data to add the methyl-Chlorpyrifos (Reldan) and ethyl-Chlorpyrifos (Dursban) recoveries together.
+        ' LIMS only has a spot for EC, which is why the methyl is looked for in the samples and added together. 
         Dim strMethylChlorRecovery As String
         Dim blnMethylChlorInSample As Boolean
+        Dim blnMethlChorInSet = False
         Dim strMethylChlorValues As String
-
+        ' Variable for skipping the unit check if the sample is a 1005 pressed solids
+        Dim bln1005Units As Boolean
         Try
             ' Sample based on LIMS ID.
             For Each EDDSample In GlobalVariables.SampleList
+                ' Resetting this for each sample. 
+                blnMethylChlorInSample = False
+                ' Changing the method the the dup style for the fibertec monthly samplings.
+                If GlobalVariables.Import.Type = "FIBERTEC" And EDDSample.Analysis = "E625_CLAB" Then
+                    EDDSample.Analysis = "E625_CLABD"
+                End If
                 ' Each target analyte within the given sample.
                 For Each EDDCompound In EDDSample.CompoundList
+
+                    ' Boolen check variable for the 1005s
+                    If GlobalVariables.Import.Type = "TA" And EDDCompound.EDDsysSampleCode.Substring(6).Contains("1005") Then
+                        bln1005Units = True
+                    End If
+                    ' Hex Chrom isn't in LIMS and this is the only way I could figure out how to get a value for it in there when checking the data. 
+                    If EDDCompound.EDDChemicalName = "Chromium, Hexavalent" And bln1005Units = True And (String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Or EDDCompound.EDDResultValue = vbTab) Then
+                        EDDCompound.EDDResultValue = 0
+                    End If
+                    ' Labs use different numbers for m/p-Xylenes so I am having eTL change it to what it is in LIMS otherwise it would get switched.
+                    If EDDCompound.EDDCasRn = "136777-61-2" Or EDDCompound.EDDCasRn = "179601-23-1" Then
+                        EDDCompound.EDDCasRn = "MPXYL"
+                    End If
                     ' Looping through each of the compounds made from the LIMS queries to compare to the EDD values.
                     For Each LIMSCompound In GlobalVariables.limsCompoundInformation
                         ' Checking to make sure the sample information was pulled from LIMS and created the samples to check against. 
                         blnLimsSampleImported = True
-                        ' Using the LIMS number and CAS number as the identifiers to compare the EDD and LIMS results.
+                        ' Trying to figure out and correct edge case scenarios for checking the information that was imported. 
                         ' The .Contains is for the SGS metals samples. Their EDDs add a "T" to the end of the CAS numbers so they would be skipped otherwise.
-                        If GlobalVariables.Import.Type = "SGS" And LIMSCompound.EDDCasRn.Contains(EDDCompound.EDDCasRn) Then
-                            EDDCompound.EDDCasRn = LIMSCompound.EDDCasRn
+                        ' Nested if statements because an and will cause the 1005s to fail when verifying the data. 
+                        If GlobalVariables.Import.Type = "SGS" Then
+                            If EDDCompound.EDDCasRn.Contains(LIMSCompound.EDDCasRn) Then
+                                EDDCompound.EDDCasRn = LIMSCompound.EDDCasRn
+                            End If
                         End If
+                        If GlobalVariables.Import.Type = "FIBERTEC" And EDDCompound.EDDCasRn = "SS" Then
+                            EDDCompound.EDDCasRn = "TSS"
+                        End If
+                        If GlobalVariables.Import.Type = "CABOT" And EDDCompound.EDDCasRn = "TON" Then
+                            EDDCompound.EDDChemicalName = "Organic Nitrogen"
+                            If EDDCompound.EDDResultValue = "" Then
+                                EDDCompound.EDDResultValue = "0"
+                            End If
+                        End If
+                        ' Using the LIMS number and CAS number as the identifiers to compare the EDD and LIMS results.
                         If LIMSCompound.EDDsysSampleCode = EDDSample.LimsID And LIMSCompound.EDDCasRn = EDDCompound.EDDCasRn Then
                             ' Changing the EDD name to the one used in LIMS.
-                            If LIMSCompound.EDDChemicalName <> EDDCompound.Name Then
+                            If LIMSCompound.EDDChemicalName <> EDDCompound.EDDChemicalName Then
                                 EDDCompound.EDDChemicalName = LIMSCompound.EDDChemicalName
+                                ' Chlorine and Chloride have the same CAS number, so their names are changed based on the lab method used to what they need to be reported in LIMS.
+                            ElseIf bln1005Units = True And EDDCompound.EDDLabAnlMethodName = "SW9056" Then
+                                EDDCompound.EDDChemicalName = "Chlorine"
+                            ElseIf bln1005Units = True And EDDCompound.EDDLabAnlMethodName = "SW9056A" Then
+                                EDDCompound.EDDChemicalName = "Chloride"
                             End If
                             ' Checking that the units are the same.
-                            If LIMSCompound.EDDResultUnit <> LIMSCompound.EDDResultUnit Then
+                            ' Example: ppm and mg/L
+                            ' Skipping if it was the 1005 pressed solids because everything is reported in weighted values. 
+                            If Not checkRecoveryUnits(LIMSCompound.EDDResultUnit.ToLower, EDDCompound.EDDResultUnit.ToLower) And bln1005Units = False Then
                                 MsgBox("Unit mismatch between EDD and LIMS values." & vbCrLf &
-                               "LIMS ID: " & EDDSample.LimsID & " - Analyte: " & EDDCompound.EDDChemicalName, MsgBoxStyle.OkOnly)
-                            End If
-                            ' Checking the method to what it should be in LIMS.
-                            ' Adding them to the text file as they pop up so it is kept on the server so anyone can access and change it. 
-                            If Not GlobalVariables.eddAnalysisMethod.ContainsKey(EDDCompound.EDDLabAnlMethodName) Then
-                                MsgBox(EDDCompound.EDDLabAnlMethodName & " EDD method was not found." & vbCrLf &
-                                           "Please add it to the text file in: " & vbCrLf &
-                                           "\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\", MsgBoxStyle.OkOnly)
+                                    "LIMS ID: " & EDDSample.LimsID & " - Analyte: " & EDDCompound.EDDChemicalName & vbCrLf &
+                                    "Verify in the report and in the text file located at:" & vbCrLf &
+                                    "\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\", MsgBoxStyle.OkOnly)
                             End If
                             ' Changing analytes with no recovery to 0 so that the data will fill into LIMS when submitted. 
-                            If String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Or EDDCompound.EDDResultValue = vbTab Then
+                            If String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Or EDDCompound.EDDResultValue = vbTab And bln1005Units = True Then
                                 EDDCompound.EDDResultValue = 0
                             End If
                             ' Checking the EDD Flags for everything besides the grabs.
                             ' Mostly for the CBOD5 value beacuse ALS's system can't report a flag for an analyte with an MDL of 0.0."
+                            '     It looks like ALS has added the J flaggin, but have kept the check in place. 
                             ' The MDL isn't reported so blank value is changed to a 0.
-                            If GlobalVariables.Import.Type <> "GRABS" And GlobalVariables.Import.Type <> "031B" Then
+                            If GlobalVariables.Import.Type <> "GRABS" And GlobalVariables.Import.Type <> "031B" And GlobalVariables.Import.Type <> "031C" And GlobalVariables.Import.Type <> "VISTA" Then ' And GlobalVariables.Import.Type <> "VISTA"
+                                ' Changing the blank MDL to 0 so it can be converted from a string and not throw an exception. 
                                 If EDDCompound.EDDMethodDetectionLimit = "" Then
                                     EDDCompound.EDDMethodDetectionLimit = 0
                                 End If
-                                If Convert.ToDouble(EDDCompound.EDDResultValue) >= Convert.ToDouble(EDDCompound.EDDMethodDetectionLimit) And Convert.ToDouble(EDDCompound.EDDResultValue) < Convert.ToDouble(EDDCompound.EDDReportingDetectionLimit) Then
+                                If Convert.ToDouble(EDDCompound.EDDResultValue) = 0 Then
+                                    If EDDCompound.EDDLabQualifiers = "" Then
+                                        EDDCompound.EDDLabQualifiers = "U"
+                                    End If
+
+                                ElseIf Convert.ToDouble(EDDCompound.EDDResultValue) >= Convert.ToDouble(EDDCompound.EDDMethodDetectionLimit) And Convert.ToDouble(EDDCompound.EDDResultValue) < Convert.ToDouble(EDDCompound.EDDReportingDetectionLimit) Then
                                     If EDDCompound.EDDLabQualifiers = "" Then
                                         EDDCompound.EDDLabQualifiers = "J"
                                     End If
-                                    'ElseIf Convert.ToDouble(EDDCompound.EDDResultValue) = 0 Then
-                                    '    If EDDCompound.EDDLabQualifiers = "" Then
-                                    '        EDDCompound.EDDLabQualifiers = "U"
-                                    '    End If
                                 End If
                             End If
+                            ' Exiting the loop since the matching analyte was found. 
                             Exit For
                         End If
                         'Console.WriteLine(EDDCompound.EDDCasRn & " " & EDDCompound.EDDsysSampleCode & " " & EDDCompound.EDDChemicalName & " " & EDDCompound.EDDResultUnit & " " & EDDCompound.EDDLabAnlMethodName)
@@ -1004,6 +1093,7 @@ Public Class Permit
                     If GlobalVariables.Import.Type = "GRABS" And EDDCompound.EDDCasRn = "5598-13-0" And EDDCompound.EDDResultValue <> "" Then ' Should this be the RL of the lab?
                         strMethylChlorRecovery = EDDCompound.EDDResultValue
                         blnMethylChlorInSample = True
+                        blnMethlChorInSet = True
                     End If
                 Next
                 ' Combining the two values together for methyl and ethyl-Chlorpyrifos if they were detected in the sample.
@@ -1012,6 +1102,9 @@ Public Class Permit
                         If EDDCompound.EDDCasRn = "2921-88-2" Then
                             ' Try just to make sure that a letter isn't put into the value position and break the program. 
                             Try
+                                If EDDCompound.EDDResultValue = "" Then
+                                    EDDCompound.EDDResultValue = 0
+                                End If
                                 ' Everything is stored as strings so they're converted to doubles, added together, and then converted back to a string.
                                 strMethylChlorValues = Convert.ToString(Convert.ToDouble(strMethylChlorRecovery) + Convert.ToDouble(EDDCompound.EDDResultValue))
                                 EDDCompound.EDDResultValue = strMethylChlorValues
@@ -1027,17 +1120,35 @@ Public Class Permit
             Next
             ' In case the methods for the analysis aren't in the server location, the LIMS samples might not get pulled.
             ' The checks won't be performed since there is nothing the verify the data against.
+            ' Various messages for like when the  unit check is skipped or if chlorpyrifos was detected in a grab sample. 
             If blnLimsSampleImported = False Then
                 MsgBox("No samples data was pulled in from LIMS to verfiy the data in the EDD." & vbCrLf &
                        "Make sure the analysis and LIMS methods are in the text files located at" & vbCrLf &
                        "\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & vbCrLf &
                        "Also make sure the samples in the EDD start with their LIMS number.", MsgBoxStyle.Critical)
             End If
-
+            If bln1005Units = True Then
+                MsgBox("Samples for 1005 Pressed Solids." & vbCrLf &
+                       "Verify that the reported units are correct in the EDD." & vbCrLf &
+                       "They were not checked by eTrainLite.", MsgBoxStyle.OkOnly)
+            End If
+            If blnMethlChorInSet = True Then
+                MsgBox("methyl-Chlorpyrifos was detected in at least one of the grabs samples." & vbCrLf &
+                       "Verify that the reported value was added correctly to the ethyl chlorpyrifos (Dursban) recovery.", MsgBoxStyle.OkOnly)
+            End If
         Catch ex As Exception
             MsgBox("Error verifying data." & vbCrLf &
                    "Sub Procedure: verifyCLabData()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
     End Sub
+
+    Function checkRecoveryUnits(limsUnit As String, eddUnit As String) As Boolean
+        For i As Integer = 0 To GlobalVariables.recoveryUnits.Count - 1
+            If GlobalVariables.recoveryUnits(i).Contains(limsUnit) And GlobalVariables.recoveryUnits(i).Contains(eddUnit) Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
 End Class
