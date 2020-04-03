@@ -7,6 +7,7 @@ Public Class eTrain
     Private Property strServerFP As String
     Private Property strDataFilesFP As String
     Private Property intSigFig As Integer
+    Private Property strAnalysisLab As String
 
     'Const
     Public Sub New()
@@ -62,7 +63,14 @@ Public Class eTrain
             intSigFig = value
         End Set
     End Property
-
+    Public Property AnalysisLab() As String
+        Get
+            Return strAnalysisLab
+        End Get
+        Set(value As String)
+            strAnalysisLab = value
+        End Set
+    End Property
 
     Function ChooseFolder(ByVal rootFolder As String, ByVal Desc As String) As String
         Dim dl As New FolderBrowserDialog()

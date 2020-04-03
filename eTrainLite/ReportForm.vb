@@ -21,8 +21,7 @@ Public Class ReportForm
         blnFlg = False
         GlobalVariables.ReportSamList.Clear()
         'Check for entry
-        If GlobalVariables.Import.Type = "VISTA" Then
-
+        If GlobalVariables.Import.Type = "DF" Then
 
             If cboType.Text <> "" Then
                 If txtReportSaveLoc.Text <> "" And Directory.Exists(txtReportSaveLoc.Text) Then
@@ -597,8 +596,8 @@ Public Class ReportForm
     End Sub
 
     Private Sub ReportForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        If GlobalVariables.Import.Type = "VISTA" Then
-            cboType.Items.Add("VISTA")
+        If GlobalVariables.Import.Type = "DF" Then
+            cboType.Items.Add("DF")
         ElseIf GlobalVariables.eTrain.Location = "MIDLAND" Then
             If GlobalVariables.eTrain.Team = "FAST" Then
                 cboType.Items.Add("Sample Report")

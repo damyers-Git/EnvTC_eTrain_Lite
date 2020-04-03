@@ -191,6 +191,35 @@ Public Class Transfer
                                     Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
+                                ElseIf GlobalVariables.Import.Type = "031A" Then
+
+                                    d = DateTime.Now
+
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Temp\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    objWriter = New System.IO.StreamWriter(strPath)
+
+                                    'Header info
+                                    objWriter.WriteLine("$IDNTMODE = S")
+                                    objWriter.WriteLine("$SAMPLEID = " & aSample.LimsID)
+                                    objWriter.WriteLine("$ANALYSIS = " & aSample.Analysis)
+                                    objWriter.WriteLine("$REPLNUMB = 0")
+                                    objWriter.WriteLine("$OPERATOR = CONTLAB") ' Change to something else?
+                                    objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$INSTRMNT = ") '& aSample.Instrument)
+                                    objWriter.WriteLine("$SOURCE_N = 2")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS NPDES 031A Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_02?") '& aSample.DetectLimitType)
+                                    objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& aSample.AcqDate)
+
+                                    For Each aCompound In aSample.CompoundList
+                                        ' Dilution factor set to 1 because the DF calculation is done by the lab to the reported value so it doesn't need it applied a second time. 
+                                        objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDReportingDetectionLimit & "  ?1")
+                                    Next
+                                    objWriter.Close()
+                                    intFileCounter = intFileCounter + 1
                                 ElseIf GlobalVariables.Import.Type = "031B" Then
 
                                     d = DateTime.Now
@@ -249,12 +278,15 @@ Public Class Transfer
                                     Next
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
-                                ElseIf GlobalVariables.Import.Type = "VISTA" Then
-
+                                ElseIf GlobalVariables.Import.Type = "DF" Or GlobalVariables.eTrain.AnalysisLab = "VISTA" Then
+                                    ' Variable only used for reporting the vista data. 
+                                    ' Total TEQ and 2378-OCDD TEQ scores are reported as the same thing so the variable is used vs making the method call twice. 
+                                    ' The check2378TEQ method was left and commented out in case anything changes in the future. 
+                                    Dim dblTEQScore As Double
                                     d = DateTime.Now
 
-                                    'strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -267,8 +299,8 @@ Public Class Transfer
                                     objWriter.WriteLine("$ANALYSTN = " & strUserID)
                                     objWriter.WriteLine("$INSTRMNT = _VISTA")
                                     objWriter.WriteLine("$SOURCE_N = 2")
-                                    objWriter.WriteLine("SOURCE_1 = Midland HR Data Transfer")
-                                    objWriter.WriteLine("SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SOURCE_1 = Midland HR Data Transfer")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
                                     objWriter.WriteLine("$SAMP_FLD = description?" & aSample.CompoundList(0).EDDLabSampleID)
                                     objWriter.WriteLine("$SAMP_FLD = job_name?")
                                     objWriter.WriteLine("$SAMP_FLD = sample_name?" & aSample.CompoundList(0).EDDsysSampleCode)
@@ -281,15 +313,24 @@ Public Class Transfer
                                             objWriter.WriteLine("?" & aCompound.EDDChemicalName & " Flags?T?" & aCompound.EDDLabQualifiers)
                                         End If
                                     Next
-                                    calculateTEQ(aSample.LimsID)
+                                    dblTEQScore = calculateTotalTEQ(aSample.LimsID)
+                                    objWriter.WriteLine("?Total TEQ (ppq)?N?" & dblTEQScore)
+                                    objWriter.WriteLine("?Total TEQ (ppq)?T?")
+                                    objWriter.WriteLine("?Total TEQ (ppq) Flags?T?NONE")
+
+                                    objWriter.WriteLine("?2378-TCDD_TEQ (ND=0)?N?" & dblTEQScore)
+                                    objWriter.WriteLine("?2378-TCDD_TEQ (ND=0)?T?")
+                                    'objWriter.WriteLine("?2378-TCDD_TEQ (ND=0) Flags?T?NONE")
+
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
+                                    ' For the rest of the CLab data getting sent into LIMS
                                 Else
 
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C: \Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -300,11 +341,11 @@ Public Class Transfer
                                     objWriter.WriteLine("$REPLNUMB = 0")
                                     objWriter.WriteLine("$OPERATOR = CONTLAB")
                                     objWriter.WriteLine("$ANALYSTN = " & strUserID)
-                                    objWriter.WriteLine("NEWSAMPL = FALSE")
+                                    objWriter.WriteLine("$NEWSAMPL = FALSE")
                                     objWriter.WriteLine("$INSTRMNT = ")
                                     objWriter.WriteLine("$SOURCE_N = 2")
-                                    objWriter.WriteLine("SOURCE_1 = MIOPS Contract Lab Data")
-                                    objWriter.WriteLine("SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                    objWriter.WriteLine("$SOURCE_1 = MIOPS Contract Lab Data")
+                                    objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
                                     objWriter.WriteLine("$SAMP_FLD = dow_field_02?")
                                     objWriter.WriteLine("$SAMP_FLD = dow_field_03?") '& LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
                                     'objWriter.WriteLine("SAMP_FLD = " & LIMSDate(aSample.CompoundList(0).EDDAnalysisDate))
@@ -611,20 +652,24 @@ Public Class Transfer
 
     End Function
 
-    Function calculateTEQ(limsID As String) As String
+    Function calculateTotalTEQ(limsID As String) As Double
         Dim aCompound As Compound
         Dim aSample As Sample
-        Dim dblTeqScore As Double
+        Dim dblTeqScore = 0.0
 
         For Each aSample In GlobalVariables.SampleList
             If aSample.LimsID = limsID Then
                 For Each aCompound In aSample.CompoundList
-
+                    For i As Integer = 0 To GlobalVariables.befAndTefScores.Count - 1
+                        If GlobalVariables.befAndTefScores(i).Contains(aCompound.EDDChemicalName) And Convert.ToDouble(aCompound.EDDResultValue) >= Convert.ToDouble(GlobalVariables.befAndTefScores(i).Item(2)) Then
+                            dblTeqScore += Convert.ToDouble(aCompound.EDDResultValue) * Convert.ToDouble(GlobalVariables.befAndTefScores(i).Item(3)) * Convert.ToDouble(GlobalVariables.befAndTefScores(i).Item(4))
+                        End If
+                    Next
                 Next
             Else
                 Continue For
             End If
         Next
+        Return dblTeqScore
     End Function
-
 End Class

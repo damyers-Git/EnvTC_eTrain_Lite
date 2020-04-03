@@ -8,8 +8,76 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         Dim arrSpl() As String
 
         'Set Import Type, in case it was changed
-        If cboImportType.Text = "Chemstation" Then
-            GlobalVariables.Import.Type = "CHEM"
+        If GlobalVariables.eTrain.Team = "CLAB" Then
+            If GlobalVariables.eTrain.AnalysisLab = "EUROLAN" Then
+                If cboImportType.Text = "EUROLAN" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "GRABS" Then
+                    GlobalVariables.Import.Type = "GRABS"
+                ElseIf cboImportType.Text = "031A" Then
+                    GlobalVariables.Import.Type = "031A"
+                ElseIf cboImportType.Text = "031B" Then
+                    GlobalVariables.Import.Type = "031B"
+                ElseIf cboImportType.Text = "031C" Then
+                    GlobalVariables.Import.Type = "031C"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "ALS" Then
+                If cboImportType.Text = "ALS" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "BOD-PHOS" Then
+                    GlobalVariables.Import.Type = "BOD-PHOS"
+                ElseIf cboImportType.Text = "QUALA_ALS" Then
+                    GlobalVariables.Import.Type = "QUALA_ALS"
+                ElseIf cboImportType.Text = "DPS_ALS" Then
+                    GlobalVariables.Import.Type = "DPS_ALS"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "SGS" Then
+                If cboImportType.Text = "SGS" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "METALS" Then
+                    GlobalVariables.Import.Type = "METALS"
+                ElseIf cboImportType.Text = "DPS_SGS" Then
+                    GlobalVariables.Import.Type = "DPS_SGS"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "TA" Then
+                If cboImportType.Text = "TA" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "IONS" Then
+                    GlobalVariables.Import.Type = "IONS"
+                ElseIf cboImportType.Text = "VOA_MONTHLY" Then
+                    GlobalVariables.Import.Type = "VOA_MONTHLY"
+                ElseIf cboImportType.Text = "SFE_FLUORIDE" Then
+                    GlobalVariables.Import.Type = "SFE_FLUORIDE"
+                ElseIf cboImportType.Text = "1005_PS" Then
+                    GlobalVariables.Import.Type = "1005_PS"
+                ElseIf cboImportType.Text = "SVOA_SEMIANNUAL" Then
+                    GlobalVariables.Import.Type = "SVOA_SEMIANNUAL"
+                ElseIf cboImportType.Text = "CABOT" Then
+                    GlobalVariables.Import.Type = "CABOT"
+                ElseIf cboImportType.Text = "KENAN_TA" Then
+                    GlobalVariables.Import.Type = "KENAN_TA"
+                ElseIf cboImportType.Text = "QUALA_TA" Then
+                    GlobalVariables.Import.Type = "QUALA_TA"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "FIBERTEC" Then
+                If cboImportType.Text = "FIBERTEC" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "KENAN_FIBERTEC" Then
+                    GlobalVariables.Import.Type = "KENAN_FIBERTEC"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "VISTA" Then
+                If cboImportType.Text = "VISTA" Then
+                    GlobalVariables.Import.Type = "Full_List"
+                ElseIf cboImportType.Text = "DF" Then
+                    GlobalVariables.Import.Type = "DF"
+                End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
+                If cboImportType.Text = "CABOT" Then
+                    GlobalVariables.Import.Type = "CABOT"
+                End If
+            End If
+        ElseIf cboImportType.Text = "Chemstation" Then
+                GlobalVariables.Import.Type = "CHEM"
         ElseIf cboImportType.Text = "Chemstation - BevCan" Then
             GlobalVariables.Import.Type = "CHEMBEVCAN"
         ElseIf cboImportType.Text = "Masshunter" Then
@@ -22,27 +90,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             GlobalVariables.Import.Type = "EDD"
         ElseIf cboImportType.Text = "SSR" Then
             GlobalVariables.Import.Type = "SSR"
-        ElseIf cboImportType.Text = "GRABS" Then
-            GlobalVariables.Import.Type = "GRABS"
-        ElseIf cboImportType.Text = "EUROLAN" Then
-            GlobalVariables.Import.Type = "EUROLAN"
-        ElseIf cboImportType.Text = "SGS" Then
-            GlobalVariables.Import.Type = "SGS"
-        ElseIf cboImportType.Text = "ALS" Then
-            GlobalVariables.Import.Type = "ALS"
-        ElseIf cboImportType.Text = "TA" Then
-            GlobalVariables.Import.Type = "TA"
-        ElseIf cboImportType.Text = "FIBERTEC" Then
-            GlobalVariables.Import.Type = "FIBERTEC"
-        ElseIf cboImportType.Text = "031B" Then
-            GlobalVariables.Import.Type = "031B"
-        ElseIf cboImportType.Text = "031C" Then
-            GlobalVariables.Import.Type = "031C"
-        ElseIf cboImportType.Text = "VISTA" Then
-            GlobalVariables.Import.Type = "VISTA"
-        ElseIf cboImportType.Text = "CABOT" Then
-            GlobalVariables.Import.Type = "CABOT"
-
         Else
             MsgBox("Please select an Import Type first", MsgBoxStyle.Exclamation, "eTrain 2.0")
             Exit Sub
@@ -146,7 +193,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
                 lstFileList.Items.Add(file.ToString) '"...\" & arrSpl(UBound(arrSpl) - 2) & "\" & arrSpl(UBound(arrSpl) - 1) & "\" & arrSpl(UBound(arrSpl)))
             Next
-        ElseIf GlobalVariables.Import.Type = "GRABS" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab <> "VISTA" Then
             GlobalVariables.Import.arrFileList.Clear()
             GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
             GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
@@ -155,90 +202,13 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
                 lstFileList.Items.Add(file.ToString)
             Next
-        ElseIf GlobalVariables.Import.Type = "EUROLAN" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "ALS" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "SGS" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "TA" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "FIBERTEC" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "031B" Then
-
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-        ElseIf GlobalVariables.Import.Type = "031C" Then
-
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-
-        ElseIf GlobalVariables.Import.Type = "VISTA" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "VISTA" Then
 
             GlobalVariables.Import.arrFileList.Clear()
             GlobalVariables.Import.FileSearch(strImportLoc, "*.xls*")
             GlobalVariables.Import.FileSearch(strImportLoc, "*.xlsx")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
-
-        ElseIf GlobalVariables.Import.Type = "CABOT" Then
-
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
+            'GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
+            'GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
 
             For Each file In GlobalVariables.Import.arrFileList
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
@@ -371,108 +341,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     End If
                 Next
             Next
-        ElseIf GlobalVariables.Import.Type = "GRABS" Then 'Added WT 9/26/2017
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "EUROLAN" Then 'Added WT 9/26/2017
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-
-        ElseIf GlobalVariables.Import.Type = "ALS" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "SGS" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "TA" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "FIBERTEC" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "031B" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "031C" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "VISTA" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-
-        ElseIf GlobalVariables.Import.Type = "CABOT" Then
+        ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
             For Each item In lstFileList.SelectedItems
                 For Each file In GlobalVariables.Import.arrFileList
                     arrSpl = item.ToString.Split("\")
@@ -512,7 +381,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     txtImportResults.Text = strText
                 Next
             End If
-        ElseIf GlobalVariables.Import.Type = "GRABS" Then
+        ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
             If GlobalVariables.SampleList.Count = 0 Then
                 txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
             Else
@@ -520,118 +389,11 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
                     strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
                     strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
                     txtImportResults.Text = strText
                 Next
             End If
-        ElseIf GlobalVariables.Import.Type = "EUROLAN" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "ALS" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "SGS" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "TA" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "FIBERTEC" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "031B" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "031C" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "VISTA" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.Import.Type = "CABOT" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    'strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf ' Removed since the analysis date doens't matter to CLab stuff.
-                    txtImportResults.Text = strText
-                Next
-            End If
+
+
         Else
             For Each aSample In GlobalVariables.SampleList
                 strText = strText & "Sample Name: " & aSample.Name & vbCrLf
@@ -673,7 +435,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
 
         ' ----> Populate selInstrument -> May be obsolete
-        ' ----> Populate selProject (LIMS Analysis line) Query database for integrity check? (2nd column in import is analysis method name)
+        ' ----> Populate selProject (LIMS AnalysisLab line) Query database for integrity check? (2nd column in import is analysis method name)
 
         If GlobalVariables.Transfer.ToLIMS(InputBox("Please enter your UserID for LIMS Transfer", "eTrain Lite")) Then
             MsgBox("Data transfer complete!", MsgBoxStyle.Information, "eTrain Lite")
@@ -779,7 +541,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 '    .lbl2.Text = "Source Name:"
                 '    .lbl3.Visible = True
                 '    .cbo3.Visible = True
-                '    .lbl3.Text = "Analysis:"
+                '    .lbl3.Text = "AnalysisLab:"
                 '    .lbl4.Visible = True
                 '    .cbo4.Visible = True
                 '    .lbl4.Text = "Instrument:"
@@ -797,7 +559,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
 
                 ' ----> Populate selInstrument -> May be obsolete
-                ' ----> Populate selProject (LIMS Analysis line) Query database for integrity check? (2nd column in import is analysis method name)
+                ' ----> Populate selProject (LIMS AnalysisLab line) Query database for integrity check? (2nd column in import is analysis method name)
 
                 If GlobalVariables.Transfer.ToLIMS(InputBox("Please enter your UserID for LIMS Transfer", "eTrain 2.0")) Then
                     MsgBox("Data transfer complete!", MsgBoxStyle.Information, "eTrain 2.0")
@@ -812,7 +574,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         'Generate report
 
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            If GlobalVariables.Import.Type = "VISTA" Then
+            If GlobalVariables.Import.Type = "DF" Then
                 If nudSigFig.Value <> 0 Then
                     GlobalVariables.eTrain.SigFig = nudSigFig.Value
                 Else
@@ -980,45 +742,45 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             ElseIf GlobalVariables.eTrain.Team = "CHROM" Then
                 'Check if SF set
                 If nudSigFig.Value <> 0 Then
-                        GlobalVariables.eTrain.SigFig = nudSigFig.Value
-                    Else
-                        MsgBox("Please set sigfig amount", MsgBoxStyle.Exclamation, "eTrain 2.0")
-                        nudSigFig.Focus()
-                        Exit Sub
-                    End If
-
-                    'Call up Report form
-                    With ReportForm
-                        .lblTxt1.Text = "Associated SIS Location:"
-                        .lbl1.Visible = True
-                        .cbo1.Visible = True
-                        .lbl1.Text = "Source:"
-                        .lbl2.Visible = True
-                        .cbo2.Visible = True
-                        .lbl2.Text = "Source Name:"
-                        .lbl3.Visible = True
-                        .cbo3.Visible = True
-                        .lbl3.Text = "Analysis:"
-                        .lbl4.Visible = True
-                        .cbo4.Visible = True
-                        .lbl4.Text = "Instrument:"
-                        .lbl5.Visible = True
-                        .cbo5.Visible = True
-                        .lbl5.Text = "Reporting Limit:"
-                        .lbl6.Visible = True
-                        .cbo6.Visible = True
-                        .lbl6.Text = "Recovery Limits:"
-                        .cbo1.Enabled = True
-                        .cbo2.Enabled = False
-                        .cbo3.Enabled = False
-                        .cbo4.Enabled = False
-                        .cbo5.Enabled = False
-                        .cbo6.Enabled = False
-                    End With
-                    ReportForm.ShowDialog()
+                    GlobalVariables.eTrain.SigFig = nudSigFig.Value
+                Else
+                    MsgBox("Please set sigfig amount", MsgBoxStyle.Exclamation, "eTrain 2.0")
+                    nudSigFig.Focus()
+                    Exit Sub
                 End If
-            ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
-                If GlobalVariables.eTrain.Team = "CHROM" Then
+
+                'Call up Report form
+                With ReportForm
+                    .lblTxt1.Text = "Associated SIS Location:"
+                    .lbl1.Visible = True
+                    .cbo1.Visible = True
+                    .lbl1.Text = "Source:"
+                    .lbl2.Visible = True
+                    .cbo2.Visible = True
+                    .lbl2.Text = "Source Name:"
+                    .lbl3.Visible = True
+                    .cbo3.Visible = True
+                    .lbl3.Text = "Analysis:"
+                    .lbl4.Visible = True
+                    .cbo4.Visible = True
+                    .lbl4.Text = "Instrument:"
+                    .lbl5.Visible = True
+                    .cbo5.Visible = True
+                    .lbl5.Text = "Reporting Limit:"
+                    .lbl6.Visible = True
+                    .cbo6.Visible = True
+                    .lbl6.Text = "Recovery Limits:"
+                    .cbo1.Enabled = True
+                    .cbo2.Enabled = False
+                    .cbo3.Enabled = False
+                    .cbo4.Enabled = False
+                    .cbo5.Enabled = False
+                    .cbo6.Enabled = False
+                End With
+                ReportForm.ShowDialog()
+            End If
+        ElseIf GlobalVariables.eTrain.Location = "FREEPORT" Then
+            If GlobalVariables.eTrain.Team = "CHROM" Then
                 'Check if SF set
                 If nudSigFig.Value <> 0 Then
                     GlobalVariables.eTrain.SigFig = nudSigFig.Value
@@ -1288,9 +1050,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
     Private Sub TestToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         GlobalVariables.Calculations.MidlandHR(InputBox("Enter SIS location"))
-
-
-
     End Sub
 
     Private Sub btnSigHelp_Click(sender As System.Object, e As System.EventArgs) Handles btnSigHelp.Click
@@ -1305,16 +1064,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         MsgBox("Version: " & versionNumber.ToString & vbCrLf & "Developer: Joshua Durham U411882" & vbCrLf & "Co-Developer Wyatt Towne UA20088")
 
     End Sub
-
-    Private Sub TestToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles TestToolStripMenuItem.Click
-
-    End Sub
-
-    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-    End Sub
-
-
     Private Sub SeadriftToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SeadriftToolStripMenuItem.Click
         'Set GlobalVariables
         GlobalVariables.eTrain.Server = "SEADRIFT"
@@ -1352,13 +1101,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             Me.btnTransLIMS.Enabled = True
         End If
     End Sub
-
-    Private Sub ModeSwitchToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ModeSwitchToolStripMenuItem.Click
-
-    End Sub
-
-
-
     Private Sub AECOMToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AECOMToolStripMenuItem.Click
         'Set GlobalVariables
         GlobalVariables.eTrain.Server = "MIDLAND"
@@ -1379,11 +1121,12 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         End If
     End Sub
 
-    Private Sub CLABToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CLABToolStripMenuItem.Click
+    Private Sub EUROLANToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EUROLANToolStripMenuItem.Click
         'Set GlobalVariables
         GlobalVariables.eTrain.Server = "MIDLAND"
         GlobalVariables.eTrain.Location = "MIDLAND"
         GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "EUROLAN"
         GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
 
         'Form UI
@@ -1393,19 +1136,127 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("GRABS")
         cboImportType.Items.Add("EUROLAN")
-        cboImportType.Items.Add("ALS")
-        cboImportType.Items.Add("SGS")
-        cboImportType.Items.Add("TA")
-        cboImportType.Items.Add("FIBERTEC")
+        cboImportType.Items.Add("GRABS")
+        cboImportType.Items.Add("031A")
         cboImportType.Items.Add("031B")
         cboImportType.Items.Add("031C")
-        cboImportType.Items.Add("VISTA")
+    End Sub
+    Private Sub ALSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ALSToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "ALS"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("ALS")
+        cboImportType.Items.Add("BOD-PHOS")
+        cboImportType.Items.Add("QUALA_ALS")
+        cboImportType.Items.Add("DPS_ALS")
+    End Sub
+    Private Sub SGSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SGSToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "SGS"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("SGS")
+        cboImportType.Items.Add("METALS")
+        cboImportType.Items.Add("DPS_SGS")
+    End Sub
+    Private Sub TAToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TAToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "TA"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("TA")
+        cboImportType.Items.Add("IONS")
+        cboImportType.Items.Add("VOA_MONTHLY")
+        cboImportType.Items.Add("SFE_FLUORIDE")
+        cboImportType.Items.Add("1005_PS")
+        cboImportType.Items.Add("SVOA_SEMIANNUAL")
         cboImportType.Items.Add("CABOT")
-        'Enable LIMS transfer if samples and server selected
-        If GlobalVariables.SampleList.Count > 0 And Not IsNothing(GlobalVariables.eTrain.Server) Then
-            Me.btnTransLIMS.Enabled = True
-        End If
+        cboImportType.Items.Add("KENAN_TA")
+        cboImportType.Items.Add("QUALA_TA")
+    End Sub
+    Private Sub FIBERTECToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FIBERTECToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "FIBERTEC"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("FIBERTEC")
+        cboImportType.Items.Add("KENAN_FIBERTEC")
+    End Sub
+    Private Sub VISTAToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles VISTAToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "VISTA"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("VISTA")
+        cboImportType.Items.Add("DF")
+    End Sub
+    Private Sub CABOTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CABOTToolStripMenuItem.Click
+        'Set GlobalVariables
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "CLAB"
+        GlobalVariables.eTrain.AnalysisLab = "CABOT"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("CABOT")
     End Sub
 End Class

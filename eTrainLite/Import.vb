@@ -53,7 +53,6 @@ Public Class Import
         End Set
     End Property
 
-
     'Import Samples into eTrain based on import type
     Sub SampleImport()
 
@@ -917,7 +916,7 @@ Public Class Import
                          "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
 
             End Try
-        ElseIf Type = "TA" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "TA" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -967,7 +966,7 @@ Public Class Import
             End Try
             ' Slightly different than the normal EDD are sent out from SGS.
             ' Using quotatoin marks in their naming convetion, but also the tabs as desired.
-        ElseIf Type = "SGS" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "SGS" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -1019,7 +1018,7 @@ Public Class Import
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
 
-        ElseIf Type = "ALS" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "ALS" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -1066,7 +1065,7 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "FIBERTEC" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "FIBERTEC" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -1118,7 +1117,7 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "EUROLAN" Or Type = "GRABS" Or Type = "031B" Or Type = "031C" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "EUROLAN" Then
 
             Try
                 Dim aSampleTemp As New Sample
@@ -1167,49 +1166,49 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "VISTA" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "VISTA" Then
 
             Try
                 ' Determiing if the file is a txt, dat, or excel.
                 Dim strFileType = GlobalVariables.Import.FilePath.Split(".")
-                'If strFileType(strFileType.Length - 1) = "txt" Or strFileType(strFileType.Length - 1) = "dat" Then
-                '    Dim aSampleTemp As New Sample
-                '    Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
-                '    line = sr.ReadLine
-                '    line = sr.ReadLine ' Writes over the column headers for reading in the file. 
-                '    Dim arrSplitLine() As String
-                '    Dim aPermit As New Permit
-                '    Do Until line = ""
+                If strFileType(strFileType.Length - 1) = "txt" Or strFileType(strFileType.Length - 1) = "dat" Then
+                    Dim aSampleTemp As New Sample
+                    Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
+                    line = sr.ReadLine
+                    line = sr.ReadLine ' Writes over the column headers for reading in the file. 
+                    Dim arrSplitLine() As String
+                    Dim aPermit As New Permit
+                    Do Until line = ""
 
-                '        arrSplitLine = line.Split(vbTab)
+                        arrSplitLine = line.Split(vbTab)
 
-                '        ' Checking each new line read whether it is the same as the previous.
-                '        If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
-                '            If (arrSplitLine(3) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(11) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
-                '                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
-                '                aSampleTemp.Type = "SAMPLE"
-                '                GlobalVariables.SampleList.Add(aSampleTemp)
-                '                aSampleTemp = New Sample
-                '            End If
-                '        End If
-                '        If (checkForLimsNumber(arrSplitLine(3))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
-                '            loadVistaEDD(arrSplitLine, aSampleTemp)
-                '        End If
+                        ' Checking each new line read whether it is the same as the previous.
+                        If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                            If (arrSplitLine(3) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(11) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
+                                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
+                                aSampleTemp.Type = "SAMPLE"
+                                GlobalVariables.SampleList.Add(aSampleTemp)
+                                aSampleTemp = New Sample
+                            End If
+                        End If
+                        If (checkForLimsNumber(arrSplitLine(3))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
+                            loadVistaEDD(arrSplitLine, aSampleTemp)
+                        End If
 
-                '        line = sr.ReadLine() ' Reading in the next line of the EDD.
+                        line = sr.ReadLine() ' Reading in the next line of the EDD.
 
-                '        'If end of the file, ensure last sample is added to Global sample list
-                '        If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
-                '            If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
-                '                Dim tempTest As String
-                '                tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
-                '                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
-                '                GlobalVariables.SampleList.Add(aSampleTemp)
-                '            End If
-                '        End If
-                '    Loop
-                '    aPermit.loadLimsInformation()
-                If strFileType(strFileType.Length - 1) = "xls" Or strFileType(strFileType.Length - 1) = "xlsx" Then
+                        'If end of the file, ensure last sample is added to Global sample list
+                        If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
+                            If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
+                                Dim tempTest As String
+                                tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                                GlobalVariables.SampleList.Add(aSampleTemp)
+                            End If
+                        End If
+                    Loop
+                    aPermit.loadLimsInformation()
+                ElseIf strFileType(strFileType.Length - 1) = "xls" Or strFileType(strFileType.Length - 1) = "xlsx" Then
                     Dim arrConvertEdd As String(,)
                     Dim aSampleTemp As New Sample
                     Dim aPermit As New Permit
@@ -1243,7 +1242,7 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf Type = "CABOT" Then
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -1264,6 +1263,7 @@ Public Class Import
                             aSampleTemp = New Sample
                         End If
                     End If
+
                     If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
                         If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32).ToLower = "yes" Or arrSplitLine(32).ToLower = "y") Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
                             loadCabotEDD(arrSplitLine, aSampleTemp)

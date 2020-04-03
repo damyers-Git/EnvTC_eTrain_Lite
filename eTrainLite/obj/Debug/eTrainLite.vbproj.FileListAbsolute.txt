@@ -84,3 +84,7 @@ C:\Repos\EAC_eTrainLite\eTrainLite\obj\Debug\eTrainLite.SpikeInfo.resources
 C:\Repos\EAC_eTrainLite\eTrainLite\obj\Debug\eTrainLite.TransferForm.resources
 C:\Repos\EAC_eTrainLite\eTrainLite\obj\Debug\eTrainLite.UnitConversion.resources
 C:\Repos\EAC_eTrainLite\eTrainLite\obj\Debug\eTrainLite.vbproj.GenerateResource.Cache
+C:\Repos\eTrainLite\eTrainLite\bin\Debug\eTrainLite.exe.manifest
+C:\Repos\eTrainLite\eTrainLite\bin\Debug\eTrainLite.application
+C:\Repos\eTrainLite\eTrainLite\obj\Debug\eTrainLite.exe.manifest
+C:\Repos\eTrainLite\eTrainLite\obj\Debug\eTrainLite.application

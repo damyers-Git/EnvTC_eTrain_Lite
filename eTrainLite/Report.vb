@@ -101,12 +101,12 @@ Public Class Report
 
         Try
             exApp = exEngine.Excel
-            workbook = exApp.Workbooks.Create(1)
+            workbook = exApp.Workbooks.Create(GlobalVariables.SampleList.Count)
 
             For Each aSample In GlobalVariables.SampleList
                 intCompoundCounter = 9
                 worksheet = workbook.Worksheets(intSampleCounter)
-                workbook.Worksheets("Sheet1").Name = "OF-031A Summary_" & intSampleCounter
+                workbook.Worksheets("Sheet" & (intSampleCounter + 1)).Name = "OF-031A Summary_" & intSampleCounter
 
                 ' Header.
                 worksheet.Range("A1").Value = "Calculation of Toxic Equivalent Quantity (TEQ) for 031 Outfall NPDES Reporting"
@@ -306,8 +306,9 @@ Public Class Report
 
             Next
             workbook.Version = ExcelVersion.Excel2010
-                workbook.SaveAs(GlobalVariables.Report.SavLoc & "\" & "OF031A_Summ_" & GlobalVariables.Report.RName & ".xlsx")
-                workbook.Close()
+            workbook.SaveAs(GlobalVariables.Report.SavLoc & "\" & "DRIT_Summ_" & GlobalVariables.Report.RName & ".xlsx")
+            workbook.SaveAs(GlobalVariables.Report.SavLoc & "\" & "DRIT_Summ_" & GlobalVariables.Report.RName & "_TransferFile.xlsx")
+            workbook.Close()
                 exEngine.Dispose()
 
             Return True
@@ -4139,8 +4140,8 @@ Public Class Report
 	'                            worksheet.Range("A3").Value = "LIMS #"
 	'                            worksheet.Range("A4").Value = "Sample Point"
 	'                            worksheet.Range("A5").Value = "Sample Date"
-	'                            worksheet.Range("A6").Value = "Analysis Date"
-	'                            worksheet.Range("A7").Value = "Analysis Time"
+	'                            worksheet.Range("A6").Value = "AnalysisLab Date"
+	'                            worksheet.Range("A7").Value = "AnalysisLab Time"
 	'                            worksheet.Range("A8").Value = "Data Folder Name"
 	'                            worksheet.Range("A9").Value = "Dilution Factor"
 	'                            worksheet.Range("A10").Value = "Analyte/Parameter"

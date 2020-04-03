@@ -22,6 +22,7 @@ Partial Class MainForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -30,6 +31,12 @@ Partial Class MainForm
         Me.ModeSwitchToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MidlandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CLABToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EUROLANToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ALSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SGSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FIBERTECToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.VISTAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AECOMToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SeadriftToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ROHToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -54,6 +61,7 @@ Partial Class MainForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.btnClearSamples = New System.Windows.Forms.Button()
         Me.btnSigHelp = New System.Windows.Forms.Button()
+        Me.CabotToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.nudSigFig, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -111,9 +119,46 @@ Partial Class MainForm
         '
         'CLABToolStripMenuItem
         '
+        Me.CLABToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EUROLANToolStripMenuItem, Me.ALSToolStripMenuItem, Me.SGSToolStripMenuItem, Me.TAToolStripMenuItem, Me.FIBERTECToolStripMenuItem, Me.VISTAToolStripMenuItem, Me.CabotToolStripMenuItem})
         Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
         Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CLABToolStripMenuItem.Text = "CLAB"
+        '
+        'EUROLANToolStripMenuItem
+        '
+        Me.EUROLANToolStripMenuItem.Name = "EUROLANToolStripMenuItem"
+        Me.EUROLANToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EUROLANToolStripMenuItem.Text = "EUROLAN"
+        '
+        'ALSToolStripMenuItem
+        '
+        Me.ALSToolStripMenuItem.Name = "ALSToolStripMenuItem"
+        Me.ALSToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ALSToolStripMenuItem.Text = "ALS"
+        '
+        'SGSToolStripMenuItem
+        '
+        Me.SGSToolStripMenuItem.Name = "SGSToolStripMenuItem"
+        Me.SGSToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SGSToolStripMenuItem.Text = "SGS"
+        '
+        'TAToolStripMenuItem
+        '
+        Me.TAToolStripMenuItem.Name = "TAToolStripMenuItem"
+        Me.TAToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.TAToolStripMenuItem.Text = "TA"
+        '
+        'FIBERTECToolStripMenuItem
+        '
+        Me.FIBERTECToolStripMenuItem.Name = "FIBERTECToolStripMenuItem"
+        Me.FIBERTECToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.FIBERTECToolStripMenuItem.Text = "FIBERTEC"
+        '
+        'VISTAToolStripMenuItem
+        '
+        Me.VISTAToolStripMenuItem.Name = "VISTAToolStripMenuItem"
+        Me.VISTAToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.VISTAToolStripMenuItem.Text = "VISTA"
         '
         'AECOMToolStripMenuItem
         '
@@ -327,6 +372,12 @@ Partial Class MainForm
         Me.btnSigHelp.Text = "?"
         Me.btnSigHelp.UseVisualStyleBackColor = True
         '
+        'CabotToolStripMenuItem
+        '
+        Me.CabotToolStripMenuItem.Name = "CabotToolStripMenuItem"
+        Me.CabotToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CabotToolStripMenuItem.Text = "CABOT"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -352,6 +403,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.lstFileList)
         Me.Controls.Add(Me.MenuStrip1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "MainForm"
         Me.Text = "eTrainLite"
@@ -396,4 +448,11 @@ Partial Class MainForm
     Friend WithEvents MidlandToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AECOMToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CLABToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EUROLANToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ALSToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SGSToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents TAToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FIBERTECToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents VISTAToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CabotToolStripMenuItem As ToolStripMenuItem
 End Class
