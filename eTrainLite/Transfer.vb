@@ -330,7 +330,7 @@ Public Class Transfer
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C: \Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info

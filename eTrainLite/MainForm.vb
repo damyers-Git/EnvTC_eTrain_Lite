@@ -71,10 +71,10 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 ElseIf cboImportType.Text = "DF" Then
                     GlobalVariables.Import.Type = "DF"
                 End If
-            ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
-                If cboImportType.Text = "CABOT" Then
-                    GlobalVariables.Import.Type = "CABOT"
-                End If
+                'ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
+                '    If cboImportType.Text = "CABOT" Then
+                '        GlobalVariables.Import.Type = "CABOT"
+                '    End If
             End If
         ElseIf cboImportType.Text = "Chemstation" Then
                 GlobalVariables.Import.Type = "CHEM"
@@ -1136,11 +1136,11 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("EUROLAN")
         cboImportType.Items.Add("GRABS")
         cboImportType.Items.Add("031A")
         cboImportType.Items.Add("031B")
         cboImportType.Items.Add("031C")
+        cboImportType.Items.Add("EUROLAN")
     End Sub
     Private Sub ALSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ALSToolStripMenuItem.Click
         'Set GlobalVariables
@@ -1157,10 +1157,10 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("ALS")
         cboImportType.Items.Add("BOD-PHOS")
         cboImportType.Items.Add("QUALA_ALS")
         cboImportType.Items.Add("DPS_ALS")
+        cboImportType.Items.Add("ALS")
     End Sub
     Private Sub SGSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SGSToolStripMenuItem.Click
         'Set GlobalVariables
@@ -1177,9 +1177,9 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("SGS")
         cboImportType.Items.Add("METALS")
         cboImportType.Items.Add("DPS_SGS")
+        cboImportType.Items.Add("SGS")
     End Sub
     Private Sub TAToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TAToolStripMenuItem.Click
         'Set GlobalVariables
@@ -1196,7 +1196,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("TA")
         cboImportType.Items.Add("IONS")
         cboImportType.Items.Add("VOA_MONTHLY")
         cboImportType.Items.Add("SFE_FLUORIDE")
@@ -1205,6 +1204,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("CABOT")
         cboImportType.Items.Add("KENAN_TA")
         cboImportType.Items.Add("QUALA_TA")
+        cboImportType.Items.Add("TA")
     End Sub
     Private Sub FIBERTECToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FIBERTECToolStripMenuItem.Click
         'Set GlobalVariables
@@ -1221,8 +1221,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("FIBERTEC")
         cboImportType.Items.Add("KENAN_FIBERTEC")
+        cboImportType.Items.Add("FIBERTEC")
     End Sub
     Private Sub VISTAToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles VISTAToolStripMenuItem.Click
         'Set GlobalVariables
@@ -1239,24 +1239,24 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Enabled = True
         cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("VISTA")
         cboImportType.Items.Add("DF")
+        cboImportType.Items.Add("VISTA")
     End Sub
-    Private Sub CABOTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CABOTToolStripMenuItem.Click
-        'Set GlobalVariables
-        GlobalVariables.eTrain.Server = "MIDLAND"
-        GlobalVariables.eTrain.Location = "MIDLAND"
-        GlobalVariables.eTrain.Team = "CLAB"
-        GlobalVariables.eTrain.AnalysisLab = "CABOT"
-        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+    'Private Sub CABOTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CABOTToolStripMenuItem.Click
+    '    'Set GlobalVariables
+    '    GlobalVariables.eTrain.Server = "MIDLAND"
+    '    GlobalVariables.eTrain.Location = "MIDLAND"
+    '    GlobalVariables.eTrain.Team = "CLAB"
+    '    GlobalVariables.eTrain.AnalysisLab = "CABOT"
+    '    GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
 
-        'Form UI
-        UpdateForm()
-        'Populate import type box
-        btnFindFiles.Enabled = True
-        cboImportType.Enabled = True
-        cboImportType.Items.Clear()
+    '    'Form UI
+    '    UpdateForm()
+    '    'Populate import type box
+    '    btnFindFiles.Enabled = True
+    '    cboImportType.Enabled = True
+    '    cboImportType.Items.Clear()
 
-        cboImportType.Items.Add("CABOT")
-    End Sub
+    '    cboImportType.Items.Add("CABOT")
+    'End Sub
 End Class

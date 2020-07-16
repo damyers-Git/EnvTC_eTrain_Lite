@@ -974,15 +974,13 @@ Public Class Permit
                 blnMethylChlorInSample = False
                 ' Each target analyte within the given sample.
                 For Each EDDCompound In EDDSample.CompoundList
-                    ' Boolen check variable for the 1005s
-
-                    ' Hex Chrom isn't in LIMS and this is the only way I could figure out how to get a value for it in there when checking the data. 
-                    If EDDCompound.EDDChemicalName = "Chromium, Hexavalent" And bln1005PS = True And (String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Or EDDCompound.EDDResultValue = vbTab) Then
-                        EDDCompound.EDDResultValue = 0
-                    End If
-                    ' Labs use different numbers for m/p-Xylenes so I am having eTL change it to what it is in LIMS otherwise it would get switched.
-                    If EDDCompound.EDDCasRn = "136777-61-2" Or EDDCompound.EDDCasRn = "179601-23-1" Or EDDCompound.EDDCasRn = "M/P-XYLENE" Then
+                    ' Labs use different CAS numbers compounds and they have to match to get entered into LIMS so I am having eTL change it to what it is in LIMS otherwise it would get switched.
+                    ' m/p-Xylenes
+                    If EDDCompound.EDDCasRn = "136777-61-2" Or EDDCompound.EDDCasRn = "179601-23-1" Or EDDCompound.EDDCasRn = "M/P-XYLENE" Or EDDCompound.EDDCasRn = "XYLMP" Then
                         EDDCompound.EDDCasRn = "MPXYL"
+                        ' MCPP
+                    ElseIf EDDCompound.EDDCasRn = "93-65-2" Then
+                        EDDCompound.EDDCasRn = "7085-19-0"
                     End If
                     ' Looping through each of the compounds made from the LIMS queries to compare to the EDD values.
                     For Each LIMSCompound In GlobalVariables.limsCompoundInformation
@@ -991,10 +989,12 @@ Public Class Permit
                         ' Trying to figure out and correct edge case scenarios for checking the information that was imported. 
                         ' The .Contains is for the SGS (and now other labs do it too) metals samples. Their EDDs add a "T" to the end of the CAS numbers so they would be skipped otherwise.
                         ' Allegedly, the T is for "total" metals and the lab wouldn't remove it from the EDD when I asked. 
-                        ' Nested if statements because an and will cause the 1005s to fail when verifying the data. IDK I have no idea why it mattered. 
-                        If EDDSample.Analysis = "E200_8_DUP" Or EDDSample.Analysis = "E200MGL_DU" Or EDDSample.Analysis = "E245_HG_UG" Then
+                        ' Nested if statements because an "and" with the .contains will cause the 1005s to fail when verifying the data. IDK I have no idea why it mattered. 
+                        If EDDSample.Analysis = "E200_8_DUP" Or EDDSample.Analysis = "E200MGL_DU" Or EDDSample.Analysis = "E245_HG_UG" Or EDDSample.Analysis = "E245_1_MER" Then
                             If EDDCompound.EDDCasRn.Contains(LIMSCompound.EDDCasRn) Then
                                 EDDCompound.EDDCasRn = LIMSCompound.EDDCasRn
+                                'ElseIf EDDCompound.EDDChemicalName = LIMSCompound.EDDChemicalName Then
+                                '    EDDCompound.EDDChemicalName = LIMSCompound.EDDChemicalName
                             End If
                         End If
                         ' Changing the cas # for TSS reported by Fibertec  for the Kenan samples.
@@ -1006,9 +1006,16 @@ Public Class Permit
                             If EDDCompound.EDDCasRn = "TDS" Or EDDCompound.EDDCasRn = "E-10173" Then
                                 EDDCompound.EDDCasRn = "0000-000-26"
                                 EDDCompound.EDDChemicalName = "Total Dissolved Solids"
-                            ElseIf EDDCompound.EDDCasRn = "TON" Or EDDCompound.EDDChemicalName.ToLower = "total organic nitrogen" Then
+                            End If
+                            If EDDCompound.EDDCasRn = "TON" Or EDDCompound.EDDChemicalName.ToLower = "total organic nitrogen" Then
                                 EDDCompound.EDDChemicalName = "Organic Nitrogen"
                                 EDDCompound.EDDCasRn = "STL00111"
+                            End If
+                        End If
+                        ' Changes being made for the 1005s
+                        If GlobalVariables.Import.Type = "1005_PS" Then
+                            If EDDCompound.EDDCasRn = "15831-10-4" And EDDCompound.EDDChemicalName = "3 & 4-Methylphenol" Then
+                                EDDCompound.EDDChemicalName = "3/4-Methylphenol"
                             End If
                         End If
                         ' For changing the LIMS's cas # to something if it didn't have one to pull in because that will cause the analyte to be skipped completely. 
@@ -1023,12 +1030,19 @@ Public Class Permit
                             ' Changing the EDD name to the one used in LIMS.
                             If LIMSCompound.EDDChemicalName <> EDDCompound.EDDChemicalName Then
                                 EDDCompound.EDDChemicalName = LIMSCompound.EDDChemicalName
-                                ' Chlorine and Chloride have the same CAS number, so their names are changed based on the lab method used to what they need to be reported in LIMS.
-                            ElseIf bln1005PS = True And EDDCompound.EDDLabAnlMethodName = "SW9056" Then
-                                EDDCompound.EDDChemicalName = "Chlorine"
-                            ElseIf bln1005PS = True And EDDCompound.EDDLabAnlMethodName = "SW9056A" Then
-                                EDDCompound.EDDChemicalName = "Chloride"
                             End If
+                            ' Chlorine and Chloride have the same CAS number, so their names are changed based on the lab method used to what they need to be reported in LIMS.
+                            If bln1005PS = True Then
+                                If EDDCompound.EDDLabAnlMethodName = "SW9056" Then
+                                    EDDCompound.EDDChemicalName = "Chlorine"
+                                ElseIf EDDCompound.EDDLabAnlMethodName = "SW9056A" Then
+                                    EDDCompound.EDDChemicalName = "Chloride"
+                                End If
+                                If EDDCompound.EDDCasRn = "87-68-3" Then
+                                    EDDCompound.EDDChemicalName = "Hexachlorobutadiene"
+                                End If
+                            End If
+
                             ' Checking that the units are the same.
                             ' Example: ppm and mg/L
                             ' Skipping if it was the 1005 pressed solids because everything is reported in weighted values. 

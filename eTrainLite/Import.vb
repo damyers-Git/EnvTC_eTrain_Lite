@@ -1128,7 +1128,15 @@ Public Class Import
                 Dim aPermit As New Permit
                 Do Until line = ""
 
-                    arrSplitLine = convertEurolanEDD(line) ' Converting the EDD to a usable format.
+                    '' Lancaster moved to using tabs for their EDDs so this and the two method calls associated with it are no longer needed.
+                    '' I have left the below line because I can in case they go back to using commas.  
+                    'arrSplitLine = convertEurolanEDD(line) ' Converting the EDD to a usable format.
+
+                    If (InStr(line, Chr(34))) Then
+                        line = Regex.Replace(line, """", "")
+                    End If
+
+                    arrSplitLine = line.Split(vbTab)
 
                     ' Checking each new line read whether it is the same as the previous.
                     If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
