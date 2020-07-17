@@ -37,7 +37,6 @@ Partial Class MainForm
         Me.TAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FIBERTECToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VISTAToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CabotToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AECOMToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SeadriftToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ROHToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -114,74 +113,68 @@ Partial Class MainForm
         '
         Me.MidlandToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CLABToolStripMenuItem, Me.AECOMToolStripMenuItem})
         Me.MidlandToolStripMenuItem.Name = "MidlandToolStripMenuItem"
-        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.MidlandToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.MidlandToolStripMenuItem.Text = "Midland"
         '
         'CLABToolStripMenuItem
         '
-        Me.CLABToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EUROLANToolStripMenuItem, Me.ALSToolStripMenuItem, Me.SGSToolStripMenuItem, Me.TAToolStripMenuItem, Me.FIBERTECToolStripMenuItem, Me.VISTAToolStripMenuItem, Me.CabotToolStripMenuItem})
+        Me.CLABToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EUROLANToolStripMenuItem, Me.ALSToolStripMenuItem, Me.SGSToolStripMenuItem, Me.TAToolStripMenuItem, Me.FIBERTECToolStripMenuItem, Me.VISTAToolStripMenuItem})
         Me.CLABToolStripMenuItem.Name = "CLABToolStripMenuItem"
-        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.CLABToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CLABToolStripMenuItem.Text = "CLAB"
         '
         'EUROLANToolStripMenuItem
         '
         Me.EUROLANToolStripMenuItem.Name = "EUROLANToolStripMenuItem"
-        Me.EUROLANToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.EUROLANToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.EUROLANToolStripMenuItem.Text = "EUROLAN"
         '
         'ALSToolStripMenuItem
         '
         Me.ALSToolStripMenuItem.Name = "ALSToolStripMenuItem"
-        Me.ALSToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.ALSToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ALSToolStripMenuItem.Text = "ALS"
         '
         'SGSToolStripMenuItem
         '
         Me.SGSToolStripMenuItem.Name = "SGSToolStripMenuItem"
-        Me.SGSToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.SGSToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SGSToolStripMenuItem.Text = "SGS"
         '
         'TAToolStripMenuItem
         '
         Me.TAToolStripMenuItem.Name = "TAToolStripMenuItem"
-        Me.TAToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.TAToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.TAToolStripMenuItem.Text = "TA"
         '
         'FIBERTECToolStripMenuItem
         '
         Me.FIBERTECToolStripMenuItem.Name = "FIBERTECToolStripMenuItem"
-        Me.FIBERTECToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.FIBERTECToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.FIBERTECToolStripMenuItem.Text = "FIBERTEC"
         '
         'VISTAToolStripMenuItem
         '
         Me.VISTAToolStripMenuItem.Name = "VISTAToolStripMenuItem"
-        Me.VISTAToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
+        Me.VISTAToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.VISTAToolStripMenuItem.Text = "VISTA"
-        '
-        'CabotToolStripMenuItem
-        '
-        Me.CabotToolStripMenuItem.Name = "CabotToolStripMenuItem"
-        Me.CabotToolStripMenuItem.Size = New System.Drawing.Size(127, 22)
-        Me.CabotToolStripMenuItem.Text = "CABOT"
         '
         'AECOMToolStripMenuItem
         '
         Me.AECOMToolStripMenuItem.Name = "AECOMToolStripMenuItem"
-        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(116, 22)
+        Me.AECOMToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AECOMToolStripMenuItem.Text = "AECOM"
         '
         'SeadriftToolStripMenuItem
         '
         Me.SeadriftToolStripMenuItem.Name = "SeadriftToolStripMenuItem"
-        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+        Me.SeadriftToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SeadriftToolStripMenuItem.Text = "&Seadrift"
         '
         'ROHToolStripMenuItem1
         '
         Me.ROHToolStripMenuItem1.Name = "ROHToolStripMenuItem1"
-        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(118, 22)
+        Me.ROHToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
         Me.ROHToolStripMenuItem1.Text = "&ROH"
         '
         'lstFileList
@@ -455,5 +448,4 @@ Partial Class MainForm
     Friend WithEvents TAToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FIBERTECToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents VISTAToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents CabotToolStripMenuItem As ToolStripMenuItem
 End Class

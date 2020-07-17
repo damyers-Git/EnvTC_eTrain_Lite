@@ -52,8 +52,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "1005_PS"
                 ElseIf cboImportType.Text = "SVOA_SEMIANNUAL" Then
                     GlobalVariables.Import.Type = "SVOA_SEMIANNUAL"
-                ElseIf cboImportType.Text = "CABOT" Then
-                    GlobalVariables.Import.Type = "CABOT"
                 ElseIf cboImportType.Text = "KENAN_TA" Then
                     GlobalVariables.Import.Type = "KENAN_TA"
                 ElseIf cboImportType.Text = "QUALA_TA" Then
@@ -71,10 +69,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 ElseIf cboImportType.Text = "DF" Then
                     GlobalVariables.Import.Type = "DF"
                 End If
-                'ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
-                '    If cboImportType.Text = "CABOT" Then
-                '        GlobalVariables.Import.Type = "CABOT"
-                '    End If
             End If
         ElseIf cboImportType.Text = "Chemstation" Then
                 GlobalVariables.Import.Type = "CHEM"
@@ -1242,21 +1236,4 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("DF")
         cboImportType.Items.Add("VISTA")
     End Sub
-    'Private Sub CABOTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CABOTToolStripMenuItem.Click
-    '    'Set GlobalVariables
-    '    GlobalVariables.eTrain.Server = "MIDLAND"
-    '    GlobalVariables.eTrain.Location = "MIDLAND"
-    '    GlobalVariables.eTrain.Team = "CLAB"
-    '    GlobalVariables.eTrain.AnalysisLab = "CABOT"
-    '    GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
-
-    '    'Form UI
-    '    UpdateForm()
-    '    'Populate import type box
-    '    btnFindFiles.Enabled = True
-    '    cboImportType.Enabled = True
-    '    cboImportType.Items.Clear()
-
-    '    cboImportType.Items.Add("CABOT")
-    'End Sub
 End Class
