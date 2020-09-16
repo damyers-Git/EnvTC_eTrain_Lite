@@ -37,6 +37,9 @@ Public Class GlobalVariables
     Public Shared Property limsMethodNames As New Dictionary(Of String, String)
     Public Shared Property recoveryUnits As New List(Of List(Of String))
     Public Shared Property befAndTefScores As New List(Of List(Of String))
+    Public Shared Property newSampleMethods As New Dictionary(Of String, String)
+    Public Shared Property newSampleAnalytes As New Dictionary(Of String, String)
+    Public Shared Property newSampleLabs As New Dictionary(Of String, String)
     Public Shared Property NeedsCalculation As Boolean
     Public Shared Property NeedsUnitConversion As Boolean
     Public Shared Property CustomReportError As Boolean

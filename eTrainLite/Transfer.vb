@@ -324,13 +324,12 @@ Public Class Transfer
 
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
-                                    ' For the rest of the CLab data getting sent into LIMS
                                 Else
 
                                     d = DateTime.Now
 
                                     strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & d.ToString("HHmm") & "-" & intFileCounter.ToString("000") & ".txt"
-                                    'strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                    'strPath = "C: \Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
                                     objWriter = New System.IO.StreamWriter(strPath)
 
                                     'Header info
@@ -355,6 +354,35 @@ Public Class Transfer
                                     objWriter.Close()
                                     intFileCounter = intFileCounter + 1
                                 End If
+                            ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+
+                                d = DateTime.Now
+
+                                'strPath = GlobalVariables.eTrain.ServerFP & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                strPath = "C:\Users\nb98715\Desktop\CLab_Test\" & d.ToString("ddMMyy") & "-" & d.ToString("HHmm") & intFileCounter.ToString("000") & ".txt"
+                                objWriter = New System.IO.StreamWriter(strPath)
+
+                                'Header info
+                                objWriter.WriteLine("$IDNTMODE = S")
+                                objWriter.WriteLine("$SAMPLEID = " & aSample.CompoundList(0).EDDSysSampleCode & "_" & aSample.CompoundList(0).EDDAnalysisDate)
+                                objWriter.WriteLine("$SAMPTEMPL = " & aSample.CompoundList(0).EDDsysSampleCode)
+                                objWriter.WriteLine("$ANALYSIS = " & aSample.CompoundList(0).EDDLabAnlMethodName)
+                                objWriter.WriteLine("$REPLNUMB = 0")
+                                objWriter.WriteLine("$OPERATOR = BATCH")
+                                objWriter.WriteLine("$NEWSAMPL = TRUE")
+                                objWriter.WriteLine("$INSTRMNT = " & GlobalVariables.newSampleLabs(GlobalVariables.eTrain.AnalysisLab))
+                                objWriter.WriteLine("$ANALYSTN = " & strUserID)
+                                objWriter.WriteLine("$SOURCE_N = 2")
+                                objWriter.WriteLine("$SOURCE_1 = Midland Sewer Data Transfer")
+                                objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
+                                objWriter.WriteLine("$SAMP_FLD = sampled_dat?" & aSample.CompoundList(0).EDDAnalysisDate) ' & aSample.CompoundList(0).edd)
+                                ' For the rest of the CLab data getting sent into LIMS
+
+                                For Each aCompound In aSample.CompoundList
+                                    objWriter.WriteLine("?" & aCompound.EDDChemicalName & "  ?N  ?" & aCompound.EDDResultValue & "  ?  ?" & aCompound.EDDLabQualifiers & "  ?" & aCompound.EDDEDilutionFactor)
+                                Next
+                                objWriter.Close()
+                                intFileCounter = intFileCounter + 1
 
                             ElseIf GlobalVariables.eTrain.Team = "AECOM" Then
 

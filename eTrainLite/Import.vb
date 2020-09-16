@@ -1250,7 +1250,7 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf GlobalVariables.eTrain.AnalysisLab = "CABOT" Then
+        ElseIf GlobalVariables.eTrain.Team = "NewSample" And GlobalVariables.eTrain.AnalysisLab = "TANC_NEW" Then
             Try
                 Dim aSampleTemp As New Sample
                 Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
@@ -1265,17 +1265,15 @@ Public Class Import
                     ' Checking each new line read whether it is the same as the previous.
                     If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
                         If (arrSplitLine(0) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(1) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
-                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6) ' arrSplitLine(0).Substring(0, 6)
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
                             aSampleTemp.Type = "SAMPLE"
                             GlobalVariables.SampleList.Add(aSampleTemp)
                             aSampleTemp = New Sample
                         End If
                     End If
 
-                    If (checkForLimsNumber(arrSplitLine(0))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
-                        If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32).ToLower = "yes" Or arrSplitLine(32).ToLower = "y") Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
-                            loadCabotEDD(arrSplitLine, aSampleTemp)
-                        End If
+                    If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32).ToLower = "yes" Or arrSplitLine(32).ToLower = "y") And arrSplitLine(6).ToLower = "w" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                        loadEDDEUROLAN(arrSplitLine, aSampleTemp)
                     End If
 
                     line = sr.ReadLine() ' Reading in the next line of the EDD.
@@ -1284,8 +1282,8 @@ Public Class Import
                     If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
                         If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
                             Dim tempTest As String
-                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
-                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode
+                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
                             GlobalVariables.SampleList.Add(aSampleTemp)
                         End If
                     End If
@@ -1334,6 +1332,8 @@ Public Class Import
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
     End Function
+
+    '' No longer needed. Lancaster switched over to using tabs to delimit their EDDs.
 
     ' Used in taking a EDD from Eurofins Lancaster and returning an array of the values.
     ' Starts by creating an array by splitting at the quotation marks.

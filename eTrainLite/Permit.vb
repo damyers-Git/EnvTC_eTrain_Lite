@@ -831,24 +831,40 @@ Public Class Permit
                 Next
                 ' Only importing the method that the data will go into so there will (hypothetically) be half the number imported versus the whole table.
                 ' Mostly for the LIMS samples that use a dup sample and then a calcluation is made to populate the reported sample. 
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_LIMS.txt")
-                    Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
-                    End If
-                Next
-                ' Importing the lab's analysis method and the corresponding LIMS method. 
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_EDD.txt")
-                    Dim parts() As String = line.Split("|")
-                    If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
-                        GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
-                    End If
-                Next
+                If GlobalVariables.eTrain.Team <> "NewSample" Then
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_LIMS.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                    ' Importing the lab's analysis method and the corresponding LIMS method. 
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_EDD.txt")
+                        Dim parts() As String = line.Split("|")
+                        If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
+                            GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
+                        End If
+                    Next
+                Else
+                    ' Methods
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & ".txt")
+                        Dim parts() As String = line.Split("|")
+                        GlobalVariables.newSampleMethods.Add(parts(0), parts(1))
+                    Next
+                    ' Analyte Information
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & "_ANALYTE.txt")
+                        Dim parts() As String = line.Split("|")
+                        GlobalVariables.newSampleAnalytes.Add(parts(0), parts(1))
+                    Next
+                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\LABS.txt")
+                        Dim parts() As String = line.Split("|")
+                        GlobalVariables.newSampleLabs.Add(parts(0), parts(1))
+                    Next
+                End If
             End If
             ' Creating a list of lists of the possible recovery units.
             ' Sometimes reported slightly different than what they are in LIMS even though they might mean the same thing. 
             ' Example: ppm and mg/L
-
             For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\RecoveryUnits.txt")
                 Dim count As Integer = 0
                 Dim tempList As New List(Of String)
@@ -877,24 +893,29 @@ Public Class Permit
         End Try
         ' Querying LIMS for each sample that was pulled in from the EDD.
         ' Queried for each sample because the LIMS number is the unique identifier to pull in the compound information.
-        For Each limsSample As Sample In GlobalVariables.SampleList
-            ' Changing the Sample.type to whatever the first compound in the sampleList is so that it can get transfered to LIMS. 
-            Try
-                limsSample.Analysis = GlobalVariables.eddAnalysisMethod.Item(limsSample.CompoundList(0).EDDLabAnlMethodName)
-                If GlobalVariables.Permit.loadLimsCompounds(limsSample.LimsID) Then
-                    Continue For
-                Else
-                    MsgBox("Error connecting to LIMS for ID: " & limsSample.LimsID & vbCrLf &
-                       "Sub Procedure: loadLimsInformation()", MsgBoxStyle.Critical)
-                    Return False
-                End If
-            Catch ex As Exception
-                MsgBox("Error verify analysis method" & vbCrLf &
-                   "Sub Procedure: LoadLimsAnalysisAndUnits()" & vbCrLf &
-                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
-            End Try
-        Next
-        verifyCLabData()
+        If GlobalVariables.eTrain.Team <> "NewSample" Then
+            For Each limsSample As Sample In GlobalVariables.SampleList
+                ' Changing the Sample.type to whatever the first compound in the sampleList is so that it can get transfered to LIMS. 
+                Try
+                    limsSample.Analysis = GlobalVariables.eddAnalysisMethod.Item(limsSample.CompoundList(0).EDDLabAnlMethodName)
+                    If GlobalVariables.Permit.loadLimsCompounds(limsSample.LimsID) Then
+                        Continue For
+                    Else
+                        MsgBox("Error connecting to LIMS for ID: " & limsSample.LimsID & vbCrLf &
+                           "Sub Procedure: loadLimsInformation()", MsgBoxStyle.Critical)
+                        Return False
+                    End If
+                Catch ex As Exception
+                    MsgBox("Error verify analysis method" & vbCrLf &
+                       "Sub Procedure: LoadLimsAnalysisAndUnits()" & vbCrLf &
+                       "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+                End Try
+            Next
+            verifyCLabData()
+            ' For new samples being created
+        Else
+            verifyNewSample()
+        End If
         Return True
     End Function
     Function loadLimsCompounds(limsID As String) As Boolean
@@ -1143,4 +1164,22 @@ Public Class Permit
         Next
         Return False
     End Function
+    Sub verifyNewSample()
+        Dim EDDSample As Sample
+        Dim EDDCompound As Compound
+
+        For Each EDDSample In GlobalVariables.SampleList
+            For Each EDDCompound In EDDSample.CompoundList
+                If GlobalVariables.newSampleMethods.ContainsKey(EDDCompound.EDDLabAnlMethodName) Then
+                    EDDCompound.EDDLabAnlMethodName = GlobalVariables.newSampleMethods(EDDCompound.EDDLabAnlMethodName)
+                End If
+                If GlobalVariables.newSampleAnalytes.ContainsKey(EDDCompound.EDDChemicalName) Then
+                    EDDCompound.EDDChemicalName = GlobalVariables.newSampleAnalytes(EDDCompound.EDDChemicalName)
+                End If
+                If String.IsNullOrEmpty(EDDCompound.EDDResultValue) Or EDDCompound.EDDResultValue = "" Or EDDCompound.EDDResultValue = vbTab Then
+                    EDDCompound.EDDResultValue = 0
+                End If
+            Next
+        Next
+    End Sub
 End Class

@@ -20,6 +20,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "031B"
                 ElseIf cboImportType.Text = "031C" Then
                     GlobalVariables.Import.Type = "031C"
+                ElseIf cboImportType.Text = "PESTICIDES" Then
+                    GlobalVariables.Import.Type = "PESTICIDES"
                 End If
             ElseIf GlobalVariables.eTrain.AnalysisLab = "ALS" Then
                 If cboImportType.Text = "ALS" Then
@@ -52,6 +54,12 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "1005_PS"
                 ElseIf cboImportType.Text = "SVOA_SEMIANNUAL" Then
                     GlobalVariables.Import.Type = "SVOA_SEMIANNUAL"
+                ElseIf cboImportType.Text = "PCB_TA" Then
+                    GlobalVariables.Import.Type = "PCB_TA"
+                ElseIf cboImportType.Text = "CYANIDE" Then
+                    GlobalVariables.Import.Type = "CYANIDE"
+                ElseIf cboImportType.Text = "CABOT" Then
+                    GlobalVariables.Import.Type = "CABOT"
                 ElseIf cboImportType.Text = "KENAN_TA" Then
                     GlobalVariables.Import.Type = "KENAN_TA"
                 ElseIf cboImportType.Text = "QUALA_TA" Then
@@ -70,20 +78,12 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "DF"
                 End If
             End If
-        ElseIf cboImportType.Text = "Chemstation" Then
-                GlobalVariables.Import.Type = "CHEM"
-        ElseIf cboImportType.Text = "Chemstation - BevCan" Then
-            GlobalVariables.Import.Type = "CHEMBEVCAN"
-        ElseIf cboImportType.Text = "Masshunter" Then
-            GlobalVariables.Import.Type = "MASS"
-        ElseIf cboImportType.Text = "TOC" Then
-            GlobalVariables.Import.Type = "TOC"
-        ElseIf cboImportType.Text = "TQIII" Then
-            GlobalVariables.Import.Type = "TQIII"
-        ElseIf cboImportType.Text = "EDD" Then
-            GlobalVariables.Import.Type = "EDD"
-        ElseIf cboImportType.Text = "SSR" Then
-            GlobalVariables.Import.Type = "SSR"
+        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+            If GlobalVariables.eTrain.AnalysisLab = "TANC_NEW" Then
+                If cboImportType.Text = "SEWER" Then
+                    GlobalVariables.Import.Type = "SEWER"
+                End If
+            End If
         Else
             MsgBox("Please select an Import Type first", MsgBoxStyle.Exclamation, "eTrain 2.0")
             Exit Sub
@@ -99,6 +99,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
             ElseIf GlobalVariables.eTrain.Team = "HR" Then
                 strImportLoc = GlobalVariables.eTrain.ChooseFolder("C:\", "Choose the location where the files reside")
             ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
+                strImportLoc = GlobalVariables.eTrain.ChooseFolder("C:\", "Choose the location where the files reside")
+            ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
                 strImportLoc = GlobalVariables.eTrain.ChooseFolder("C:\", "Choose the location where the files reside")
             ElseIf GlobalVariables.eTrain.Team = "AECOM" Then
                 strImportLoc = GlobalVariables.eTrain.ChooseFolder("C:\", "Choose the location where the files reside")
@@ -187,15 +189,6 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
                 lstFileList.Items.Add(file.ToString) '"...\" & arrSpl(UBound(arrSpl) - 2) & "\" & arrSpl(UBound(arrSpl) - 1) & "\" & arrSpl(UBound(arrSpl)))
             Next
-        ElseIf GlobalVariables.eTrain.AnalysisLab <> "VISTA" Then
-            GlobalVariables.Import.arrFileList.Clear()
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
-            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
-
-            For Each file In GlobalVariables.Import.arrFileList
-                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
-                lstFileList.Items.Add(file.ToString)
-            Next
         ElseIf GlobalVariables.eTrain.AnalysisLab = "VISTA" Then
 
             GlobalVariables.Import.arrFileList.Clear()
@@ -208,6 +201,16 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
                 lstFileList.Items.Add(file.ToString)
             Next
+        ElseIf GlobalVariables.eTrain.AnalysisLab <> "VISTA" Then
+            GlobalVariables.Import.arrFileList.Clear()
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
+
+            For Each file In GlobalVariables.Import.arrFileList
+                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
+                lstFileList.Items.Add(file.ToString)
+            Next
+
         End If
         'Make Import Available
         Me.btnImport.Enabled = True
@@ -346,6 +349,17 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     End If
                 Next
             Next
+        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+            For Each item In lstFileList.SelectedItems
+                For Each file In GlobalVariables.Import.arrFileList
+                    arrSpl = item.ToString.Split("\")
+                    If InStr(file, arrSpl(UBound(arrSpl))) Then
+                        GlobalVariables.Import.FilePath = file.ToString
+                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                        GlobalVariables.Import.SampleImport()
+                    End If
+                Next
+            Next
         End If
         'CAS no's
         If GlobalVariables.eTrain.Location = "MIDLAND" Then
@@ -386,7 +400,17 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     txtImportResults.Text = strText
                 Next
             End If
-
+        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+            If GlobalVariables.SampleList.Count = 0 Then
+                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+            Else
+                For Each aSample In GlobalVariables.SampleList
+                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
+                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                    txtImportResults.Text = strText
+                Next
+            End If
 
         Else
             For Each aSample In GlobalVariables.SampleList
@@ -1134,6 +1158,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("031A")
         cboImportType.Items.Add("031B")
         cboImportType.Items.Add("031C")
+        cboImportType.Items.Add("PESTICIDES")
         cboImportType.Items.Add("EUROLAN")
     End Sub
     Private Sub ALSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ALSToolStripMenuItem.Click
@@ -1195,6 +1220,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("SFE_FLUORIDE")
         cboImportType.Items.Add("1005_PS")
         cboImportType.Items.Add("SVOA_SEMIANNUAL")
+        cboImportType.Items.Add("PCB_TA")
+        cboImportType.Items.Add("CYANIDE")
         cboImportType.Items.Add("CABOT")
         cboImportType.Items.Add("KENAN_TA")
         cboImportType.Items.Add("QUALA_TA")
@@ -1235,5 +1262,23 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
         cboImportType.Items.Add("DF")
         cboImportType.Items.Add("VISTA")
+    End Sub
+    ' Importing data to create a new sample in LIMS if it doesn't have a number associated with it. 
+    Private Sub TANC_NEWToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles TANC_NEWToolStripMenuItem1.Click
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "NewSample"
+        GlobalVariables.eTrain.AnalysisLab = "TANC_NEW"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("SEWER")
+
     End Sub
 End Class
