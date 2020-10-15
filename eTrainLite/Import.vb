@@ -1250,52 +1250,54 @@ Public Class Import
                     "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                     "correct and try again.)", MsgBoxStyle.Critical)
             End Try
-        ElseIf GlobalVariables.eTrain.Team = "NewSample" And GlobalVariables.eTrain.AnalysisLab = "TANC_NEW" Then
-            Try
-                Dim aSampleTemp As New Sample
-                Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
-                line = sr.ReadLine
-                line = sr.ReadLine ' Writes over the column headers for reading in the file. 
-                Dim arrSplitLine() As String
-                Dim aPermit As New Permit
-                Do Until line = ""
+        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+            If GlobalVariables.eTrain.AnalysisLab = "TANC_NEW" Then
+                Try
+                    Dim aSampleTemp As New Sample
+                    Dim sr As StreamReader = New StreamReader(GlobalVariables.Import.FilePath)
+                    line = sr.ReadLine
+                    line = sr.ReadLine ' Writes over the column headers for reading in the file. 
+                    Dim arrSplitLine() As String
+                    Dim aPermit As New Permit
+                    Do Until line = ""
 
-                    arrSplitLine = line.Split(vbTab)
+                        arrSplitLine = line.Split(vbTab)
 
-                    ' Checking each new line read whether it is the same as the previous.
-                    If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
-                        If (arrSplitLine(0) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(1) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
-                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
-                            aSampleTemp.Type = "SAMPLE"
-                            GlobalVariables.SampleList.Add(aSampleTemp)
-                            aSampleTemp = New Sample
+                        ' Checking each new line read whether it is the same as the previous.
+                        If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                            If (arrSplitLine(0) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrSplitLine(1) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
+                                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
+                                aSampleTemp.Type = "SAMPLE"
+                                GlobalVariables.SampleList.Add(aSampleTemp)
+                                aSampleTemp = New Sample
+                            End If
                         End If
-                    End If
 
-                    If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32).ToLower = "yes" Or arrSplitLine(32).ToLower = "y") And arrSplitLine(6).ToLower = "w" Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
-                        loadEDDEUROLAN(arrSplitLine, aSampleTemp)
-                    End If
-
-                    line = sr.ReadLine() ' Reading in the next line of the EDD.
-
-                    'If end of the file, ensure last sample is added to Global sample list
-                    If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
-                        If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
-                            Dim tempTest As String
-                            tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode
-                            aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
-                            GlobalVariables.SampleList.Add(aSampleTemp)
+                        If (arrSplitLine(31) = "TRG" Or arrSplitLine(31) = "Target") And (arrSplitLine(32).ToLower = "yes" Or arrSplitLine(32).ToLower = "y") And (arrSplitLine(6).ToLower = "w" Or arrSplitLine(6).ToLower = "ww") Then ' Only accepting analytes that are targets for the analysis and the reportable value from the dilution is
+                            loadEDDEUROLAN(arrSplitLine, aSampleTemp)
                         End If
-                    End If
-                Loop
-                ' Getting all of the data from LIMS to check against the EDD.
-                aPermit.loadLimsInformation()
-            Catch ex As Exception
-                MsgBox("Error pulling sample information!" & vbCrLf &
-                    "Logic Error: " & ex.Message & vbCrLf &
-                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
-                    "correct and try again.)", MsgBoxStyle.Critical)
-            End Try
+
+                        line = sr.ReadLine() ' Reading in the next line of the EDD.
+
+                        'If end of the file, ensure last sample is added to Global sample list
+                        If line = "" And Not aSampleTemp.CompoundList.Count = 0 Then
+                            If aSampleTemp.CompoundList(0).EDDSysSampleCode.Length >= 6 Then
+                                Dim tempTest As String
+                                tempTest = aSampleTemp.CompoundList(0).EDDSysSampleCode
+                                aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode
+                                GlobalVariables.SampleList.Add(aSampleTemp)
+                            End If
+                        End If
+                    Loop
+                    ' Getting all of the data from LIMS to check against the EDD.
+                    aPermit.loadLimsInformation()
+                Catch ex As Exception
+                    MsgBox("Error pulling sample information!" & vbCrLf &
+                        "Logic Error: " & ex.Message & vbCrLf &
+                        "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                        "correct and try again.)", MsgBoxStyle.Critical)
+                End Try
+            End If
         End If
     End Sub
     ' Method for reading in an excel sheet and putting it into a 2D array of strings.

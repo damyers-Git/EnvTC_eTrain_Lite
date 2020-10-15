@@ -364,18 +364,17 @@ Public Class Transfer
 
                                 'Header info
                                 objWriter.WriteLine("$IDNTMODE = S")
-                                objWriter.WriteLine("$SAMPLEID = " & aSample.CompoundList(0).EDDSysSampleCode & "_" & aSample.CompoundList(0).EDDAnalysisDate)
+                                objWriter.WriteLine("$SAMPLEID = " & aSample.CompoundList(0).EDDSysSampleCode & "_" & getSampleDate(aSample.CompoundList(0).EDDSysSampleCode, 0))
                                 objWriter.WriteLine("$SAMPTEMPL = " & aSample.CompoundList(0).EDDsysSampleCode)
                                 objWriter.WriteLine("$ANALYSIS = " & aSample.CompoundList(0).EDDLabAnlMethodName)
                                 objWriter.WriteLine("$REPLNUMB = 0")
                                 objWriter.WriteLine("$OPERATOR = BATCH")
                                 objWriter.WriteLine("$NEWSAMPL = TRUE")
                                 objWriter.WriteLine("$INSTRMNT = " & GlobalVariables.newSampleLabs(GlobalVariables.eTrain.AnalysisLab))
-                                objWriter.WriteLine("$ANALYSTN = " & strUserID)
                                 objWriter.WriteLine("$SOURCE_N = 2")
                                 objWriter.WriteLine("$SOURCE_1 = Midland Sewer Data Transfer")
                                 objWriter.WriteLine("$SOURCE_2 = CONTACT W. Bodeis 989-636-5245")
-                                objWriter.WriteLine("$SAMP_FLD = sampled_dat?" & aSample.CompoundList(0).EDDAnalysisDate) ' & aSample.CompoundList(0).edd)
+                                objWriter.WriteLine("$SAMP_FLD = sampled_date?" & getSampleDate(aSample.CompoundList(0).EDDSysSampleCode, 1))
                                 ' For the rest of the CLab data getting sent into LIMS
 
                                 For Each aCompound In aSample.CompoundList
@@ -699,5 +698,40 @@ Public Class Transfer
             End If
         Next
         Return dblTeqScore
+    End Function
+    Function getSampleDate(strSampleName As String, intDate As Integer) As String
+        ' 240-135876-1_TestResultsQC_v1
+        ' 240-135876-1_LabSample_v1
+        Dim sr As StreamReader
+        Dim line As String
+        Dim arrOriginalPath As String()
+        Dim arrSplitSampleInfo As String()
+        Dim strNewFilePath As String
+        Dim strFileName As String
+        Dim intArrayLocation As Integer
+        Dim arrLineSplit As String()
+        Dim arrDateSplit As String()
+
+        arrOriginalPath = GlobalVariables.Import.FilePath.Split("\") ' Splitting the file path into an array.
+        intArrayLocation = arrOriginalPath.GetUpperBound(0) ' Getting the last element's in the array that has the file name.
+        arrSplitSampleInfo = arrOriginalPath(intArrayLocation).Split("_") ' Splitting again to get just the lab's name for the sample set.
+        strFileName = arrSplitSampleInfo(0) ' Getting the name from the array to a String. 
+        strNewFilePath = String.Join("\", arrOriginalPath, 0, intArrayLocation) & "\" & strFileName & "_LabSample_v1.txt" ' Changing the file path for the stream reader to get the file with the sample date(s). 
+        sr = New StreamReader(strNewFilePath)
+        line = sr.ReadLine
+        line = sr.ReadLine ' skipping over the headers
+        ' Looping through the LabSample file to get the sampling date
+        Do Until line = ""
+            arrLineSplit = line.Split(vbTab)
+            arrDateSplit = arrLineSplit(7).Split
+            ' Returning just the date 
+            If arrLineSplit(0) = strSampleName And intDate = 0 Then
+                Return Replace(arrDateSplit(0).ToString, "/", "")
+                ' Returning the date and time 
+            ElseIf arrLineSplit(0) = strSampleName And intDate = 1 Then
+                Return Replace(arrDateSplit(0).ToString, "/", "-") & " " & arrDateSplit(1).ToString
+            End If
+            line = sr.ReadLine
+        Loop
     End Function
 End Class

@@ -64,6 +64,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "KENAN_TA"
                 ElseIf cboImportType.Text = "QUALA_TA" Then
                     GlobalVariables.Import.Type = "QUALA_TA"
+                ElseIf cboImportType.Text = "SEWER" Then
+                    GlobalVariables.Import.Type = "SEWER"
                 End If
             ElseIf GlobalVariables.eTrain.AnalysisLab = "FIBERTEC" Then
                 If cboImportType.Text = "FIBERTEC" Then
@@ -1225,6 +1227,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("CABOT")
         cboImportType.Items.Add("KENAN_TA")
         cboImportType.Items.Add("QUALA_TA")
+        cboImportType.Items.Add("SEWER")
         cboImportType.Items.Add("TA")
     End Sub
     Private Sub FIBERTECToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FIBERTECToolStripMenuItem.Click

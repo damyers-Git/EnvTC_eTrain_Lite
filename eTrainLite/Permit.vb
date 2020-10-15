@@ -1021,9 +1021,9 @@ Public Class Permit
                         ' Changing the cas # for TSS reported by Fibertec  for the Kenan samples.
                         If GlobalVariables.Import.Type = "KENAN_FIBERTEC" And EDDCompound.EDDCasRn = "SS" Then
                             EDDCompound.EDDCasRn = "TSS"
-                        End If
-                        ' Changing all the stuff from the Cabot data since they have been sending two different types of EDDs.
-                        If GlobalVariables.Import.Type = "CABOT" Then
+
+                            ' Changing all the stuff from the Cabot data since they have been sending two different types of EDDs.
+                        ElseIf GlobalVariables.Import.Type = "CABOT" Then
                             If EDDCompound.EDDCasRn = "TDS" Or EDDCompound.EDDCasRn = "E-10173" Then
                                 EDDCompound.EDDCasRn = "0000-000-26"
                                 EDDCompound.EDDChemicalName = "Total Dissolved Solids"
@@ -1032,11 +1032,18 @@ Public Class Permit
                                 EDDCompound.EDDChemicalName = "Organic Nitrogen"
                                 EDDCompound.EDDCasRn = "STL00111"
                             End If
-                        End If
-                        ' Changes being made for the 1005s
-                        If GlobalVariables.Import.Type = "1005_PS" Then
+                            ' Changes being made for the 1005s
+                        ElseIf GlobalVariables.Import.Type = "1005_PS" Then
                             If EDDCompound.EDDCasRn = "15831-10-4" And EDDCompound.EDDChemicalName = "3 & 4-Methylphenol" Then
                                 EDDCompound.EDDChemicalName = "3/4-Methylphenol"
+                            End If
+                        ElseIf GlobalVariables.Import.Type = "SEWER" Then
+                            If EDDSample.Analysis = "BOD" And EDDCompound.EDDChemicalName <> "BOD" Then
+                                EDDCompound.EDDChemicalName = "BOD"
+                            ElseIf EDDSample.Analysis = "AMMONIA" And EDDCompound.EDDChemicalName <> "Ammonia" Then
+                                EDDCompound.EDDChemicalName = "Ammonia"
+                            ElseIf EDDSample.Analysis = "NITRO-TOT" And EDDCompound.EDDChemicalName <> "Nitrogen" Then
+                                EDDCompound.EDDChemicalName = "Nitrogen"
                             End If
                         End If
                         ' For changing the LIMS's cas # to something if it didn't have one to pull in because that will cause the analyte to be skipped completely. 
