@@ -63,6 +63,7 @@ Partial Class MainForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.btnClearSamples = New System.Windows.Forms.Button()
         Me.btnSigHelp = New System.Windows.Forms.Button()
+        Me.DeerParkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.nudSigFig, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -163,7 +164,7 @@ Partial Class MainForm
         '
         'NewSampleToolStripMenuItem
         '
-        Me.NewSampleToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TANC_NEWToolStripMenuItem1})
+        Me.NewSampleToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TANC_NEWToolStripMenuItem1, Me.DeerParkToolStripMenuItem})
         Me.NewSampleToolStripMenuItem.Name = "NewSampleToolStripMenuItem"
         Me.NewSampleToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.NewSampleToolStripMenuItem.Text = "NewSample"
@@ -282,7 +283,7 @@ Partial Class MainForm
         'tsslTeam
         '
         Me.tsslTeam.Name = "tsslTeam"
-        Me.tsslTeam.Size = New System.Drawing.Size(40, 17)
+        Me.tsslTeam.Size = New System.Drawing.Size(38, 17)
         Me.tsslTeam.Text = "Team:"
         Me.tsslTeam.Visible = False
         '
@@ -387,6 +388,12 @@ Partial Class MainForm
         Me.btnSigHelp.Text = "?"
         Me.btnSigHelp.UseVisualStyleBackColor = True
         '
+        'DeerParkToolStripMenuItem
+        '
+        Me.DeerParkToolStripMenuItem.Name = "DeerParkToolStripMenuItem"
+        Me.DeerParkToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.DeerParkToolStripMenuItem.Text = "DeerPark"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -465,4 +472,5 @@ Partial Class MainForm
     Friend WithEvents VISTAToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NewSampleToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TANC_NEWToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents DeerParkToolStripMenuItem As ToolStripMenuItem
 End Class

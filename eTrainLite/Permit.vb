@@ -817,7 +817,8 @@ Public Class Permit
                 ' Supplementing analytes and their CAS number into the dictionary for those not in the DOW_COMPONENT_CODE query.
                 ' Adding them here first so the names are correct versus what is in LIMS.
                 ' Example: '2,4-D' is actually '2,4-D (Med)' for all the samples that I have seen come through. 
-                For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
+                ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
+                For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\Name_CAS\casComponentCustom.txt")
                     Dim parts() As String = line.Split("|")
                     If Not GlobalVariables.compNameToCASDic.ContainsKey(parts(0)) Then
                         GlobalVariables.compNameToCASDic.Add(parts(0), parts(1))
@@ -832,14 +833,16 @@ Public Class Permit
                 ' Only importing the method that the data will go into so there will (hypothetically) be half the number imported versus the whole table.
                 ' Mostly for the LIMS samples that use a dup sample and then a calcluation is made to populate the reported sample. 
                 If GlobalVariables.eTrain.Team <> "NewSample" Then
-                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_LIMS.txt")
+                    'For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_LIMS.txt")
+                    For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_LIMS.txt")
                         Dim parts() As String = line.Split("|")
                         If Not GlobalVariables.limsAnalysisMethod.ContainsKey(parts(0)) Then
                             GlobalVariables.limsAnalysisMethod.Add(parts(0), parts(1))
                         End If
                     Next
                     ' Importing the lab's analysis method and the corresponding LIMS method. 
-                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_EDD.txt")
+                    ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_EDD.txt")
+                    For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\Methods\" & GlobalVariables.Import.Type & "_EDD.txt")
                         Dim parts() As String = line.Split("|")
                         If Not GlobalVariables.eddAnalysisMethod.ContainsKey(parts(0)) Then
                             GlobalVariables.eddAnalysisMethod.Add(parts(0), parts(1))
@@ -847,16 +850,19 @@ Public Class Permit
                     Next
                 Else
                     ' Methods
-                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & ".txt")
+                    ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & ".txt")
+                    For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & ".txt")
                         Dim parts() As String = line.Split("|")
                         GlobalVariables.newSampleMethods.Add(parts(0), parts(1))
                     Next
                     ' Analyte Information
-                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & "_ANALYTE.txt")
+                    ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & "_ANALYTE.txt")
+                    For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\" & GlobalVariables.Import.Type & "_ANALYTE.txt")
                         Dim parts() As String = line.Split("|")
                         GlobalVariables.newSampleAnalytes.Add(parts(0), parts(1))
                     Next
-                    For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\LABS.txt")
+                    ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\LABS.txt")
+                    For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\NewSample\LABS.txt")
                         Dim parts() As String = line.Split("|")
                         GlobalVariables.newSampleLabs.Add(parts(0), parts(1))
                     Next
@@ -865,7 +871,8 @@ Public Class Permit
             ' Creating a list of lists of the possible recovery units.
             ' Sometimes reported slightly different than what they are in LIMS even though they might mean the same thing. 
             ' Example: ppm and mg/L
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\RecoveryUnits.txt")
+            ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\RecoveryUnits.txt")
+            For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\RecoveryUnits.txt")
                 Dim count As Integer = 0
                 Dim tempList As New List(Of String)
                 Dim parts() As String = line.Split("|")
@@ -875,10 +882,11 @@ Public Class Permit
                 GlobalVariables.recoveryUnits.Add(tempList)
             Next
             ' Creating a list of lists of the BEF and TEF values for the D&F data.
-            For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\BefAndTef.txt")
+            ' For Each line As String In IO.File.ReadAllLines("\\mdrnd\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\BefAndTef.txt")
+            For Each line As String In IO.File.ReadAllLines("\\USMDLNDOWD022\AS-Global\Special_Access\EAC\Data\eTrainLite\Units\BefAndTef.txt")
                 Dim count As Integer = 0
                 Dim tempList As New List(Of String)
-                    Dim parts() As String = line.Split("|")
+                Dim parts() As String = line.Split("|")
                 For i As Integer = 0 To parts.Length - 1
                     tempList.Add(parts(i))
                 Next
@@ -952,7 +960,7 @@ Public Class Permit
         ' Putting the dataview into the table. 
         dtUnits = dvUnits.ToTable
         ' Creating an arrayList of each compound based on the LIMS number from the method call.
-         For Each row As DataRow In dtUnits.Rows
+        For Each row As DataRow In dtUnits.Rows
             ' Skipping over the check put in place for the WWTP Grabs, and various NPDES sample sets so they go in as a sample to be checked against.
             If row(0).ToString = "Limit Check" Then
                 Continue For
@@ -1019,9 +1027,10 @@ Public Class Permit
                             End If
                         End If
                         ' Changing the cas # for TSS reported by Fibertec  for the Kenan samples.
-                        If GlobalVariables.Import.Type = "KENAN_FIBERTEC" And EDDCompound.EDDCasRn = "SS" Then
-                            EDDCompound.EDDCasRn = "TSS"
-
+                        If GlobalVariables.Import.Type = "KENAN_FIBERTEC" Then
+                            If EDDCompound.EDDCasRn = "SS" Then
+                                EDDCompound.EDDCasRn = "TSS"
+                            End If
                             ' Changing all the stuff from the Cabot data since they have been sending two different types of EDDs.
                         ElseIf GlobalVariables.Import.Type = "CABOT" Then
                             If EDDCompound.EDDCasRn = "TDS" Or EDDCompound.EDDCasRn = "E-10173" Then

@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="eTrainLite.exe" size="835584">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="eTrainLite.exe" size="838144">
       <assemblyIdentity name="eTrainLite" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>tt37QhtK/T60Ir0M69+2HaS74oo=</dsig:DigestValue>
+        <dsig:DigestValue>M2pXGOjberosXbu8lAuifNE5glI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -108,13 +108,13 @@
       <dsig:DigestValue>IOq4DRoZKJ3PksB/yRgU5TcqqdY=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="eTrainLite.exe.config" size="183">
+  <file name="eTrainLite.exe.config" size="177">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>zmtMKrAEuvsQh2jJFtlCNruBIWE=</dsig:DigestValue>
+      <dsig:DigestValue>D+d7PmRXGmyrSFU3QHH+7R3Tv7U=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">

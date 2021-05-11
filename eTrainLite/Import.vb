@@ -1221,7 +1221,7 @@ Public Class Import
                     Dim aSampleTemp As New Sample
                     Dim aPermit As New Permit
 
-                    arrConvertEdd = convertExcelEdd()
+                    arrConvertEdd = convertVistaExcelEdd()
 
                     For i As Integer = 0 To arrConvertEdd.GetLength(0) - 1
                         If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
@@ -1297,11 +1297,49 @@ Public Class Import
                         "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
                         "correct and try again.)", MsgBoxStyle.Critical)
                 End Try
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "DeerPark" Then
+                Try
+                    ' Determiing if the file is a txt, dat, or excel.
+                    Dim strFileType = GlobalVariables.Import.FilePath.Split(".")
+                    If strFileType(strFileType.Length - 1) = "xls" Or strFileType(strFileType.Length - 1) = "xlsx" Then
+                        Dim arrConvertEdd As String(,)
+                        Dim aSampleTemp As New Sample
+                        Dim aPermit As New Permit
+
+                        arrConvertEdd = convertSGSExcelEdd()
+
+                        For i As Integer = 0 To arrConvertEdd.GetLength(0) - 1
+                            If Not aSampleTemp.CompoundList.Count = 0 Then 'Verify that there is at least one compound in the compound list
+                                If (arrConvertEdd(i, 3) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDsysSampleCode) Or (arrConvertEdd(i, 11) <> aSampleTemp.CompoundList(aSampleTemp.CompoundList.Count - 1).EDDLabAnlMethodName) Then 'Check if the current sample and analysis method are still the same. 
+                                    aSampleTemp.LimsID = aSampleTemp.CompoundList(0).EDDSysSampleCode.Substring(0, 6)
+                                    aSampleTemp.Type = "SAMPLE"
+                                    GlobalVariables.SampleList.Add(aSampleTemp)
+                                    aSampleTemp = New Sample
+                                End If
+                            End If
+
+                            If (checkForLimsNumber(arrConvertEdd(i, 3))) Then ' Making sure the sample name in the EDD begins with a 6 digit number that will be a LIMS IDs to ensure only samples are accepted (no blanks, LCS, or MS).
+                                Dim arrForEdd(arrConvertEdd.GetLength(1)) As String
+                                For j As Integer = 0 To arrConvertEdd.GetLength(1) - 1
+                                    arrForEdd(j) = arrConvertEdd(i, j)
+                                Next
+                                loadVistaEDD(arrForEdd, aSampleTemp)
+                            End If
+                        Next
+                        'Getting all of the data from LIMS to check against the EDD.
+                        aPermit.loadLimsInformation()
+                    End If
+                Catch ex As Exception
+                    MsgBox("Error pulling sample information!" & vbCrLf &
+                    "Logic Error: " & ex.Message & vbCrLf &
+                    "(EDD may be formatted incorrectly. Please ensure EDD format is " & vbCrLf &
+                    "correct and try again.)", MsgBoxStyle.Critical)
+                End Try
             End If
         End If
     End Sub
     ' Method for reading in an excel sheet and putting it into a 2D array of strings.
-    Function convertExcelEdd() As String(,)
+    Function convertVistaExcelEdd() As String(,)
         Try
             Dim dt As New DataTable
             Dim ds As New DataSet()
@@ -1330,11 +1368,47 @@ Public Class Import
             'Return dt
         Catch ex As Exception
             MsgBox("Error converting the imported EDD." & vbCrLf &
-                   "Sub Procedure: convertExcelEdd()" & vbCrLf &
+                   "Sub Procedure: convertVistaExcelEdd()" & vbCrLf &
                    "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
         End Try
     End Function
+    Function convertSGSExcelEdd() As String(,)
+        Try
+            Dim dt As New DataTable
+            Dim ds As New DataSet()
+            Dim constring As String = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & GlobalVariables.Import.FilePath & ";Extended Properties=""Excel 12.0;HDR=YES;"""
+            Dim con As New OleDbConnection(constring & "")
+            con.Open()
+            'Dim myTableName = con.GetSchema("Tables").Rows(0)("TABLE_NAME")
+            Dim arrSheets() As String = {"TestResultsQC_v1", "LabSample_v1"}
+            Dim lstEDDValues As New List(Of List(Of String))
+            For i = 0 To arrSheets.Length
+                Dim sqlquery As String = String.Format("SELECT * FROM [{0}]", arrSheets(i))
+                Dim da As New OleDbDataAdapter(sqlquery, con)
+                da.Fill(ds)
+                dt = ds.Tables(0)
+                ' Declaring and initializing here once the data has been ipmorted from the excel sheet.
 
+            Next
+            'Dim sqlquery As String = String.Format("SELECT * FROM [{0}]", myTableName) ' "Select * From " & myTableName  
+            'Dim da As New OleDbDataAdapter(sqlquery, con)
+            'da.Fill(ds)
+            'dt = ds.Tables(0)
+            ' Declaring and initializing here once the data has been ipmorted from the excel sheet.
+            Dim eddConvertedEDD(dt.Rows.Count, dt.Columns.Count) As String
+            For i As Integer = 0 To dt.Rows.Count - 1
+                For j As Integer = 0 To dt.Columns.Count - 1
+                    eddConvertedEDD(i, j) = dt.Rows(i).Item(j).ToString
+                Next
+            Next
+
+            Return eddConvertedEDD
+        Catch ex As Exception
+            MsgBox("Error converting the imported EDD." & vbCrLf &
+                   "Sub Procedure: convertSGSExcelEdd()" & vbCrLf &
+                   "Logic Error: " & ex.Message, MsgBoxStyle.Critical)
+        End Try
+    End Function
     '' No longer needed. Lancaster switched over to using tabs to delimit their EDDs.
 
     ' Used in taking a EDD from Eurofins Lancaster and returning an array of the values.

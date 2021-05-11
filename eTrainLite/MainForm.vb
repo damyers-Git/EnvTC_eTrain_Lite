@@ -32,6 +32,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "QUALA_ALS"
                 ElseIf cboImportType.Text = "DPS_ALS" Then
                     GlobalVariables.Import.Type = "DPS_ALS"
+                ElseIf cboImportType.Text = "XALT_ALS" Then
+                    GlobalVariables.Import.Type = "XALT_ALS"
                 End If
             ElseIf GlobalVariables.eTrain.AnalysisLab = "SGS" Then
                 If cboImportType.Text = "SGS" Then
@@ -58,6 +60,8 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                     GlobalVariables.Import.Type = "PCB_TA"
                 ElseIf cboImportType.Text = "CYANIDE" Then
                     GlobalVariables.Import.Type = "CYANIDE"
+                ElseIf cboImportType.Text = "XALT_TA" Then
+                    GlobalVariables.Import.Type = "XALT_TA"
                 ElseIf cboImportType.Text = "CABOT" Then
                     GlobalVariables.Import.Type = "CABOT"
                 ElseIf cboImportType.Text = "KENAN_TA" Then
@@ -85,8 +89,12 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 If cboImportType.Text = "SEWER" Then
                     GlobalVariables.Import.Type = "SEWER"
                 End If
+            ElseIf GlobalVariables.eTrain.AnalysisLab = "DeerPark" Then
+                If cboImportType.Text = "DeerPark" Then
+                    GlobalVariables.Import.Type = "DeerPark"
+                End If
             End If
-        Else
+            Else
             MsgBox("Please select an Import Type first", MsgBoxStyle.Exclamation, "eTrain 2.0")
             Exit Sub
         End If
@@ -203,6 +211,18 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
                 arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
                 lstFileList.Items.Add(file.ToString)
             Next
+        ElseIf GlobalVariables.eTrain.AnalysisLab = "DeerPark" Then
+            GlobalVariables.Import.arrFileList.Clear()
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.xls*")
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.xlsx")
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
+            GlobalVariables.Import.FileSearch(strImportLoc, "*.dat")
+
+            For Each file In GlobalVariables.Import.arrFileList
+                arrSpl = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1).Split("\")
+                lstFileList.Items.Add(file.ToString)
+            Next
+
         ElseIf GlobalVariables.eTrain.AnalysisLab <> "VISTA" Then
             GlobalVariables.Import.arrFileList.Clear()
             GlobalVariables.Import.FileSearch(strImportLoc, "*.txt*")
@@ -1181,6 +1201,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("BOD-PHOS")
         cboImportType.Items.Add("QUALA_ALS")
         cboImportType.Items.Add("DPS_ALS")
+        cboImportType.Items.Add("XALT_ALS")
         cboImportType.Items.Add("ALS")
     End Sub
     Private Sub SGSToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SGSToolStripMenuItem.Click
@@ -1224,6 +1245,7 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
         cboImportType.Items.Add("SVOA_SEMIANNUAL")
         cboImportType.Items.Add("PCB_TA")
         cboImportType.Items.Add("CYANIDE")
+        cboImportType.Items.Add("XALT_TA")
         cboImportType.Items.Add("CABOT")
         cboImportType.Items.Add("KENAN_TA")
         cboImportType.Items.Add("QUALA_TA")
@@ -1283,5 +1305,22 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
         cboImportType.Items.Add("SEWER")
 
+    End Sub
+
+    Private Sub DeerParkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeerParkToolStripMenuItem.Click
+        GlobalVariables.eTrain.Server = "MIDLAND"
+        GlobalVariables.eTrain.Location = "MIDLAND"
+        GlobalVariables.eTrain.Team = "NewSample"
+        GlobalVariables.eTrain.AnalysisLab = "DeerPark"
+        GlobalVariables.eTrain.ServerFP = "\\usmdlsdowacds1\Lims_xfer\ENVMD\"
+
+        'Form UI
+        UpdateForm()
+        'Populate import type box
+        btnFindFiles.Enabled = True
+        cboImportType.Enabled = True
+        cboImportType.Items.Clear()
+
+        cboImportType.Items.Add("DeerPark")
     End Sub
 End Class
