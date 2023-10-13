@@ -50,7 +50,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>M2pXGOjberosXbu8lAuifNE5glI=</dsig:DigestValue>
+        <dsig:DigestValue>f9cOLZs2KEbR/8zUhQYEWeKK8PQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -108,13 +108,13 @@
       <dsig:DigestValue>IOq4DRoZKJ3PksB/yRgU5TcqqdY=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="eTrainLite.exe.config" size="177">
+  <file name="eTrainLite.exe.config" size="183">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>D+d7PmRXGmyrSFU3QHH+7R3Tv7U=</dsig:DigestValue>
+      <dsig:DigestValue>zmtMKrAEuvsQh2jJFtlCNruBIWE=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
