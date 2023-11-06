@@ -247,215 +247,219 @@ Public Class MainForm   'FIX NEXT TIME... SSR NOT BEING SET AS CORRECT TYPE!!!!
 
         'Begin Import
         'Check for CS1 and CS3, 1 and only 1 of each
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            If GlobalVariables.eTrain.Team = "FAST" Then
-                blnCS1 = False
-                blnCS3 = False
+        Try
+            If GlobalVariables.eTrain.Location = "MIDLAND" Then
+                If GlobalVariables.eTrain.Team = "FAST" Then
+                    blnCS1 = False
+                    blnCS3 = False
+                    For Each item In lstFileList.SelectedItems
+                        If InStr(item.ToString, "CS1") Then
+                            If blnCS1 = True Then
+                                MsgBox("More than 1 CS1 has been selected, please select only 1 and try import again.")
+                                Exit Sub
+                            Else
+                                blnCS1 = True
+                            End If
+                        End If
+                        If InStr(item.ToString, "CS3") Then
+                            If blnCS3 = True Then
+                                MsgBox("More than 1 CS3 has been selected, please select only 1 and try import again.")
+                                Exit Sub
+                            Else
+                                blnCS3 = True
+                            End If
+                        End If
+                    Next
+                    If blnCS1 = False Then
+                        MsgBox("No CS1 Found, please ensure you have a CS1 selected and try import again.")
+                        Exit Sub
+                    End If
+                    If blnCS3 = False Then
+                        MsgBox("No CS3 Found, please ensure you have a CS3 selected and try import again.")
+                        Exit Sub
+                    End If
+                End If
+            End If
+
+            If GlobalVariables.Import.Type = "CHEM" Then
+                'Grab file path and import each file
                 For Each item In lstFileList.SelectedItems
-                    If InStr(item.ToString, "CS1") Then
-                        If blnCS1 = True Then
-                            MsgBox("More than 1 CS1 has been selected, please select only 1 and try import again.")
-                            Exit Sub
-                        Else
-                            blnCS1 = True
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, item.ToString.Substring(3)) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
                         End If
-                    End If
-                    If InStr(item.ToString, "CS3") Then
-                        If blnCS3 = True Then
-                            MsgBox("More than 1 CS3 has been selected, please select only 1 and try import again.")
-                            Exit Sub
-                        Else
-                            blnCS3 = True
+                    Next
+                Next
+            ElseIf GlobalVariables.Import.Type = "CHEMBEVCAN" Then
+                'Grab file path and import each file
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
                         End If
-                    End If
+                    Next
                 Next
-                If blnCS1 = False Then
-                    MsgBox("No CS1 Found, please ensure you have a CS1 selected and try import again.")
-                    Exit Sub
-                End If
-                If blnCS3 = False Then
-                    MsgBox("No CS3 Found, please ensure you have a CS3 selected and try import again.")
-                    Exit Sub
+            ElseIf GlobalVariables.Import.Type = "TOC" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            ElseIf GlobalVariables.Import.Type = "MASS" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            ElseIf GlobalVariables.Import.Type = "TQIII" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            ElseIf GlobalVariables.Import.Type = "EDD" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\") 'arrSpl contain file name? ()
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+
+            ElseIf GlobalVariables.Import.Type = "SSR" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+                For Each item In lstFileList.SelectedItems
+                    For Each file In GlobalVariables.Import.arrFileList
+                        arrSpl = item.ToString.Split("\")
+                        If InStr(file, arrSpl(UBound(arrSpl))) Then
+                            GlobalVariables.Import.FilePath = file.ToString
+                            GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
+                            GlobalVariables.Import.SampleImport()
+                        End If
+                    Next
+                Next
+            End If
+            'CAS no's
+            If GlobalVariables.eTrain.Location = "MIDLAND" Then
+                If GlobalVariables.eTrain.Team = "CHROM" Then
+                    If GlobalVariables.Import.MidlandChromAttachCAS() Then
+
+                    End If
                 End If
             End If
-        End If
 
-        If GlobalVariables.Import.Type = "CHEM" Then
-            'Grab file path and import each file
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, item.ToString.Substring(3)) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "CHEMBEVCAN" Then
-            'Grab file path and import each file
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "TOC" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "MASS" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "TQIII" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.Import.Type = "EDD" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\") 'arrSpl contain file name? ()
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-
-        ElseIf GlobalVariables.Import.Type = "SSR" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
-            For Each item In lstFileList.SelectedItems
-                For Each file In GlobalVariables.Import.arrFileList
-                    arrSpl = item.ToString.Split("\")
-                    If InStr(file, arrSpl(UBound(arrSpl))) Then
-                        GlobalVariables.Import.FilePath = file.ToString
-                        GlobalVariables.Import.FolderPath = file.ToString.Substring(0, InStrRev(file.ToString, "\") - 1)
-                        GlobalVariables.Import.SampleImport()
-                    End If
-                Next
-            Next
-        End If
-        'CAS no's
-        If GlobalVariables.eTrain.Location = "MIDLAND" Then
-            If GlobalVariables.eTrain.Team = "CHROM" Then
-                If GlobalVariables.Import.MidlandChromAttachCAS() Then
-
-                End If
-            End If
-        End If
-
-        'Display imported information
-        lblImportResults.Text = "Import Results: " & GlobalVariables.SampleList.Count & " Samples Imported"
-        If GlobalVariables.Import.Type = "TOC" Then
-            For Each aSample In GlobalVariables.SampleList
-                strText = strText & "Sample Name: " & aSample.Name & vbCrLf
-                strText = strText & "ID: " & aSample.LimsID & vbCrLf & vbCrLf
-                txtImportResults.Text = strText
-            Next
-        ElseIf GlobalVariables.Import.Type = "EDD" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
+            'Display imported information
+            lblImportResults.Text = "Import Results: " & GlobalVariables.SampleList.Count & " Samples Imported"
+            If GlobalVariables.Import.Type = "TOC" Then
                 For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
+                    strText = strText & "Sample Name: " & aSample.Name & vbCrLf
+                    strText = strText & "ID: " & aSample.LimsID & vbCrLf & vbCrLf
                     txtImportResults.Text = strText
                 Next
-            End If
-        ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+            ElseIf GlobalVariables.Import.Type = "EDD" Then
+                If GlobalVariables.SampleList.Count = 0 Then
+                    txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+                Else
+                    For Each aSample In GlobalVariables.SampleList
+                        strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
+                        strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                        strText = strText & "Analysis Date: " & aSample.CompoundList(0).EDDAnalysisDate & vbCrLf & vbCrLf
+                        txtImportResults.Text = strText
+                    Next
+                End If
+            ElseIf GlobalVariables.eTrain.Team = "CLAB" Then
+                If GlobalVariables.SampleList.Count = 0 Then
+                    txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+                Else
+                    For Each aSample In GlobalVariables.SampleList
+                        strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                        strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
+                        strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                        txtImportResults.Text = strText
+                    Next
+                End If
+            ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
+                If GlobalVariables.SampleList.Count = 0 Then
+                    txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
+                Else
+                    For Each aSample In GlobalVariables.SampleList
+                        strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
+                        strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
+                        strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                        txtImportResults.Text = strText
+                    Next
+                End If
+
             Else
                 For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
-                    txtImportResults.Text = strText
-                Next
-            End If
-        ElseIf GlobalVariables.eTrain.Team = "NewSample" Then
-            If GlobalVariables.SampleList.Count = 0 Then
-                txtImportResults.Text = "No samples detected in EDD. Please ensure EDD is formatted correctly!"
-            Else
-                For Each aSample In GlobalVariables.SampleList
-                    strText = strText & "Sample Code: " & aSample.CompoundList(0).EDDsysSampleCode & vbCrLf
-                    strText = strText & "Number of Compounds: " & aSample.CompoundList.Count & vbCrLf
-                    strText = strText & "Analysis Method: " & aSample.CompoundList(0).EDDLabAnlMethodName & vbCrLf & vbCrLf
+                    strText = strText & "Sample Name: " & aSample.Name & vbCrLf
+                    strText = strText & "Internal Standards: " & aSample.InternalStdList.Count & vbCrLf
+                    strText = strText & "Surrogates: " & aSample.SurrogateList.Count & vbCrLf
+                    strText = strText & "Compounds: " & aSample.CompoundList.Count & vbCrLf
+                    strText = strText & "Misc: " & aSample.Misc & vbCrLf & vbCrLf
                     txtImportResults.Text = strText
                 Next
             End If
 
-        Else
-            For Each aSample In GlobalVariables.SampleList
-                strText = strText & "Sample Name: " & aSample.Name & vbCrLf
-                strText = strText & "Internal Standards: " & aSample.InternalStdList.Count & vbCrLf
-                strText = strText & "Surrogates: " & aSample.SurrogateList.Count & vbCrLf
-                strText = strText & "Compounds: " & aSample.CompoundList.Count & vbCrLf
-                strText = strText & "Misc: " & aSample.Misc & vbCrLf & vbCrLf
-                txtImportResults.Text = strText
-            Next
-        End If
 
-
-        'Enable Report generation if samples in list and LIMS transfer if samples and server selected
-        If GlobalVariables.SampleList.Count > 0 Then
-            Me.btnReport.Enabled = True
-            'Enable method/instrument/sigfig controls
-            nudSigFig.Enabled = True
-            btnSigHelp.Enabled = True
-            If Not IsNothing(GlobalVariables.eTrain.Server) Then
-                Me.btnTransLIMS.Enabled = True
+            'Enable Report generation if samples in list and LIMS transfer if samples and server selected
+            If GlobalVariables.SampleList.Count > 0 Then
+                Me.btnReport.Enabled = True
+                'Enable method/instrument/sigfig controls
+                nudSigFig.Enabled = True
+                btnSigHelp.Enabled = True
+                If Not IsNothing(GlobalVariables.eTrain.Server) Then
+                    Me.btnTransLIMS.Enabled = True
+                End If
             End If
-        End If
+        Catch ex As Exception
+            MsgBox("Error" & vbCrLf & ex.Message)
+        End Try
     End Sub
 
     Private Sub btnTransLIMS_Click(sender As System.Object, e As System.EventArgs) Handles btnTransLIMS.Click

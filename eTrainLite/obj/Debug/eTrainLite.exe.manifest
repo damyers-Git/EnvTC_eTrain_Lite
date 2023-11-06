@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="eTrainLite.exe" size="838144">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="eTrainLite.exe" size="825856">
       <assemblyIdentity name="eTrainLite" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>f9cOLZs2KEbR/8zUhQYEWeKK8PQ=</dsig:DigestValue>
+        <dsig:DigestValue>ndtvNM/W8r8bgDGF9glVYl1bDWs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -63,18 +63,6 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
         <dsig:DigestValue>wpt1ZZ/RXkx2UnYJy8iCunh+6Lw=</dsig:DigestValue>
-      </hash>
-    </dependentAssembly>
-  </dependency>
-  <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Syncfusion.XlsIO.Base.dll" size="5271552">
-      <assemblyIdentity name="Syncfusion.XlsIO.Base" version="15.4400.0.17" publicKeyToken="3D67ED1F87D44C89" language="neutral" processorArchitecture="msil" />
-      <hash>
-        <dsig:Transforms>
-          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-        </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>/W6CJ3YxBQ21uB1+LbDQ4hGfv90=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
